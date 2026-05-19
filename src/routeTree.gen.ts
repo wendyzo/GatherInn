@@ -14,9 +14,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedSocietiesSocietyIdRouteImport } from './routes/_authenticated/societies.$societyId'
-import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedEventsEventIdRouteImport } from './routes/_authenticated/events.$eventId'
-import { Route as AuthenticatedProjectsProjectIdNewEventRouteImport } from './routes/_authenticated/projects.$projectId.new-event'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -43,23 +41,11 @@ const AuthenticatedSocietiesSocietyIdRoute =
     path: '/societies/$societyId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedProjectsProjectIdRoute =
-  AuthenticatedProjectsProjectIdRouteImport.update({
-    id: '/projects/$projectId',
-    path: '/projects/$projectId',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedEventsEventIdRoute =
   AuthenticatedEventsEventIdRouteImport.update({
     id: '/events/$eventId',
     path: '/events/$eventId',
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedProjectsProjectIdNewEventRoute =
-  AuthenticatedProjectsProjectIdNewEventRouteImport.update({
-    id: '/new-event',
-    path: '/new-event',
-    getParentRoute: () => AuthenticatedProjectsProjectIdRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -67,18 +53,14 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/events/$eventId': typeof AuthenticatedEventsEventIdRoute
-  '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/societies/$societyId': typeof AuthenticatedSocietiesSocietyIdRoute
-  '/projects/$projectId/new-event': typeof AuthenticatedProjectsProjectIdNewEventRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/events/$eventId': typeof AuthenticatedEventsEventIdRoute
-  '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/societies/$societyId': typeof AuthenticatedSocietiesSocietyIdRoute
-  '/projects/$projectId/new-event': typeof AuthenticatedProjectsProjectIdNewEventRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -87,9 +69,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/events/$eventId': typeof AuthenticatedEventsEventIdRoute
-  '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/_authenticated/societies/$societyId': typeof AuthenticatedSocietiesSocietyIdRoute
-  '/_authenticated/projects/$projectId/new-event': typeof AuthenticatedProjectsProjectIdNewEventRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -98,18 +78,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/dashboard'
     | '/events/$eventId'
-    | '/projects/$projectId'
     | '/societies/$societyId'
-    | '/projects/$projectId/new-event'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/dashboard'
     | '/events/$eventId'
-    | '/projects/$projectId'
     | '/societies/$societyId'
-    | '/projects/$projectId/new-event'
   id:
     | '__root__'
     | '/'
@@ -117,9 +93,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/_authenticated/dashboard'
     | '/_authenticated/events/$eventId'
-    | '/_authenticated/projects/$projectId'
     | '/_authenticated/societies/$societyId'
-    | '/_authenticated/projects/$projectId/new-event'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -165,13 +139,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSocietiesSocietyIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/projects/$projectId': {
-      id: '/_authenticated/projects/$projectId'
-      path: '/projects/$projectId'
-      fullPath: '/projects/$projectId'
-      preLoaderRoute: typeof AuthenticatedProjectsProjectIdRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/events/$eventId': {
       id: '/_authenticated/events/$eventId'
       path: '/events/$eventId'
@@ -179,43 +146,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEventsEventIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/projects/$projectId/new-event': {
-      id: '/_authenticated/projects/$projectId/new-event'
-      path: '/new-event'
-      fullPath: '/projects/$projectId/new-event'
-      preLoaderRoute: typeof AuthenticatedProjectsProjectIdNewEventRouteImport
-      parentRoute: typeof AuthenticatedProjectsProjectIdRoute
-    }
   }
 }
-
-interface AuthenticatedProjectsProjectIdRouteChildren {
-  AuthenticatedProjectsProjectIdNewEventRoute: typeof AuthenticatedProjectsProjectIdNewEventRoute
-}
-
-const AuthenticatedProjectsProjectIdRouteChildren: AuthenticatedProjectsProjectIdRouteChildren =
-  {
-    AuthenticatedProjectsProjectIdNewEventRoute:
-      AuthenticatedProjectsProjectIdNewEventRoute,
-  }
-
-const AuthenticatedProjectsProjectIdRouteWithChildren =
-  AuthenticatedProjectsProjectIdRoute._addFileChildren(
-    AuthenticatedProjectsProjectIdRouteChildren,
-  )
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEventsEventIdRoute: typeof AuthenticatedEventsEventIdRoute
-  AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRouteWithChildren
   AuthenticatedSocietiesSocietyIdRoute: typeof AuthenticatedSocietiesSocietyIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEventsEventIdRoute: AuthenticatedEventsEventIdRoute,
-  AuthenticatedProjectsProjectIdRoute:
-    AuthenticatedProjectsProjectIdRouteWithChildren,
   AuthenticatedSocietiesSocietyIdRoute: AuthenticatedSocietiesSocietyIdRoute,
 }
 
@@ -231,3 +173,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
