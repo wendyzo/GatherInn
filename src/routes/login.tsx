@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Crown } from "lucide-react";
+import BrandLogo from "@/components/BrandLogo";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({ component: Login });
@@ -48,10 +49,9 @@ function Login() {
     <div className="min-h-screen flex items-center justify-center px-4 bg-background">
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground"><Crown className="h-5 w-5" /></span>
-          <span className="font-display text-xl">Successor&rsquo;s Blueprint</span>
+          <BrandLogo compact />
         </Link>
-        <div className="rounded-xl border border-border bg-card p-8 shadow-sm">
+        <div className="rounded-md border border-border bg-card p-8 shadow-sm">
           <h1 className="font-display text-2xl">{mode === "signin" ? "Welcome back" : "Create your account"}</h1>
           <p className="text-sm text-muted-foreground mt-1">
             {mode === "signin" ? "Sign in to access your societies." : "You'll be able to start or join a society after signup."}

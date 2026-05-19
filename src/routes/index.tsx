@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Crown, History, AlertTriangle, Users, ListChecks, Handshake } from "lucide-react";
+import { ArrowRight, History, AlertTriangle, Users, ListChecks, Handshake } from "lucide-react";
+import BrandLogo from "@/components/BrandLogo";
 
 export const Route = createFileRoute("/")({ component: Landing });
 
@@ -8,8 +9,7 @@ function Landing() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="mx-auto max-w-6xl px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground"><Crown className="h-4 w-4" /></span>
-          <span className="font-display text-lg">Successor&rsquo;s Blueprint</span>
+          <BrandLogo />
         </div>
         <Link to="/login" className="text-sm font-medium hover:text-primary">Sign in</Link>
       </header>
@@ -41,7 +41,7 @@ function Landing() {
             { icon: ListChecks, title: "Deep-clone the timeline", body: "Pick a new start date and we shift every task deadline accordingly. The Gantt is rebuilt for you." },
             { icon: Handshake, title: "Import vetted vendors", body: "Bring along the lighting crew you trust, the caterer with the 5-star rating, the AV team that delivered." },
           ].map(({ icon: Icon, title, body }) => (
-            <div key={title} className="rounded-xl border border-border bg-card p-6">
+            <div key={title} className="rounded-md border border-border bg-card p-6">
               <div className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary"><Icon className="h-5 w-5" /></div>
               <h3 className="font-display text-xl mt-4">{title}</h3>
               <p className="text-sm text-muted-foreground mt-2">{body}</p>
@@ -60,7 +60,7 @@ function Landing() {
         </div>
 
         <div className="mt-12 flex items-center gap-2 text-sm text-muted-foreground">
-          <Users className="h-4 w-4" /> Role-based: only Executives and Project Owners can view history or create successor events.
+          <Users className="h-4 w-4" /> Role-based: only Executives and Project Owners can view history or create blueprint events.
         </div>
       </section>
     </div>

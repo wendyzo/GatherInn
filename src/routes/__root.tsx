@@ -53,7 +53,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Successor's Blueprint" },
+      { title: "GatherInn" },
       { name: "description", content: "Society-based event knowledge management. Inherit timelines, vendors, and risks from past events." },
     ],
     links: [
