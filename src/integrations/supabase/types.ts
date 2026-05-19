@@ -14,16 +14,329 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      event_risks: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_id: string
+          id: string
+          resolved: boolean
+          severity: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_id: string
+          id?: string
+          resolved?: boolean
+          severity?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_id?: string
+          id?: string
+          resolved?: boolean
+          severity?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_risks_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_tasks: {
+        Row: {
+          completed: boolean
+          created_at: string
+          description: string | null
+          due_date: string | null
+          event_id: string
+          id: string
+          position: number
+          title: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          event_id: string
+          id?: string
+          position?: number
+          title: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          event_id?: string
+          id?: string
+          position?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_tasks_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_vendors: {
+        Row: {
+          contact: string | null
+          created_at: string
+          event_id: string
+          id: string
+          name: string
+          notes: string | null
+          rating: number | null
+          service: string | null
+        }
+        Insert: {
+          contact?: string | null
+          created_at?: string
+          event_id: string
+          id?: string
+          name: string
+          notes?: string | null
+          rating?: number | null
+          service?: string | null
+        }
+        Update: {
+          contact?: string | null
+          created_at?: string
+          event_id?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          rating?: number | null
+          service?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_vendors_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          cloned_from_event_id: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          event_date: string | null
+          id: string
+          name: string
+          project_id: string
+          society_id: string
+          status: string
+        }
+        Insert: {
+          cloned_from_event_id?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          name: string
+          project_id: string
+          society_id: string
+          status?: string
+        }
+        Update: {
+          cloned_from_event_id?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          society_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_cloned_from_event_id_fkey"
+            columns: ["cloned_from_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_society_id_fkey"
+            columns: ["society_id"]
+            isOneToOne: false
+            referencedRelation: "societies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          experience_tags: string[]
+          full_name: string | null
+          id: string
+          skills: string[]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          experience_tags?: string[]
+          full_name?: string | null
+          id: string
+          skills?: string[]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          experience_tags?: string[]
+          full_name?: string | null
+          id?: string
+          skills?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          society_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+          society_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+          society_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_society_id_fkey"
+            columns: ["society_id"]
+            isOneToOne: false
+            referencedRelation: "societies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      societies: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      society_members: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["society_role"]
+          society_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["society_role"]
+          society_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["society_role"]
+          society_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "society_members_society_id_fkey"
+            columns: ["society_id"]
+            isOneToOne: false
+            referencedRelation: "societies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      can_manage_society: {
+        Args: { _society_id: string; _user_id: string }
+        Returns: boolean
+      }
+      has_society_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["society_role"]
+          _society_id: string
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_society_member: {
+        Args: { _society_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      society_role: "executive" | "project_owner" | "member"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +463,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      society_role: ["executive", "project_owner", "member"],
+    },
   },
 } as const
