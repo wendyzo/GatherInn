@@ -15,6 +15,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedSocietiesSocietyIdRouteImport } from './routes/_authenticated/societies.$societyId'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
+import { Route as AuthenticatedEventsEventIdRouteImport } from './routes/_authenticated/events.$eventId'
+import { Route as AuthenticatedProjectsProjectIdNewEventRouteImport } from './routes/_authenticated/projects.$projectId.new-event'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -47,20 +49,36 @@ const AuthenticatedProjectsProjectIdRoute =
     path: '/projects/$projectId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedEventsEventIdRoute =
+  AuthenticatedEventsEventIdRouteImport.update({
+    id: '/events/$eventId',
+    path: '/events/$eventId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedProjectsProjectIdNewEventRoute =
+  AuthenticatedProjectsProjectIdNewEventRouteImport.update({
+    id: '/new-event',
+    path: '/new-event',
+    getParentRoute: () => AuthenticatedProjectsProjectIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
+  '/events/$eventId': typeof AuthenticatedEventsEventIdRoute
+  '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/societies/$societyId': typeof AuthenticatedSocietiesSocietyIdRoute
+  '/projects/$projectId/new-event': typeof AuthenticatedProjectsProjectIdNewEventRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
+  '/events/$eventId': typeof AuthenticatedEventsEventIdRoute
+  '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/societies/$societyId': typeof AuthenticatedSocietiesSocietyIdRoute
+  '/projects/$projectId/new-event': typeof AuthenticatedProjectsProjectIdNewEventRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,8 +86,10 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
+  '/_authenticated/events/$eventId': typeof AuthenticatedEventsEventIdRoute
+  '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/_authenticated/societies/$societyId': typeof AuthenticatedSocietiesSocietyIdRoute
+  '/_authenticated/projects/$projectId/new-event': typeof AuthenticatedProjectsProjectIdNewEventRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -77,23 +97,29 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/dashboard'
+    | '/events/$eventId'
     | '/projects/$projectId'
     | '/societies/$societyId'
+    | '/projects/$projectId/new-event'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/dashboard'
+    | '/events/$eventId'
     | '/projects/$projectId'
     | '/societies/$societyId'
+    | '/projects/$projectId/new-event'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/login'
     | '/_authenticated/dashboard'
+    | '/_authenticated/events/$eventId'
     | '/_authenticated/projects/$projectId'
     | '/_authenticated/societies/$societyId'
+    | '/_authenticated/projects/$projectId/new-event'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -146,18 +172,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/events/$eventId': {
+      id: '/_authenticated/events/$eventId'
+      path: '/events/$eventId'
+      fullPath: '/events/$eventId'
+      preLoaderRoute: typeof AuthenticatedEventsEventIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/projects/$projectId/new-event': {
+      id: '/_authenticated/projects/$projectId/new-event'
+      path: '/new-event'
+      fullPath: '/projects/$projectId/new-event'
+      preLoaderRoute: typeof AuthenticatedProjectsProjectIdNewEventRouteImport
+      parentRoute: typeof AuthenticatedProjectsProjectIdRoute
+    }
   }
 }
 
+interface AuthenticatedProjectsProjectIdRouteChildren {
+  AuthenticatedProjectsProjectIdNewEventRoute: typeof AuthenticatedProjectsProjectIdNewEventRoute
+}
+
+const AuthenticatedProjectsProjectIdRouteChildren: AuthenticatedProjectsProjectIdRouteChildren =
+  {
+    AuthenticatedProjectsProjectIdNewEventRoute:
+      AuthenticatedProjectsProjectIdNewEventRoute,
+  }
+
+const AuthenticatedProjectsProjectIdRouteWithChildren =
+  AuthenticatedProjectsProjectIdRoute._addFileChildren(
+    AuthenticatedProjectsProjectIdRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRoute
+  AuthenticatedEventsEventIdRoute: typeof AuthenticatedEventsEventIdRoute
+  AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRouteWithChildren
   AuthenticatedSocietiesSocietyIdRoute: typeof AuthenticatedSocietiesSocietyIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedProjectsProjectIdRoute: AuthenticatedProjectsProjectIdRoute,
+  AuthenticatedEventsEventIdRoute: AuthenticatedEventsEventIdRoute,
+  AuthenticatedProjectsProjectIdRoute:
+    AuthenticatedProjectsProjectIdRouteWithChildren,
   AuthenticatedSocietiesSocietyIdRoute: AuthenticatedSocietiesSocietyIdRoute,
 }
 
