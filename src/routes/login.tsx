@@ -79,6 +79,12 @@ function Login() {
             {mode === "signin" ? "No account? Sign up" : "Already have an account? Sign in"}
           </button>
         </div>
+        <p className="mt-4 text-center text-sm text-muted-foreground">
+          Just browsing?{" "}
+          <Link to="/demo" className="text-foreground underline underline-offset-2 hover:text-primary">
+            Try the demo
+          </Link>
+        </p>
       </div>
     </div>
   );
