@@ -134,39 +134,6 @@ export type Database = {
           },
         ]
       }
-      runsheet_blocks: {
-        Row: {
-          id: string
-          event_id: string
-          title: string
-          description: string | null
-          start_time: string
-          duration_minutes: number
-          position: number
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          event_id: string
-          title: string
-          description?: string | null
-          start_time?: string
-          duration_minutes?: number
-          position?: number
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          event_id?: string
-          title?: string
-          description?: string | null
-          start_time?: string
-          duration_minutes?: number
-          position?: number
-          created_at?: string
-        }
-        Relationships: []
-      }
       events: {
         Row: {
           cloned_from_event_id: string | null
@@ -174,10 +141,9 @@ export type Database = {
           created_by: string
           description: string | null
           event_date: string | null
-          location: string | null
           id: string
           name: string
-          project_id: string | null
+          project_id: string
           society_id: string
           status: string
         }
@@ -187,10 +153,9 @@ export type Database = {
           created_by: string
           description?: string | null
           event_date?: string | null
-          location?: string | null
           id?: string
           name: string
-          project_id?: string | null
+          project_id: string
           society_id: string
           status?: string
         }
@@ -200,7 +165,6 @@ export type Database = {
           created_by?: string
           description?: string | null
           event_date?: string | null
-          location?: string | null
           id?: string
           name?: string
           project_id?: string
