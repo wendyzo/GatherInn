@@ -142,8 +142,9 @@ export type Database = {
           description: string | null
           event_date: string | null
           id: string
+          location: string | null
           name: string
-          project_id: string
+          project_id: string | null
           society_id: string
           status: string
         }
@@ -154,8 +155,9 @@ export type Database = {
           description?: string | null
           event_date?: string | null
           id?: string
+          location?: string | null
           name: string
-          project_id: string
+          project_id?: string | null
           society_id: string
           status?: string
         }
@@ -166,8 +168,9 @@ export type Database = {
           description?: string | null
           event_date?: string | null
           id?: string
+          location?: string | null
           name?: string
-          project_id?: string
+          project_id?: string | null
           society_id?: string
           status?: string
         }
@@ -256,6 +259,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      runsheet_blocks: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_minutes: number
+          event_id: string
+          id: string
+          position: number
+          start_time: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          event_id: string
+          id?: string
+          position?: number
+          start_time?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          event_id?: string
+          id?: string
+          position?: number
+          start_time?: string
+          title?: string
+        }
+        Relationships: []
       }
       societies: {
         Row: {
