@@ -12,7 +12,17 @@ import { format, addDays, parseISO } from "date-fns";
 
 export const Route = createFileRoute("/_authenticated/societies/$societyId")({ component: SocietyPage });
 
-type EventRow = { id: string; name: string; event_date: string | null };
+type EventRow = { id: string; name: string; event_date: string | null; society_name?: string };
+
+const STOPWORDS = new Set([
+  "the","a","an","of","and","or","for","to","in","on","at","with","our","my","your","new",
+  "2024","2025","2026","2027","annual","first","second","third","ii","iii","iv","v",
+  "day","night","event","party","society","club",
+]);
+
+function keywordsOf(name: string): string[] {
+  return name.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 3 && !STOPWORDS.has(w));
+}
 
 function SocietyPage() {
   const { societyId } = Route.useParams();
@@ -27,6 +37,8 @@ function SocietyPage() {
   const [newName, setNewName] = useState("");
   const [blueprint, setBlueprint] = useState<EventRow | null>(null);
   const [creating, setCreating] = useState(false);
+  const [crossEvents, setCrossEvents] = useState<EventRow[]>([]);
+  const [crossLoading, setCrossLoading] = useState(false);
 
   const canManage = role === "executive" || role === "project_owner";
 
@@ -44,15 +56,45 @@ function SocietyPage() {
   useEffect(() => { load(); }, [societyId]);
 
   const filteredBlueprints = useMemo(() => {
-    if (!newName.trim()) return history;
-    const q = newName.toLowerCase();
-    return history.filter((e) => e.name.toLowerCase().includes(q));
-  }, [history, newName]);
+    const source = crossEvents.length > 0 ? crossEvents : history;
+    const kws = keywordsOf(newName.trim());
 
-  const openDialog = () => {
+    if (!newName.trim()) return source.slice(0, 5);
+
+    if (kws.length === 0) {
+      const q = newName.toLowerCase();
+      return source.filter((e) => e.name.toLowerCase().includes(q)).slice(0, 6);
+    }
+
+    return source
+      .map((e) => {
+        const eWords = e.name.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 2);
+        const score = kws.reduce((acc, k) => acc + (eWords.some((w) => w.includes(k) || k.includes(w)) ? 1 : 0), 0);
+        return { ...e, score };
+      })
+      .filter((e) => e.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 6);
+  }, [crossEvents, history, newName]);
+
+  const openDialog = async () => {
     setNewName("");
     setBlueprint(null);
+    setCrossEvents([]);
     setOpen(true);
+    setCrossLoading(true);
+    const { data } = await supabase
+      .from("events")
+      .select("id, name, event_date, societies(name)")
+      .order("event_date", { ascending: false, nullsFirst: false })
+      .limit(200);
+    setCrossEvents(
+      (data ?? []).map((e: any) => ({
+        id: e.id, name: e.name, event_date: e.event_date,
+        society_name: e.societies?.name ?? "",
+      }))
+    );
+    setCrossLoading(false);
   };
 
   const createEvent = async () => {
@@ -133,42 +175,44 @@ function SocietyPage() {
             />
           </div>
 
-          {history.length > 0 && (
-            <div className="mt-1">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-                Related past events
-              </p>
-              <div className="max-h-52 overflow-y-auto space-y-1 pr-0.5">
-                {filteredBlueprints.length === 0 ? (
+          <div className="mt-1">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+              {newName.trim() ? "Similar past events" : "Recent events"}{crossLoading && <span className="ml-1 normal-case font-normal">· searching…</span>}
+            </p>
+            <div className="max-h-52 overflow-y-auto space-y-1 pr-0.5">
+              {filteredBlueprints.length === 0 && !crossLoading ? (
+                <button
+                  onClick={() => createEvent()}
+                  disabled={creating || !newName.trim()}
+                  className="w-full text-left rounded-md border border-dashed border-border px-3 py-3 text-sm transition hover:border-primary/40 flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                >
+                  <PenLine className="h-4 w-4 shrink-0" />
+                  <span>No related events found — <span className="font-medium text-foreground">create new event</span></span>
+                </button>
+              ) : filteredBlueprints.map((e) => {
+                const selected = blueprint?.id === e.id;
+                const fromOtherSociety = e.society_name && e.society_name !== society?.name;
+                return (
                   <button
-                    onClick={() => createEvent()}
-                    disabled={creating || !newName.trim()}
-                    className="w-full text-left rounded-md border border-dashed border-border px-3 py-3 text-sm transition hover:border-primary/40 flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                    key={e.id}
+                    onClick={() => setBlueprint(selected ? null : e)}
+                    className={`w-full text-left rounded-md border px-3 py-2.5 text-sm transition flex items-center justify-between gap-2 ${selected ? "border-accent bg-accent/10" : "border-border bg-background hover:border-primary/30"}`}
                   >
-                    <PenLine className="h-4 w-4 shrink-0" />
-                    <span>No related events found — <span className="font-medium text-foreground">create new event</span></span>
-                  </button>
-                ) : filteredBlueprints.map((e) => {
-                  const selected = blueprint?.id === e.id;
-                  return (
-                    <button
-                      key={e.id}
-                      onClick={() => setBlueprint(selected ? null : e)}
-                      className={`w-full text-left rounded-md border px-3 py-2.5 text-sm transition flex items-center justify-between gap-2 ${selected ? "border-accent bg-accent/10" : "border-border bg-background hover:border-primary/30"}`}
-                    >
-                      <span>
-                        <span className="font-medium">{e.name}</span>
-                        {e.event_date && <span className="ml-2 text-xs text-muted-foreground">{format(parseISO(e.event_date), "d MMM yyyy")}</span>}
+                    <span className="min-w-0">
+                      <span className="font-medium">{e.name}</span>
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        {e.event_date && format(parseISO(e.event_date), "d MMM yyyy")}
+                        {fromOtherSociety && <span className="ml-1">· {e.society_name}</span>}
                       </span>
-                      {selected
-                        ? <span className="text-xs text-accent-foreground bg-accent/40 rounded-full px-2 py-0.5 shrink-0">Selected</span>
-                        : <Sparkles className="h-3.5 w-3.5 text-muted-foreground shrink-0" />}
-                    </button>
-                  );
-                })}
-              </div>
+                    </span>
+                    {selected
+                      ? <span className="text-xs text-accent-foreground bg-accent/40 rounded-full px-2 py-0.5 shrink-0">Selected</span>
+                      : <Sparkles className="h-3.5 w-3.5 text-muted-foreground shrink-0" />}
+                  </button>
+                );
+              })}
             </div>
-          )}
+          </div>
 
           <DialogFooter className="mt-2">
             <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
