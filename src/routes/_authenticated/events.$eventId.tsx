@@ -177,10 +177,11 @@ function RunsheetPage() {
     if (!bTitle.trim() || !editingBlock) return;
     setSaving(true);
     try {
-      await supabase.from("runsheet_blocks").update({
+      const { error } = await supabase.from("runsheet_blocks").update({
         title: bTitle, start_time: bTime,
         duration_minutes: Number(bDur) || 30, description: bDesc || null,
       }).eq("id", editingBlock.id);
+      if (error) { toast.error(error.message); return; }
       setBlockDialog(false);
       load();
     } finally { setSaving(false); }
@@ -385,19 +386,6 @@ function RunsheetPage() {
           </DndContext>
         )}
 
-        {/* Inline add row when list is empty but adding */}
-        {blocks.length === 0 && inlineAdding && canManage && (
-          <InlineAddRow
-            visible
-            startTime={nextStart}
-            value={inlineTitle}
-            inputRef={inlineRef}
-            onChange={setInlineTitle}
-            onCommit={commitInlineAdd}
-            onCancel={() => { setInlineAdding(false); setInlineTitle(""); }}
-            onStart={startInlineAdd}
-          />
-        )}
       </section>
 
       {/* Edit block dialog (edit only — add is inline) */}
