@@ -5,17 +5,20 @@ A society management platform for university clubs and organisations. It helps s
 ## What it does
 
 ### Dashboard
+
 - Overview of all societies you belong to and your role in each
 - Contribution calendar showing your event creation history over the past year
 - Timeline of all events you have created across societies
 
 ### Societies
+
 - Create and manage societies with member roles (Executive, Project Owner, Member)
 - View all events under a society grouped by project
 - Clone past events into new ones, carrying over tasks, vendors, and risks as a starting blueprint
 - AI-powered suggestion of similar past events when creating a new one
 
 ### Event Runsheet
+
 - Build and manage a drag-and-drop event runsheet (timeline of blocks)
 - Each block has a title, start time, duration, and description
 - AI can generate a full runsheet draft from just the event name
@@ -23,6 +26,7 @@ A society management platform for university clubs and organisations. It helps s
 - Edit event details inline (name, date, location, status)
 
 ### Authentication
+
 - Email/password login via Supabase Auth
 - Route-level protection — unauthenticated users are redirected to login
 
@@ -30,20 +34,21 @@ A society management platform for university clubs and organisations. It helps s
 
 ## Tech stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | TanStack Start (React 19, SSR) |
-| Routing | TanStack Router |
-| Database & Auth | Supabase (Postgres + Auth) |
-| Styling | Tailwind CSS + shadcn/ui |
-| Deployment | Lovable Cloud → Cloudflare Workers |
-| AI | Lovable AI Gateway (Gemini 2.5 Flash) |
+| Layer           | Technology                            |
+| --------------- | ------------------------------------- |
+| Framework       | TanStack Start (React 19, SSR)        |
+| Routing         | TanStack Router                       |
+| Database & Auth | Supabase (Postgres + Auth)            |
+| Styling         | Tailwind CSS + shadcn/ui              |
+| Deployment      | Lovable Cloud → Cloudflare Workers    |
+| AI              | Lovable AI Gateway (Gemini 2.5 Flash) |
 
 ---
 
 ## Local development
 
 ### Prerequisites
+
 - Node.js 20+
 - A Supabase project (or use the existing Lovable Cloud instance)
 
@@ -67,14 +72,14 @@ npm run dev
 
 ### Available scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start local dev server |
-| `npm run build` | Production build |
-| `npm test` | Run unit tests |
+| Command              | Description             |
+| -------------------- | ----------------------- |
+| `npm run dev`        | Start local dev server  |
+| `npm run build`      | Production build        |
+| `npm test`           | Run unit tests          |
 | `npm run test:watch` | Run tests in watch mode |
-| `npm run lint` | Run ESLint |
-| `npm run format` | Format with Prettier |
+| `npm run lint`       | Run ESLint              |
+| `npm run format`     | Format with Prettier    |
 
 ---
 
@@ -87,6 +92,7 @@ npm test
 ```
 
 Currently covers:
+
 - `keywordsOf` — keyword extraction for AI event matching
 - `addMinutes` — time arithmetic for runsheet block scheduling
 
@@ -107,10 +113,10 @@ Deployment is handled by Lovable — push to `main`, then publish from the Lovab
 
 Add these in **GitHub → Settings → Secrets and variables → Actions**:
 
-| Secret | Value |
-|--------|-------|
-| `VITE_SUPABASE_URL` | Your Supabase project URL |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Your Supabase anon key |
+| Secret                          | Value                     |
+| ------------------------------- | ------------------------- |
+| `VITE_SUPABASE_URL`             | Your Supabase project URL |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Your Supabase anon key    |
 
 ---
 
@@ -138,11 +144,11 @@ src/
 
 ## Environment variables
 
-| Variable | Used by | Description |
-|----------|---------|-------------|
-| `VITE_SUPABASE_URL` | Browser | Supabase project URL |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Browser | Supabase anon key |
-| `SUPABASE_URL` | Server (SSR) | Supabase project URL |
-| `SUPABASE_PUBLISHABLE_KEY` | Server (SSR) | Supabase anon key |
+| Variable                        | Used by      | Description          |
+| ------------------------------- | ------------ | -------------------- |
+| `VITE_SUPABASE_URL`             | Browser      | Supabase project URL |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Browser      | Supabase anon key    |
+| `SUPABASE_URL`                  | Server (SSR) | Supabase project URL |
+| `SUPABASE_PUBLISHABLE_KEY`      | Server (SSR) | Supabase anon key    |
 
 Never commit `.env`. Use `.env.example` as a template.

@@ -20,7 +20,9 @@ function Login() {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => { if (!loading && user) nav({ to: "/dashboard" }); }, [user, loading, nav]);
+  useEffect(() => {
+    if (!loading && user) nav({ to: "/dashboard" });
+  }, [user, loading, nav]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,8 +30,12 @@ function Login() {
     try {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
-          email, password,
-          options: { emailRedirectTo: `${window.location.origin}/dashboard`, data: { full_name: name } },
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/dashboard`,
+            data: { full_name: name },
+          },
         });
         if (error) throw error;
         toast.success("Account created. Check your email to confirm, then sign in.");
@@ -38,16 +44,19 @@ function Login() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
           if (error.message.toLowerCase().includes("email not confirmed")) {
-            toast.error("Email not confirmed. Check your inbox (and spam folder) for the confirmation link.", {
-              action: {
-                label: "Resend email",
-                onClick: async () => {
-                  await supabase.auth.resend({ type: "signup", email });
-                  toast.success("Confirmation email resent — check your inbox.");
+            toast.error(
+              "Email not confirmed. Check your inbox (and spam folder) for the confirmation link.",
+              {
+                action: {
+                  label: "Resend email",
+                  onClick: async () => {
+                    await supabase.auth.resend({ type: "signup", email });
+                    toast.success("Confirmation email resent — check your inbox.");
+                  },
                 },
+                duration: 8000,
               },
-              duration: 8000,
-            });
+            );
           } else {
             throw error;
           }
@@ -58,7 +67,9 @@ function Login() {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Something went wrong";
       toast.error(msg);
-    } finally { setBusy(false); }
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -68,9 +79,13 @@ function Login() {
           <BrandLogo compact />
         </Link>
         <div className="rounded-md border border-border bg-card p-8 shadow-sm">
-          <h1 className="font-display text-2xl">{mode === "signin" ? "Welcome back" : "Create your account"}</h1>
+          <h1 className="font-display text-2xl">
+            {mode === "signin" ? "Welcome back" : "Create your account"}
+          </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {mode === "signin" ? "Sign in to access your societies." : "You'll be able to start or join a society after signup."}
+            {mode === "signin"
+              ? "Sign in to access your societies."
+              : "You'll be able to start or join a society after signup."}
           </p>
           <form onSubmit={submit} className="mt-6 space-y-4">
             {mode === "signup" && (
@@ -81,23 +96,42 @@ function Login() {
             )}
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
             <div>
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+              />
             </div>
             <Button type="submit" className="w-full" disabled={busy}>
               {busy ? "Working…" : mode === "signin" ? "Sign in" : "Create account"}
             </Button>
           </form>
-          <button onClick={() => setMode(mode === "signin" ? "signup" : "signin")} className="mt-6 text-sm text-muted-foreground hover:text-foreground w-full text-center">
+          <button
+            onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+            className="mt-6 text-sm text-muted-foreground hover:text-foreground w-full text-center"
+          >
             {mode === "signin" ? "No account? Sign up" : "Already have an account? Sign in"}
           </button>
         </div>
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Just browsing?{" "}
-          <Link to="/demo" className="text-foreground underline underline-offset-2 hover:text-primary">
+          <Link
+            to="/demo"
+            className="text-foreground underline underline-offset-2 hover:text-primary"
+          >
             Try the demo
           </Link>
         </p>

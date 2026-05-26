@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
 
 @import "tailwindcss" source(none);
 @source "../src";
@@ -7,8 +7,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-display:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-sans:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -116,29 +118,42 @@
   --destructive-foreground: #fff;
   --warning: #f59e0b;
   --warning-foreground: #0b1220;
-  --border: rgba(255,255,255,0.06);
-  --input: rgba(255,255,255,0.03);
-  --ring: rgba(96,165,250,0.2);
+  --border: rgba(255, 255, 255, 0.06);
+  --input: rgba(255, 255, 255, 0.03);
+  --ring: rgba(96, 165, 250, 0.2);
   --sidebar: #081026;
   --sidebar-foreground: #e6eef8;
   --sidebar-primary: #60a5fa;
   --sidebar-primary-foreground: #06203a;
   --sidebar-accent: #16a34a;
   --sidebar-accent-foreground: #e6eef8;
-  --sidebar-border: rgba(255,255,255,0.06);
-  --sidebar-ring: rgba(96,165,250,0.2);
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-ring: rgba(96, 165, 250, 0.2);
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
-  html, body { background-color: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); }
-  h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0.01em; }
+  * {
+    border-color: var(--color-border);
+  }
+  html,
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
 }
 
 /* Blueprint grid background for dashboard */
 .blueprint-bg {
   background-image:
-    linear-gradient(to right, rgba(11,61,145,0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(11,61,145,0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(11, 61, 145, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(11, 61, 145, 0.04) 1px, transparent 1px);
   background-size: 32px 32px;
 }

@@ -17,12 +17,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
           <nav className="flex items-center gap-2">
             {!onDashboard && (
-              <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5">
+              <Link
+                to="/dashboard"
+                className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5"
+              >
                 <LayoutDashboard className="h-4 w-4" /> Dashboard
               </Link>
             )}
-            <span className="text-xs text-muted-foreground hidden sm:inline px-3">{user?.email}</span>
-            <Button variant="ghost" size="sm" onClick={async () => { await signOut(); nav({ to: "/login" }); }}>
+            <span className="text-xs text-muted-foreground hidden sm:inline px-3">
+              {user?.email}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={async () => {
+                await signOut();
+                nav({ to: "/login" });
+              }}
+            >
               <LogOut className="h-4 w-4" />
             </Button>
           </nav>

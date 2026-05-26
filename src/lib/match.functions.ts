@@ -26,7 +26,7 @@ export const matchPastEvents = createServerFn({ method: "POST" })
           {
             role: "system",
             content:
-              "You find similar past events to help plan a new one. Return ONLY a JSON array of up to 4 matches, ranked by similarity. Format: [{\"id\": \"uuid\", \"reason\": \"brief reason max 8 words\"}]. Only include meaningful matches. No prose, no markdown fences.",
+              'You find similar past events to help plan a new one. Return ONLY a JSON array of up to 4 matches, ranked by similarity. Format: [{"id": "uuid", "reason": "brief reason max 8 words"}]. Only include meaningful matches. No prose, no markdown fences.',
           },
           { role: "user", content: `New event: "${data.eventName}"\n\nPast events:\n${list}` },
         ],
@@ -42,7 +42,9 @@ export const matchPastEvents = createServerFn({ method: "POST" })
     const text: string = json.choices?.[0]?.message?.content ?? "[]";
     const cleaned = text.replace(/```json|```/g, "").trim();
     let matches: Match[] = [];
-    try { matches = JSON.parse(cleaned); } catch {
+    try {
+      matches = JSON.parse(cleaned);
+    } catch {
       const m = cleaned.match(/\[[\s\S]*\]/);
       if (m) matches = JSON.parse(m[0]);
     }

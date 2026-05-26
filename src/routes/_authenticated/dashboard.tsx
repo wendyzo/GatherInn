@@ -1,12 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Building2, Plus, ArrowRight, Crown, Shield, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 import { format, parseISO, subDays, startOfWeek, addDays, startOfDay } from "date-fns";
@@ -36,38 +43,75 @@ function Dashboard() {
 
   const load = async () => {
     setLoading(true);
-    const [{ data: memberData, error: memberError }, { data: contribData, error: contribError }] = await Promise.all([
-      supabase.from("society_members").select("role, societies (id, name, description)").eq("user_id", user!.id),
-      supabase.from("events").select("id, name, event_date, status, created_at, society_id, societies(name), projects(name)").eq("created_by", user!.id).order("created_at", { ascending: false }),
-    ]);
+    const [{ data: memberData, error: memberError }, { data: contribData, error: contribError }] =
+      await Promise.all([
+        supabase
+          .from("society_members")
+          .select("role, societies (id, name, description)")
+          .eq("user_id", user!.id),
+        supabase
+          .from("events")
+          .select(
+            "id, name, event_date, status, created_at, society_id, societies(name), projects(name)",
+          )
+          .eq("created_by", user!.id)
+          .order("created_at", { ascending: false }),
+      ]);
     if (memberError) toast.error(memberError.message);
     if (contribError) toast.error(contribError.message);
     setSocieties(
-      (memberData ?? []).map((r: any) => ({ id: r.societies.id, name: r.societies.name, description: r.societies.description, role: r.role }))
+      (memberData ?? []).map(
+        (r: {
+          role: string;
+          societies: { id: string; name: string; description: string | null };
+        }) => ({
+          id: r.societies.id,
+          name: r.societies.name,
+          description: r.societies.description,
+          role: r.role,
+        }),
+      ),
     );
     setContributions(
-      (contribData ?? []).map((e: any) => ({
-        id: e.id,
-        name: e.name,
-        event_date: e.event_date,
-        status: e.status,
-        created_at: e.created_at,
-        society_name: e.societies?.name ?? "—",
-        project_name: e.projects?.name ?? "—",
-        society_id: e.society_id,
-      }))
+      (contribData ?? []).map(
+        (e: {
+          id: string;
+          name: string;
+          event_date: string | null;
+          status: string;
+          created_at: string;
+          society_id: string;
+          societies?: { name: string } | null;
+          projects?: { name: string } | null;
+        }) => ({
+          id: e.id,
+          name: e.name,
+          event_date: e.event_date,
+          status: e.status,
+          created_at: e.created_at,
+          society_name: e.societies?.name ?? "—",
+          project_name: e.projects?.name ?? "—",
+          society_id: e.society_id,
+        }),
+      ),
     );
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
   const create = async () => {
     if (!name.trim()) return;
-    const { error } = await supabase.from("societies").insert({ name, description: desc, created_by: user!.id });
+    const { error } = await supabase
+      .from("societies")
+      .insert({ name, description: desc, created_by: user!.id });
     if (error) return toast.error(error.message);
     toast.success("Society created. You're its Executive.");
-    setOpen(false); setName(""); setDesc("");
+    setOpen(false);
+    setName("");
+    setDesc("");
     load();
   };
 
@@ -76,7 +120,6 @@ function Dashboard() {
 
   return (
     <div className="blueprint-bg space-y-12">
-
       {/* Portfolio */}
       <section>
         <h2 className="font-display text-2xl mb-1">Portfolio</h2>
@@ -85,13 +128,24 @@ function Dashboard() {
         <div className="rounded-md border border-border bg-card p-5">
           <ContributionCalendar events={contributions} loading={loading} />
           <div className="flex flex-wrap gap-6 mt-4 pt-4 border-t border-border text-sm">
-            <span><strong>{societies.length}</strong> <span className="text-muted-foreground">societies</span></span>
-            <span><strong>{contributions.length}</strong> <span className="text-muted-foreground">events created</span></span>
-            <span><strong>{execCount + ownerCount}</strong> <span className="text-muted-foreground">leadership roles</span></span>
+            <span>
+              <strong>{societies.length}</strong>{" "}
+              <span className="text-muted-foreground">societies</span>
+            </span>
+            <span>
+              <strong>{contributions.length}</strong>{" "}
+              <span className="text-muted-foreground">events created</span>
+            </span>
+            <span>
+              <strong>{execCount + ownerCount}</strong>{" "}
+              <span className="text-muted-foreground">leadership roles</span>
+            </span>
           </div>
         </div>
 
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mt-8 mb-4">Contribution history</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mt-8 mb-4">
+          Contribution history
+        </h3>
         {loading ? (
           <p className="text-muted-foreground text-sm">Loading…</p>
         ) : contributions.length === 0 ? (
@@ -106,7 +160,11 @@ function Dashboard() {
                 <span className="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-primary bg-background" />
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div>
-                    <Link to="/events/$eventId" params={{ eventId: e.id }} className="font-medium hover:text-primary transition text-sm">
+                    <Link
+                      to="/events/$eventId"
+                      params={{ eventId: e.id }}
+                      className="font-medium hover:text-primary transition text-sm"
+                    >
                       {e.name}
                     </Link>
                     <p className="text-xs text-muted-foreground mt-0.5">
@@ -116,7 +174,9 @@ function Dashboard() {
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <StatusBadge status={e.status} />
                     <span className="text-xs text-muted-foreground">
-                      {e.event_date ? format(parseISO(e.event_date), "d MMM yyyy") : format(parseISO(e.created_at), "d MMM yyyy")}
+                      {e.event_date
+                        ? format(parseISO(e.event_date), "d MMM yyyy")
+                        : format(parseISO(e.created_at), "d MMM yyyy")}
                     </span>
                   </div>
                 </div>
@@ -131,19 +191,38 @@ function Dashboard() {
         <div className="flex items-end justify-between mb-6">
           <div>
             <h2 className="font-display text-2xl">Your societies</h2>
-            <p className="text-muted-foreground mt-1 text-sm">Pick a society to view its projects, events, and historical blueprint.</p>
+            <p className="text-muted-foreground mt-1 text-sm">
+              Pick a society to view its projects, events, and historical blueprint.
+            </p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button><Plus className="h-4 w-4" /> New society</Button>
+              <Button>
+                <Plus className="h-4 w-4" /> New society
+              </Button>
             </DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle>Start a new society</DialogTitle></DialogHeader>
+              <DialogHeader>
+                <DialogTitle>Start a new society</DialogTitle>
+              </DialogHeader>
               <div className="space-y-4">
-                <div><Label htmlFor="sname">Name</Label><Input id="sname" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Photography Society" /></div>
-                <div><Label htmlFor="sdesc">Description</Label><Textarea id="sdesc" value={desc} onChange={(e) => setDesc(e.target.value)} /></div>
+                <div>
+                  <Label htmlFor="sname">Name</Label>
+                  <Input
+                    id="sname"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. Photography Society"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="sdesc">Description</Label>
+                  <Textarea id="sdesc" value={desc} onChange={(e) => setDesc(e.target.value)} />
+                </div>
               </div>
-              <DialogFooter><Button onClick={create}>Create</Button></DialogFooter>
+              <DialogFooter>
+                <Button onClick={create}>Create</Button>
+              </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
@@ -154,21 +233,34 @@ function Dashboard() {
           ) : societies.length === 0 ? (
             <div className="md:col-span-3 rounded-md border border-dashed border-border p-12 text-center bg-card/50">
               <Building2 className="h-10 w-10 mx-auto text-muted-foreground" />
-              <p className="mt-4 text-muted-foreground">No societies yet. Create one to get started.</p>
+              <p className="mt-4 text-muted-foreground">
+                No societies yet. Create one to get started.
+              </p>
             </div>
-          ) : societies.map((s) => (
-            <Link key={s.id} to="/societies/$societyId" params={{ societyId: s.id }} className="group rounded-md border border-border bg-card p-6 hover:border-primary/40 hover:shadow-sm transition">
-              <div className="flex items-start justify-between">
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary"><Building2 className="h-5 w-5" /></div>
-                <RoleBadge role={s.role} />
-              </div>
-              <h3 className="font-display text-xl mt-4">{s.name}</h3>
-              {s.description && <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{s.description}</p>}
-              <div className="mt-4 text-sm text-primary inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
-                Open <ArrowRight className="h-4 w-4" />
-              </div>
-            </Link>
-          ))}
+          ) : (
+            societies.map((s) => (
+              <Link
+                key={s.id}
+                to="/societies/$societyId"
+                params={{ societyId: s.id }}
+                className="group rounded-md border border-border bg-card p-6 hover:border-primary/40 hover:shadow-sm transition"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                    <Building2 className="h-5 w-5" />
+                  </div>
+                  <RoleBadge role={s.role} />
+                </div>
+                <h3 className="font-display text-xl mt-4">{s.name}</h3>
+                {s.description && (
+                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{s.description}</p>
+                )}
+                <div className="mt-4 text-sm text-primary inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                  Open <ArrowRight className="h-4 w-4" />
+                </div>
+              </Link>
+            ))
+          )}
         </div>
       </section>
     </div>
@@ -205,7 +297,10 @@ function ContributionCalendar({ events, loading }: { events: ContribEvent[]; loa
     let lastMonth = -1;
     weeks.forEach((week, i) => {
       const m = week[0].getMonth();
-      if (m !== lastMonth) { labels.push({ col: i, label: format(week[0], "MMM") }); lastMonth = m; }
+      if (m !== lastMonth) {
+        labels.push({ col: i, label: format(week[0], "MMM") });
+        lastMonth = m;
+      }
     });
     return labels;
   }, [weeks]);
@@ -226,14 +321,23 @@ function ContributionCalendar({ events, loading }: { events: ContribEvent[]; loa
         <div className="flex gap-[3px] ml-7">
           {weeks.map((_week, i) => {
             const ml = monthLabels.find((m) => m.col === i);
-            return <div key={i} className="w-[11px] text-[9px] text-muted-foreground leading-none">{ml?.label ?? ""}</div>;
+            return (
+              <div key={i} className="w-[11px] text-[9px] text-muted-foreground leading-none">
+                {ml?.label ?? ""}
+              </div>
+            );
           })}
         </div>
         <div className="flex gap-[3px]">
           {/* Day-of-week labels */}
           <div className="flex flex-col gap-[3px] mr-1 w-6">
             {["", "Mon", "", "Wed", "", "Fri", ""].map((d, i) => (
-              <div key={i} className="h-[11px] text-[8px] text-muted-foreground leading-[11px] text-right pr-1">{d}</div>
+              <div
+                key={i}
+                className="h-[11px] text-[8px] text-muted-foreground leading-[11px] text-right pr-1"
+              >
+                {d}
+              </div>
             ))}
           </div>
           {/* Heatmap columns */}
@@ -246,7 +350,11 @@ function ContributionCalendar({ events, loading }: { events: ContribEvent[]; loa
                 return (
                   <div
                     key={di}
-                    title={future ? "" : `${format(day, "d MMM yyyy")}: ${count} event${count !== 1 ? "s" : ""}`}
+                    title={
+                      future
+                        ? ""
+                        : `${format(day, "d MMM yyyy")}: ${count} event${count !== 1 ? "s" : ""}`
+                    }
                     className={`h-[11px] w-[11px] rounded-[2px] ${future ? "invisible" : cellColor(count)}`}
                   />
                 );
@@ -275,19 +383,28 @@ function StatusBadge({ status }: { status: string }) {
     cancelled: "bg-destructive/10 text-destructive",
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ${map[status] ?? map.planning}`}>
+    <span
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ${map[status] ?? map.planning}`}
+    >
       {status}
     </span>
   );
 }
 
 function RoleBadge({ role }: { role: string }) {
-  const map: Record<string, { icon: any; label: string; cls: string }> = {
+  const map: Record<string, { icon: React.ElementType; label: string; cls: string }> = {
     executive: { icon: Crown, label: "Executive", cls: "bg-accent/30 text-foreground" },
     project_owner: { icon: Shield, label: "Project Owner", cls: "bg-primary/10 text-primary" },
     member: { icon: Shield, label: "Member", cls: "bg-muted text-muted-foreground" },
   };
   const m = map[role] ?? map.member;
   const Icon = m.icon;
-  return <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${m.cls}`}><Icon className="h-3 w-3" />{m.label}</span>;
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${m.cls}`}
+    >
+      <Icon className="h-3 w-3" />
+      {m.label}
+    </span>
+  );
 }

@@ -21,7 +21,10 @@ function NotFoundComponent() {
         <p className="mt-2 text-sm text-muted-foreground">
           The page you&rsquo;re looking for doesn&rsquo;t exist or has been moved.
         </p>
-        <Link to="/" className="mt-6 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+        <Link
+          to="/"
+          className="mt-6 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+        >
           Go home
         </Link>
       </div>
@@ -38,10 +41,21 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <h1 className="text-xl font-semibold">This page didn&rsquo;t load</h1>
         <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button onClick={() => { router.invalidate(); reset(); }} className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
+          <button
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+          >
             Try again
           </button>
-          <a href="/" className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium">Go home</a>
+          <a
+            href="/"
+            className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium"
+          >
+            Go home
+          </a>
         </div>
       </div>
     </div>
@@ -54,13 +68,33 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "GatherInn" },
-      { name: "description", content: "Society-based event knowledge management. Inherit timelines, vendors, and risks from past events." },
+      {
+        name: "description",
+        content:
+          "Society-based event knowledge management. Inherit timelines, vendors, and risks from past events.",
+      },
       { property: "og:title", content: "GatherInn" },
       { name: "twitter:title", content: "GatherInn" },
-      { property: "og:description", content: "Society-based event knowledge management. Inherit timelines, vendors, and risks from past events." },
-      { name: "twitter:description", content: "Society-based event knowledge management. Inherit timelines, vendors, and risks from past events." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8cd1a046-b0fe-404b-bda2-10c8d9175e96/id-preview-181b6472--7b5d221f-3948-47ec-94bb-4f52c0b2c616.lovable.app-1779351603232.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8cd1a046-b0fe-404b-bda2-10c8d9175e96/id-preview-181b6472--7b5d221f-3948-47ec-94bb-4f52c0b2c616.lovable.app-1779351603232.png" },
+      {
+        property: "og:description",
+        content:
+          "Society-based event knowledge management. Inherit timelines, vendors, and risks from past events.",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Society-based event knowledge management. Inherit timelines, vendors, and risks from past events.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8cd1a046-b0fe-404b-bda2-10c8d9175e96/id-preview-181b6472--7b5d221f-3948-47ec-94bb-4f52c0b2c616.lovable.app-1779351603232.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8cd1a046-b0fe-404b-bda2-10c8d9175e96/id-preview-181b6472--7b5d221f-3948-47ec-94bb-4f52c0b2c616.lovable.app-1779351603232.png",
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
     ],
@@ -68,7 +102,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -80,7 +117,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head><HeadContent /></head>
+      <head>
+        <HeadContent />
+      </head>
       <body>
         {children}
         <Scripts />
