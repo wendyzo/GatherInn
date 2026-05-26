@@ -236,11 +236,19 @@ function SocietyPage() {
             <p className="text-muted-foreground mt-1 max-w-2xl">{society.description}</p>
           )}
         </div>
-        {canManage && (
-          <Button onClick={openDialog}>
-            <Plus className="h-4 w-4" /> Create event
-          </Button>
-        )}
+        <div className="flex flex-col items-end gap-3 shrink-0">
+          <div className="text-right">
+            <p className="font-display text-2xl text-foreground/80 leading-tight">{society.name}</p>
+            <span className="text-xs text-muted-foreground capitalize tracking-wide">
+              {role.replace("_", " ")}
+            </span>
+          </div>
+          {canManage && (
+            <Button onClick={openDialog}>
+              <Plus className="h-4 w-4" /> Create event
+            </Button>
+          )}
+        </div>
       </div>
 
       <section>
