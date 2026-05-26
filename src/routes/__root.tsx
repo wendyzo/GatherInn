@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth";
+import { logger } from "@/lib/logger";
 
 import appCss from "../styles.css?url";
 
@@ -33,7 +34,9 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  console.error(error);
+  logger.error("React error boundary caught an error", error, {
+    route: typeof window !== "undefined" ? window.location.pathname : undefined,
+  });
   const router = useRouter();
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
