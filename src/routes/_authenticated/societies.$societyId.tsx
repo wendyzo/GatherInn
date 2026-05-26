@@ -1,18 +1,20 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { matchPastEvents } from "@/lib/match.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, History, Users, ChevronRight, Calendar, Sparkles, PenLine } from "lucide-react";
+import { Plus, History, Users, ChevronRight, Calendar, Sparkles, PenLine, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { format, addDays, parseISO } from "date-fns";
 
 export const Route = createFileRoute("/_authenticated/societies/$societyId")({ component: SocietyPage });
 
-type EventRow = { id: string; name: string; event_date: string | null; society_name?: string };
+type EventRow = { id: string; name: string; event_date: string | null; reason?: string };
 
 const STOPWORDS = new Set([
   "the","a","an","of","and","or","for","to","in","on","at","with","our","my","your","new",
@@ -22,6 +24,23 @@ const STOPWORDS = new Set([
 
 function keywordsOf(name: string): string[] {
   return name.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 3 && !STOPWORDS.has(w));
+}
+
+function keywordFallback(history: EventRow[], query: string): EventRow[] {
+  const kws = keywordsOf(query);
+  if (kws.length === 0) {
+    const q = query.toLowerCase();
+    return history.filter((e) => e.name.toLowerCase().includes(q)).slice(0, 5);
+  }
+  return history
+    .map((e) => {
+      const eWords = e.name.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 2);
+      const score = kws.reduce((acc, k) => acc + (eWords.some((w) => w.includes(k) || k.includes(w)) ? 1 : 0), 0);
+      return { ...e, score };
+    })
+    .filter((e) => (e as any).score > 0)
+    .sort((a, b) => ((b as any).score ?? 0) - ((a as any).score ?? 0))
+    .slice(0, 5);
 }
 
 function SocietyPage() {
@@ -37,8 +56,10 @@ function SocietyPage() {
   const [newName, setNewName] = useState("");
   const [blueprint, setBlueprint] = useState<EventRow | null>(null);
   const [creating, setCreating] = useState(false);
-  const [crossEvents, setCrossEvents] = useState<EventRow[]>([]);
-  const [crossLoading, setCrossLoading] = useState(false);
+  const [aiMatches, setAiMatches] = useState<EventRow[]>([]);
+  const [aiLoading, setAiLoading] = useState(false);
+  const callMatch = useServerFn(matchPastEvents);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const canManage = role === "executive" || role === "project_owner";
 
@@ -55,46 +76,37 @@ function SocietyPage() {
 
   useEffect(() => { load(); }, [societyId]);
 
+  // AI debounce: fire 500ms after user stops typing
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!newName.trim() || history.length === 0) { setAiMatches([]); setAiLoading(false); return; }
+    setAiMatches([]);
+    setAiLoading(true);
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const { matches } = await callMatch({ data: { eventName: newName, candidates: history } });
+        const enriched: EventRow[] = matches
+          .map((m) => { const ev = history.find((h) => h.id === m.id); return ev ? { ...ev, reason: m.reason } : null; })
+          .filter((e) => e !== null) as EventRow[];
+        setAiMatches(enriched);
+      } catch { /* fall through to keyword results */ }
+      finally { setAiLoading(false); }
+    }, 500);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [newName, history]);
+
   const filteredBlueprints = useMemo(() => {
-    const source = crossEvents.length > 0 ? crossEvents : history;
-    const kws = keywordsOf(newName.trim());
+    if (!newName.trim()) return history.slice(0, 5);
+    if (aiMatches.length > 0) return aiMatches;
+    return keywordFallback(history, newName.trim());
+  }, [history, aiMatches, newName]);
 
-    if (!newName.trim()) return source.slice(0, 5);
-
-    if (kws.length === 0) {
-      const q = newName.toLowerCase();
-      return source.filter((e) => e.name.toLowerCase().includes(q)).slice(0, 6);
-    }
-
-    return source
-      .map((e) => {
-        const eWords = e.name.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 2);
-        const score = kws.reduce((acc, k) => acc + (eWords.some((w) => w.includes(k) || k.includes(w)) ? 1 : 0), 0);
-        return { ...e, score };
-      })
-      .filter((e) => e.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 6);
-  }, [crossEvents, history, newName]);
-
-  const openDialog = async () => {
+  const openDialog = () => {
     setNewName("");
     setBlueprint(null);
-    setCrossEvents([]);
+    setAiMatches([]);
+    setAiLoading(false);
     setOpen(true);
-    setCrossLoading(true);
-    const { data } = await supabase
-      .from("events")
-      .select("id, name, event_date, societies(name)")
-      .order("event_date", { ascending: false, nullsFirst: false })
-      .limit(200);
-    setCrossEvents(
-      (data ?? []).map((e: any) => ({
-        id: e.id, name: e.name, event_date: e.event_date,
-        society_name: e.societies?.name ?? "",
-      }))
-    );
-    setCrossLoading(false);
   };
 
   const createEvent = async () => {
@@ -176,11 +188,17 @@ function SocietyPage() {
           </div>
 
           <div className="mt-1">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-              {newName.trim() ? "Similar past events" : "Recent events"}{crossLoading && <span className="ml-1 normal-case font-normal">· searching…</span>}
-            </p>
+            <div className="flex items-center gap-2 mb-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                {newName.trim() ? "Similar past events" : "Recent events"}
+              </p>
+              {aiLoading && <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />}
+              {!aiLoading && aiMatches.length > 0 && newName.trim() && (
+                <span className="text-[10px] text-primary/70 flex items-center gap-0.5"><Sparkles className="h-2.5 w-2.5" /> AI matched</span>
+              )}
+            </div>
             <div className="max-h-52 overflow-y-auto space-y-1 pr-0.5">
-              {filteredBlueprints.length === 0 && !crossLoading ? (
+              {filteredBlueprints.length === 0 && !aiLoading ? (
                 <button
                   onClick={() => createEvent()}
                   disabled={creating || !newName.trim()}
@@ -191,18 +209,17 @@ function SocietyPage() {
                 </button>
               ) : filteredBlueprints.map((e) => {
                 const selected = blueprint?.id === e.id;
-                const fromOtherSociety = e.society_name && e.society_name !== society?.name;
                 return (
                   <button
                     key={e.id}
                     onClick={() => setBlueprint(selected ? null : e)}
                     className={`w-full text-left rounded-md border px-3 py-2.5 text-sm transition flex items-center justify-between gap-2 ${selected ? "border-accent bg-accent/10" : "border-border bg-background hover:border-primary/30"}`}
                   >
-                    <span className="min-w-0">
-                      <span className="font-medium">{e.name}</span>
-                      <span className="ml-2 text-xs text-muted-foreground">
+                    <span className="min-w-0 text-left">
+                      <span className="font-medium block truncate">{e.name}</span>
+                      <span className="text-xs text-muted-foreground">
                         {e.event_date && format(parseISO(e.event_date), "d MMM yyyy")}
-                        {fromOtherSociety && <span className="ml-1">· {e.society_name}</span>}
+                        {e.reason && <span className="ml-1">· {e.reason}</span>}
                       </span>
                     </span>
                     {selected

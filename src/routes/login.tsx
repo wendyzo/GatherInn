@@ -36,7 +36,23 @@ function Login() {
         setMode("signin");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        if (error) {
+          if (error.message.toLowerCase().includes("email not confirmed")) {
+            toast.error("Email not confirmed. Check your inbox (and spam folder) for the confirmation link.", {
+              action: {
+                label: "Resend email",
+                onClick: async () => {
+                  await supabase.auth.resend({ type: "signup", email });
+                  toast.success("Confirmation email resent — check your inbox.");
+                },
+              },
+              duration: 8000,
+            });
+          } else {
+            throw error;
+          }
+          return;
+        }
         nav({ to: "/dashboard" });
       }
     } catch (err: unknown) {
