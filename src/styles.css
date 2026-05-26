@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
-
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -7,10 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display:
-    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
   --font-sans:
-    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -55,21 +53,21 @@
   --radius: 0.5rem;
 
   /* Governance Blue primary */
-  --background: #f7f8fa; /* light slate */
-  --foreground: #0f1724; /* near-black */
-  --card: #ffffff;
-  --card-foreground: #0f1724;
-  --popover: #ffffff;
-  --popover-foreground: #0f1724;
+  --background: #f8f7f4; /* warm off-white */
+  --foreground: #1a1613; /* warm near-black */
+  --card: #fffffe;
+  --card-foreground: #1a1613;
+  --popover: #fffffe;
+  --popover-foreground: #1a1613;
 
   --primary: #0b3d91; /* Governance Blue */
   --primary-foreground: #ffffff;
 
-  --secondary: #f3f4f6; /* slate light */
-  --secondary-foreground: #0f1724;
+  --secondary: #f2efe9; /* warm light */
+  --secondary-foreground: #1a1613;
 
-  --muted: #f1f5f9;
-  --muted-foreground: #475569;
+  --muted: #ede9e0;
+  --muted-foreground: #6b6459;
 
   --accent: #16a34a; /* Success Green */
   --accent-foreground: #ffffff;
@@ -83,8 +81,8 @@
   --warning: #f59e0b;
   --warning-foreground: #0f1724;
 
-  --border: #e6eef8;
-  --input: #ffffff;
+  --border: #e5dfd5;
+  --input: #fffffe;
   --ring: #bfdbfe;
 
   --sidebar: #ffffff;
@@ -140,13 +138,28 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   h1,
   h2,
   h3,
   .font-display {
     font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    font-weight: 500;
+  }
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
     letter-spacing: -0.01em;
+    font-weight: 600;
+  }
+  p {
+    line-height: 1.65;
   }
 }
 
