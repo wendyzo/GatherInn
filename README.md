@@ -2,12 +2,24 @@
 
 > Society event management platform for university clubs and organisations.
 
+**[gatherinn.lovable.app](https://gatherinn.lovable.app)** · [Demo](https://gatherinn.lovable.app/demo) · [Sign up](https://gatherinn.lovable.app/login)
+
 [![CI](https://github.com/wendyzo/GatherInn/actions/workflows/ci.yml/badge.svg)](https://github.com/wendyzo/GatherInn/actions/workflows/ci.yml)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 GatherInn helps society leaders plan events, build runsheets, track history, and pass institutional knowledge to future committees — so nothing gets lost between handovers.
+
+---
+
+## Vision
+
+Every university society faces the same problem: when a committee hands over to the next generation, the knowledge disappears. Vendors, runsheets, lessons learned, and event timelines all live in someone's personal notes or memory — and then they graduate.
+
+GatherInn is building the institutional memory layer for student organisations. Every event becomes a blueprint the next committee can inherit, adapt, and improve. Over time, a society doesn't start from zero each year — it compounds. A Photography Society that has run 10 exhibitions passes down a decade of operational knowledge to the student who just became next year's executive.
+
+Long term, GatherInn aims to be the standard platform every university society uses to plan, run, and hand over events — the way GitHub is to code, GatherInn is to organisational knowledge.
 
 ---
 
