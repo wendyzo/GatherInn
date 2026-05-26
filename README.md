@@ -19,7 +19,7 @@ Every university society faces the same problem: when a committee hands over to 
 
 GatherInn is building the institutional memory layer for student organisations. Every event becomes a blueprint the next committee can inherit, adapt, and improve. Over time, a society doesn't start from zero each year — it compounds. A Photography Society that has run 10 exhibitions passes down a decade of operational knowledge to the student who just became next year's executive.
 
-Long term, GatherInn aims to be the standard platform every university society uses to plan, run, and hand over events — the way GitHub is to code, GatherInn is to organisational knowledge.
+Long term, GatherInn aims to be the standard platform university society uses to plan, run, and hand over events — the way GitHub is to code, GatherInn is to organisational knowledge.
 
 ---
 
