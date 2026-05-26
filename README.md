@@ -39,15 +39,15 @@ GatherInn helps society leaders plan events, build runsheets, track history, and
 
 ## Tech Stack
 
-| Layer | Technology |
-| --- | --- |
-| Framework | [TanStack Start](https://tanstack.com/start) (React 19, SSR) |
-| Routing | [TanStack Router](https://tanstack.com/router) |
-| Database & Auth | [Supabase](https://supabase.com) (Postgres + Auth) |
-| Styling | [Tailwind CSS](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com) |
-| Testing | [Vitest](https://vitest.dev) |
-| Deployment | Lovable Cloud → Cloudflare Workers |
-| AI | Lovable AI Gateway (Gemini 2.5 Flash) |
+| Layer           | Technology                                                                   |
+| --------------- | ---------------------------------------------------------------------------- |
+| Framework       | [TanStack Start](https://tanstack.com/start) (React 19, SSR)                 |
+| Routing         | [TanStack Router](https://tanstack.com/router)                               |
+| Database & Auth | [Supabase](https://supabase.com) (Postgres + Auth)                           |
+| Styling         | [Tailwind CSS](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com) |
+| Testing         | [Vitest](https://vitest.dev)                                                 |
+| Deployment      | Lovable Cloud → Cloudflare Workers                                           |
+| AI              | Lovable AI Gateway (Gemini 2.5 Flash)                                        |
 
 ---
 
@@ -85,14 +85,14 @@ The app will be available at `http://localhost:3000`.
 
 ### Available scripts
 
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start local development server |
-| `npm run build` | Production build |
-| `npm test` | Run unit tests |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run lint` | Run ESLint |
-| `npm run format` | Format code with Prettier |
+| Command              | Description                    |
+| -------------------- | ------------------------------ |
+| `npm run dev`        | Start local development server |
+| `npm run build`      | Production build               |
+| `npm test`           | Run unit tests                 |
+| `npm run test:watch` | Run tests in watch mode        |
+| `npm run lint`       | Run ESLint                     |
+| `npm run format`     | Format code with Prettier      |
 
 ---
 
@@ -134,12 +134,12 @@ GatherInn/
 
 Copy `.env.example` to `.env` and populate the values. **Never commit `.env` to version control.**
 
-| Variable | Required | Description |
-| --- | --- | --- |
-| `VITE_SUPABASE_URL` | Yes | Supabase project URL (browser) |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Yes | Supabase anon key (browser) |
-| `SUPABASE_URL` | Yes | Supabase project URL (server/SSR) |
-| `SUPABASE_PUBLISHABLE_KEY` | Yes | Supabase anon key (server/SSR) |
+| Variable                        | Required | Description                       |
+| ------------------------------- | -------- | --------------------------------- |
+| `VITE_SUPABASE_URL`             | Yes      | Supabase project URL (browser)    |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Yes      | Supabase anon key (browser)       |
+| `SUPABASE_URL`                  | Yes      | Supabase project URL (server/SSR) |
+| `SUPABASE_PUBLISHABLE_KEY`      | Yes      | Supabase anon key (server/SSR)    |
 
 ---
 
@@ -157,10 +157,10 @@ npm run test:watch
 
 ### Current coverage
 
-| Module | What's tested |
-| --- | --- |
+| Module           | What's tested                                           |
+| ---------------- | ------------------------------------------------------- |
 | `event.utils.ts` | `keywordsOf` — keyword extraction for AI event matching |
-| `event.utils.ts` | `addMinutes` — time arithmetic for runsheet scheduling |
+| `event.utils.ts` | `addMinutes` — time arithmetic for runsheet scheduling  |
 
 ---
 
@@ -177,10 +177,10 @@ Every push to `main` and every pull request triggers the GitHub Actions pipeline
 
 Go to **GitHub → Settings → Secrets and variables → Actions** and add:
 
-| Secret | Value |
-| --- | --- |
-| `VITE_SUPABASE_URL` | Your Supabase project URL |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Your Supabase anon key |
+| Secret                          | Value                     |
+| ------------------------------- | ------------------------- |
+| `VITE_SUPABASE_URL`             | Your Supabase project URL |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Your Supabase anon key    |
 
 ---
 
@@ -189,6 +189,7 @@ Go to **GitHub → Settings → Secrets and variables → Actions** and add:
 GatherInn is deployed via [Lovable](https://lovable.dev) to Cloudflare Workers.
 
 **Workflow:**
+
 1. Push changes to `main` on GitHub
 2. Open Lovable → your project → click **Publish**
 
