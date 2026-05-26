@@ -8,6 +8,82 @@ export type Database = {
   };
   public: {
     Tables: {
+      org_positions: {
+        Row: {
+          id: string;
+          society_id: string;
+          title: string;
+          tier: "executive" | "project_owner" | "member";
+          parent_id: string | null;
+          position_order: number;
+          description: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          society_id: string;
+          title: string;
+          tier?: "executive" | "project_owner" | "member";
+          parent_id?: string | null;
+          position_order?: number;
+          description?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          society_id?: string;
+          title?: string;
+          tier?: "executive" | "project_owner" | "member";
+          parent_id?: string | null;
+          position_order?: number;
+          description?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "org_positions_society_id_fkey";
+            columns: ["society_id"];
+            isOneToOne: false;
+            referencedRelation: "societies";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      position_assignments: {
+        Row: {
+          id: string;
+          position_id: string;
+          user_id: string;
+          assigned_by: string;
+          status: "pending" | "active";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          position_id: string;
+          user_id: string;
+          assigned_by: string;
+          status?: "pending" | "active";
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          position_id?: string;
+          user_id?: string;
+          assigned_by?: string;
+          status?: "pending" | "active";
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "position_assignments_position_id_fkey";
+            columns: ["position_id"];
+            isOneToOne: false;
+            referencedRelation: "org_positions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       event_risks: {
         Row: {
           created_at: string;

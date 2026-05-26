@@ -1,3 +1,4 @@
+import React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -17,15 +18,17 @@ import {
 import {
   Plus,
   History,
-  Users,
+  Network,
   ChevronRight,
   Calendar,
   Sparkles,
   PenLine,
   Loader2,
+  Users,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format, addDays, parseISO } from "date-fns";
+import { OrgChart } from "@/components/OrgChart";
 
 export const Route = createFileRoute("/_authenticated/societies/$societyId")({
   component: SocietyPage,
@@ -100,6 +103,13 @@ function keywordFallback(history: EventRow[], query: string): EventRow[] {
     .slice(0, 5);
 }
 
+type Section = "events" | "org";
+
+const SIDEBAR_ITEMS: { id: Section; label: string; icon: React.ElementType }[] = [
+  { id: "events", label: "Events", icon: History },
+  { id: "org", label: "Org Structure", icon: Network },
+];
+
 function SocietyPage() {
   const { societyId } = Route.useParams();
   const { user } = useAuth();
@@ -107,6 +117,7 @@ function SocietyPage() {
   const [society, setSociety] = useState<{ name: string; description: string | null } | null>(null);
   const [role, setRole] = useState<string>("member");
   const [history, setHistory] = useState<EventRow[]>([]);
+  const [section, setSection] = useState<Section>("events");
 
   // create-event dialog state
   const [open, setOpen] = useState(false);
@@ -222,7 +233,7 @@ function SocietyPage() {
   if (!society) return <p className="text-muted-foreground">Loading…</p>;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <div className="flex items-end justify-between gap-4">
         <div>
           <div className="text-xs text-muted-foreground">
@@ -236,57 +247,83 @@ function SocietyPage() {
             <p className="text-muted-foreground mt-1 max-w-2xl">{society.description}</p>
           )}
         </div>
-        <div className="flex flex-col items-end gap-3 shrink-0">
-          <div className="text-right">
-            <p className="font-display text-2xl text-foreground/80 leading-tight">{society.name}</p>
-            <span className="text-xs text-muted-foreground capitalize tracking-wide">
-              {role.replace("_", " ")}
-            </span>
-          </div>
-          {canManage && (
-            <Button onClick={openDialog}>
-              <Plus className="h-4 w-4" /> Create event
-            </Button>
-          )}
+        <div className="text-right shrink-0">
+          <p className="font-display text-2xl text-foreground/80 leading-tight">{society.name}</p>
+          <span className="text-xs text-muted-foreground capitalize tracking-wide">
+            {role.replace("_", " ")}
+          </span>
         </div>
       </div>
 
-      <section>
-        <div className="flex items-center justify-between">
-          <h2 className="font-display text-2xl flex items-center gap-2">
-            <History className="h-5 w-5 text-accent" /> Events
-          </h2>
-          {!canManage && (
-            <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
-              <Users className="h-3 w-3" /> Executives & Project Owners can create events
-            </span>
-          )}
-        </div>
-        <div className="mt-4 rounded-md border border-border bg-card divide-y divide-border">
-          {history.length === 0 ? (
-            <div className="p-8 text-center text-muted-foreground text-sm">
-              No events yet.{canManage && " Create the first one with the button above."}
-            </div>
-          ) : (
-            history.map((e) => (
-              <Link
-                key={e.id}
-                to="/events/$eventId"
-                params={{ eventId: e.id }}
-                className="flex items-center justify-between px-5 py-4 hover:bg-secondary/40"
+      <div className="flex gap-8">
+        {/* Left sidebar nav */}
+        <aside className="w-44 shrink-0">
+          <nav className="space-y-0.5">
+            {SIDEBAR_ITEMS.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setSection(id)}
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${
+                  section === id
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+                }`}
               >
-                <div>
-                  <div className="font-medium">{e.name}</div>
-                  <div className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                    <Calendar className="h-3 w-3" /> {e.event_date ?? "No date"}
+                <Icon className="h-4 w-4 shrink-0" />
+                {label}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Main content */}
+        <div className="flex-1 min-w-0">
+          {section === "events" ? (
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-display text-2xl flex items-center gap-2">
+                  <History className="h-5 w-5 text-accent" /> Events
+                </h2>
+                {canManage ? (
+                  <Button onClick={openDialog}>
+                    <Plus className="h-4 w-4" /> Create event
+                  </Button>
+                ) : (
+                  <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
+                    <Users className="h-3 w-3" /> Executives &amp; Project Owners can create events
+                  </span>
+                )}
+              </div>
+              <div className="rounded-md border border-border bg-card divide-y divide-border">
+                {history.length === 0 ? (
+                  <div className="p-8 text-center text-muted-foreground text-sm">
+                    No events yet.{canManage && " Create the first one with the button above."}
                   </div>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </Link>
-            ))
+                ) : (
+                  history.map((e) => (
+                    <Link
+                      key={e.id}
+                      to="/events/$eventId"
+                      params={{ eventId: e.id }}
+                      className="flex items-center justify-between px-5 py-4 hover:bg-secondary/40"
+                    >
+                      <div>
+                        <div className="font-medium">{e.name}</div>
+                        <div className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                          <Calendar className="h-3 w-3" /> {e.event_date ?? "No date"}
+                        </div>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    </Link>
+                  ))
+                )}
+              </div>
+            </section>
+          ) : (
+            <OrgChart societyId={societyId} canManage={canManage} userId={user!.id} />
           )}
         </div>
-      </section>
+      </div>
 
       {/* Create event dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
