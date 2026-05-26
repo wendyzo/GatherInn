@@ -217,9 +217,7 @@ function CloneCard() {
 
 function SearchDemo() {
   const [query, setQuery] = useState("");
-  const results = SEARCH_EVENTS.filter((e) =>
-    e.toLowerCase().includes(query.toLowerCase()),
-  );
+  const results = SEARCH_EVENTS.filter((e) => e.toLowerCase().includes(query.toLowerCase()));
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
@@ -271,9 +269,7 @@ function VendorGrid() {
   const [imported, setImported] = useState<string[]>([]);
 
   const toggle = (name: string) =>
-    setImported((prev) =>
-      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name],
-    );
+    setImported((prev) => (prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]));
 
   return (
     <div className="space-y-3">
