@@ -120,6 +120,12 @@ function Dashboard() {
 
   return (
     <div className="blueprint-bg space-y-12">
+      {/* Page hero */}
+      <div className="pb-2">
+        <h1 className="font-display text-4xl lg:text-5xl text-foreground">Dashboard</h1>
+        <p className="mt-2 text-lg text-muted-foreground">{user?.email}</p>
+      </div>
+
       {/* Portfolio */}
       <section>
         <h2 className="font-display text-2xl mb-4">Portfolio</h2>

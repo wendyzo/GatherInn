@@ -242,9 +242,9 @@ function SocietyPage() {
             </Link>{" "}
             / {society.name}
           </div>
-          <h1 className="font-display text-4xl mt-1">{society.name}</h1>
+          <h1 className="font-display text-4xl lg:text-5xl mt-2">{society.name}</h1>
           {society.description && (
-            <p className="text-muted-foreground mt-1 max-w-2xl">{society.description}</p>
+            <p className="text-lg text-muted-foreground mt-2 max-w-2xl">{society.description}</p>
           )}
         </div>
         <span className="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full bg-muted text-muted-foreground capitalize">

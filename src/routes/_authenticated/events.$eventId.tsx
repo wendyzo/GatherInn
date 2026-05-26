@@ -775,14 +775,14 @@ function EditableTitle({
             setEditing(false);
           }
         }}
-        className="font-display text-4xl bg-transparent border-b border-primary outline-none w-full max-w-lg"
+        className="font-display text-4xl lg:text-5xl bg-transparent border-b border-primary outline-none w-full max-w-lg"
       />
     );
   }
   return (
     <h1
       onClick={() => !disabled && setEditing(true)}
-      className={`font-display text-4xl leading-tight ${!disabled ? "cursor-text hover:text-primary/80 transition" : ""}`}
+      className={`font-display text-4xl lg:text-5xl leading-tight ${!disabled ? "cursor-text hover:text-primary/80 transition" : ""}`}
     >
       {value}
     </h1>
