@@ -249,25 +249,22 @@ async function deepClone(args: { srcId: string; dstId: string }) {
   const { srcId, dstId } = args;
   const shiftDays = 0;
 
-  const { data: tasks } = await supabase.from("event_tasks").select("title, description, due_date, completed, position").eq("event_id", srcId);
-  if (tasks?.length) {
-    await supabase.from("event_tasks").insert(tasks.map((t) => ({
+  const [{ data: tasks }, { data: vendors }, { data: risks }] = await Promise.all([
+    supabase.from("event_tasks").select("title, description, due_date, completed, position").eq("event_id", srcId),
+    supabase.from("event_vendors").select("name, service, contact, rating, notes").eq("event_id", srcId),
+    supabase.from("event_risks").select("title, description, severity, resolved").eq("event_id", srcId),
+  ]);
+
+  await Promise.all([
+    tasks?.length ? supabase.from("event_tasks").insert(tasks.map((t) => ({
       event_id: dstId, title: t.title, description: t.description,
       due_date: t.due_date ? format(addDays(parseISO(t.due_date), shiftDays), "yyyy-MM-dd") : null,
       completed: false, position: t.position,
-    })));
-  }
-
-  const { data: vendors } = await supabase.from("event_vendors").select("name, service, contact, rating, notes").eq("event_id", srcId);
-  if (vendors?.length) {
-    await supabase.from("event_vendors").insert(vendors.map((v) => ({ ...v, event_id: dstId })));
-  }
-
-  const { data: risks } = await supabase.from("event_risks").select("title, description, severity, resolved").eq("event_id", srcId);
-  if (risks?.length) {
-    await supabase.from("event_risks").insert(risks.map((r) => ({
+    }))) : null,
+    vendors?.length ? supabase.from("event_vendors").insert(vendors.map((v) => ({ ...v, event_id: dstId }))) : null,
+    risks?.length ? supabase.from("event_risks").insert(risks.map((r) => ({
       event_id: dstId, title: `[Legacy] ${r.title}`,
       description: r.description, severity: r.severity, resolved: false,
-    })));
-  }
+    }))) : null,
+  ]);
 }

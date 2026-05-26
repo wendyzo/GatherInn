@@ -200,7 +200,7 @@ function RunsheetPage() {
     const newIdx = blocks.findIndex((b) => b.id === over.id);
     const reordered = arrayMove(blocks, oldIdx, newIdx).map((b, i) => ({ ...b, position: i }));
     setBlocks(reordered);
-    await Promise.all(reordered.map((b) => supabase.from("runsheet_blocks").update({ position: b.position }).eq("id", b.id)));
+    await supabase.from("runsheet_blocks").upsert(reordered.map((b) => ({ id: b.id, event_id: eventId, title: b.title, position: b.position })));
   };
 
   /* ---- clone from past event ---- */

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -176,30 +176,39 @@ function Dashboard() {
 }
 
 function ContributionCalendar({ events, loading }: { events: ContribEvent[]; loading: boolean }) {
-  const today = startOfDay(new Date());
-  const gridStart = startOfWeek(subDays(today, 364), { weekStartsOn: 0 });
+  const today = useMemo(() => startOfDay(new Date()), []);
+  const gridStart = useMemo(() => startOfWeek(subDays(today, 364), { weekStartsOn: 0 }), [today]);
 
-  const countMap: Record<string, number> = {};
-  for (const e of events) {
-    const day = e.created_at.slice(0, 10);
-    countMap[day] = (countMap[day] ?? 0) + 1;
-  }
+  const countMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const e of events) {
+      const day = e.created_at.slice(0, 10);
+      map[day] = (map[day] ?? 0) + 1;
+    }
+    return map;
+  }, [events]);
 
-  const weeks: Date[][] = [];
-  let cur = gridStart;
-  while (cur <= today) {
-    const week: Date[] = [];
-    for (let d = 0; d < 7; d++) week.push(addDays(cur, d));
-    weeks.push(week);
-    cur = addDays(cur, 7);
-  }
+  const weeks = useMemo(() => {
+    const result: Date[][] = [];
+    let cur = gridStart;
+    while (cur <= today) {
+      const week: Date[] = [];
+      for (let d = 0; d < 7; d++) week.push(addDays(cur, d));
+      result.push(week);
+      cur = addDays(cur, 7);
+    }
+    return result;
+  }, [gridStart, today]);
 
-  const monthLabels: { col: number; label: string }[] = [];
-  let lastMonth = -1;
-  weeks.forEach((week, i) => {
-    const m = week[0].getMonth();
-    if (m !== lastMonth) { monthLabels.push({ col: i, label: format(week[0], "MMM") }); lastMonth = m; }
-  });
+  const monthLabels = useMemo(() => {
+    const labels: { col: number; label: string }[] = [];
+    let lastMonth = -1;
+    weeks.forEach((week, i) => {
+      const m = week[0].getMonth();
+      if (m !== lastMonth) { labels.push({ col: i, label: format(week[0], "MMM") }); lastMonth = m; }
+    });
+    return labels;
+  }, [weeks]);
 
   const cellColor = (count: number) => {
     if (count === 0) return "bg-muted/50";
