@@ -209,6 +209,34 @@ Lovable handles the build and injects environment variables automatically when S
 
 ---
 
+## Working with AI (Claude Code)
+
+Use this prompt format when asking Claude to add features or make large changes. Front-loading all context in one message reduces round trips and lets Claude catch cross-file conflicts before making them.
+
+```
+## Goal
+One paragraph on what the end state should feel like / why.
+
+## Changes
+1. [File or area] — exactly what to change
+2. [File or area] — exactly what to change
+3. ...
+
+## Constraints
+- Don't touch X
+- Keep Y working
+```
+
+**Example:**
+
+> **Goal**: warmer, more editorial feel — make it look like something someone would screenshot and share.
+> **Changes**: (1) `styles.css` — switch body to Plus Jakarta Sans, headings to Fraunces, background to warm off-white. (2) `demo.tsx` — increase heading sizes on the hero, add a tagline under the logo. (3) `dashboard.tsx` — make the contribution calendar slightly larger cells.
+> **Constraints**: don't change any data logic, just visual/CSS.
+
+For large architectural changes (10+ files), type `/plan` first — Claude will lay out the full approach for your approval before touching anything.
+
+---
+
 ## Contributing
 
 1. Fork the repository
