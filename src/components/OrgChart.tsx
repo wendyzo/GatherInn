@@ -18,7 +18,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Plus, Trash2, Check, Clock, ChevronDown, ChevronUp, Shield } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Check,
+  Clock,
+  ChevronDown,
+  ChevronUp,
+  Shield,
+  LayoutGrid,
+  Network,
+} from "lucide-react";
 import { toast } from "sonner";
 
 type OrgPos = {
@@ -92,11 +102,138 @@ function getInitials(name: string | null): string {
 
 interface OrgChartProps {
   societyId: string;
+  societyName: string;
   canManage: boolean;
   userId: string;
 }
 
-export function OrgChart({ societyId, canManage, userId }: OrgChartProps) {
+// ── Tree view ─────────────────────────────────────────────
+
+function TreeNodeCard({
+  pos,
+  assignment,
+  pending,
+}: {
+  pos: OrgPos;
+  assignment: Assignment | null;
+  pending: Assignment | null;
+}) {
+  return (
+    <div
+      className={`rounded-lg border bg-card px-4 py-3 min-w-[128px] text-center shadow-sm ${
+        assignment ? "border-border" : "border-dashed border-muted-foreground/30"
+      }`}
+    >
+      <p className="font-display text-sm leading-snug mb-2">{pos.title}</p>
+      {assignment ? (
+        <div className="flex items-center justify-center gap-1.5">
+          <Avatar className="h-5 w-5">
+            <AvatarFallback className="bg-primary/10 text-primary text-[9px]">
+              {getInitials(assignment.full_name)}
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-xs text-muted-foreground truncate max-w-[84px]">
+            {assignment.full_name ?? "Unknown"}
+          </span>
+        </div>
+      ) : pending ? (
+        <div className="flex items-center justify-center gap-1">
+          <span className="text-[10px] text-amber-600">{pending.full_name ?? "Pending"}</span>
+          <span className="text-[9px] bg-amber-100 text-amber-600 px-1 rounded-full leading-4">
+            pending
+          </span>
+        </div>
+      ) : (
+        <span className="text-[11px] text-muted-foreground/50">Unassigned</span>
+      )}
+    </div>
+  );
+}
+
+function OrgTreeView({
+  positions,
+  assignments,
+  members,
+  societyName,
+}: {
+  positions: OrgPos[];
+  assignments: Assignment[];
+  members: OrgMember[];
+  societyName: string;
+}) {
+  const byTier = TIER_ORDER.reduce(
+    (acc, tier) => ({ ...acc, [tier]: positions.filter((p) => p.tier === tier) }),
+    {} as Record<string, OrgPos[]>,
+  );
+  const activeTiers = TIER_ORDER.filter((t) => byTier[t]?.length > 0);
+
+  const getActive = (posId: string) =>
+    assignments.find((a) => a.position_id === posId && a.status === "active") ?? null;
+  const getPending = (posId: string) =>
+    assignments.find((a) => a.position_id === posId && a.status === "pending") ?? null;
+
+  if (positions.length === 0) {
+    return (
+      <div className="rounded-md border border-dashed border-border p-12 text-center text-muted-foreground text-sm">
+        No positions to display. Switch to grid view to add positions.
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <style>{`
+        .org-tier-list { list-style: none; padding: 0; margin: 0; }
+        .org-tier-list > li { position: relative; padding-top: 28px; }
+        .org-tier-list > li::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 50%;
+          transform: translateX(-50%);
+          width: 1px; height: 28px;
+          background: var(--color-border);
+        }
+      `}</style>
+
+      <div className="overflow-x-auto py-6">
+        <div className="min-w-max mx-auto flex flex-col items-center">
+          {/* Root node */}
+          <div className="px-8 py-4 rounded-xl border-2 border-primary/30 bg-primary/5 text-center">
+            <p className="font-display text-xl text-primary">{societyName}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {members.length} member{members.length !== 1 ? "s" : ""}
+            </p>
+          </div>
+
+          {/* Tier rows */}
+          <ul className="org-tier-list w-full">
+            {activeTiers.map((tier) => (
+              <li key={tier}>
+                <div className="flex flex-col items-center">
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
+                    {TIER_SECTION_LABELS[tier]}
+                  </p>
+                  <div className="flex gap-4 flex-wrap justify-center">
+                    {byTier[tier].map((pos) => (
+                      <TreeNodeCard
+                        key={pos.id}
+                        pos={pos}
+                        assignment={getActive(pos.id)}
+                        pending={getPending(pos.id)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export function OrgChart({ societyId, societyName, canManage, userId }: OrgChartProps) {
   const [positions, setPositions] = useState<OrgPos[]>([]);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [members, setMembers] = useState<OrgMember[]>([]);
@@ -110,6 +247,7 @@ export function OrgChart({ societyId, canManage, userId }: OrgChartProps) {
 
   const [assigningPos, setAssigningPos] = useState<string | null>(null);
   const [assignUserId, setAssignUserId] = useState<string>("");
+  const [view, setView] = useState<"grid" | "tree">("grid");
 
   const pendingCount = assignments.filter((a) => a.status === "pending").length;
 
@@ -283,231 +421,266 @@ export function OrgChart({ societyId, canManage, userId }: OrgChartProps) {
             {members.length !== 1 ? "s" : ""}
           </p>
         </div>
-        {canManage && (
-          <Button size="sm" onClick={() => setAddOpen(true)}>
-            <Plus className="h-4 w-4" /> Add position
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          <div className="flex rounded-md border border-border overflow-hidden text-xs">
+            <button
+              onClick={() => setView("grid")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 transition-colors ${
+                view === "grid"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+              }`}
+            >
+              <LayoutGrid className="h-3.5 w-3.5" /> Grid
+            </button>
+            <button
+              onClick={() => setView("tree")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 transition-colors ${
+                view === "tree"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+              }`}
+            >
+              <Network className="h-3.5 w-3.5" /> Tree
+            </button>
+          </div>
+          {canManage && view === "grid" && (
+            <Button size="sm" onClick={() => setAddOpen(true)}>
+              <Plus className="h-4 w-4" /> Add position
+            </Button>
+          )}
+        </div>
       </div>
 
-      {positions.length === 0 && (
-        <div className="rounded-md border border-dashed border-border p-12 text-center text-muted-foreground text-sm">
-          {canManage
-            ? "No positions yet. Add your first position to start building the org structure."
-            : "No org structure has been set up for this society yet."}
-        </div>
-      )}
+      {view === "tree" ? (
+        <OrgTreeView
+          positions={positions}
+          assignments={assignments}
+          members={members}
+          societyName={societyName}
+        />
+      ) : (
+        <>
+          {positions.length === 0 && (
+            <div className="rounded-md border border-dashed border-border p-12 text-center text-muted-foreground text-sm">
+              {canManage
+                ? "No positions yet. Add your first position to start building the org structure."
+                : "No org structure has been set up for this society yet."}
+            </div>
+          )}
 
-      {TIER_ORDER.filter((tier) => byTier[tier]?.length > 0).map((tier) => (
-        <div key={tier}>
-          <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">
-            {TIER_SECTION_LABELS[tier]}
-          </h3>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {byTier[tier].map((pos) => {
-              const posAssignments = assignments.filter((a) => a.position_id === pos.id);
-              const active = posAssignments.filter((a) => a.status === "active");
-              const pending = posAssignments.filter((a) => a.status === "pending");
-              const isExpanded = expandedId === pos.id;
-              const isAssigning = assigningPos === pos.id;
-              const assignedMember = active[0] ?? null;
-              const pendingMember = pending[0] ?? null;
+          {TIER_ORDER.filter((tier) => byTier[tier]?.length > 0).map((tier) => (
+            <div key={tier}>
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">
+                {TIER_SECTION_LABELS[tier]}
+              </h3>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {byTier[tier].map((pos) => {
+                  const posAssignments = assignments.filter((a) => a.position_id === pos.id);
+                  const active = posAssignments.filter((a) => a.status === "active");
+                  const pending = posAssignments.filter((a) => a.status === "pending");
+                  const isExpanded = expandedId === pos.id;
+                  const isAssigning = assigningPos === pos.id;
+                  const assignedMember = active[0] ?? null;
+                  const pendingMember = pending[0] ?? null;
 
-              return (
-                <div
-                  key={pos.id}
-                  className={`rounded-lg border bg-card transition-shadow ${
-                    isExpanded
-                      ? "border-primary/30 shadow-md"
-                      : "border-border hover:border-primary/20 hover:shadow-sm"
-                  }`}
-                >
-                  <button
-                    className="w-full text-left p-4"
-                    onClick={() => setExpandedId(isExpanded ? null : pos.id)}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="font-display text-lg leading-tight">{pos.title}</p>
-                        <span
-                          className={`mt-1.5 inline-block text-[11px] font-medium px-2 py-0.5 rounded-full border ${TIER_BADGE_CLASSES[pos.tier]}`}
-                        >
-                          {TIER_LABELS[pos.tier]}
-                        </span>
-                      </div>
-                      {isExpanded ? (
-                        <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
-                      )}
-                    </div>
-
-                    <div className="mt-3 flex items-center gap-2">
-                      {assignedMember ? (
-                        <>
-                          <Avatar className="h-6 w-6 text-xs">
-                            <AvatarFallback className="bg-primary/10 text-primary text-[10px]">
-                              {getInitials(assignedMember.full_name)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-sm font-medium">
-                            {assignedMember.full_name ?? "Unknown"}
-                          </span>
-                        </>
-                      ) : pendingMember ? (
-                        <>
-                          <Avatar className="h-6 w-6 text-xs">
-                            <AvatarFallback className="bg-amber-100 text-amber-700 text-[10px]">
-                              {getInitials(pendingMember.full_name)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-sm text-amber-700">
-                            {pendingMember.full_name ?? "Unknown"}
-                          </span>
-                          <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full leading-none">
-                            pending
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <div className="h-6 w-6 rounded-full border-2 border-dashed border-muted-foreground/25 flex items-center justify-center">
-                            <span className="text-[9px] text-muted-foreground/40">?</span>
+                  return (
+                    <div
+                      key={pos.id}
+                      className={`rounded-lg border bg-card transition-shadow ${
+                        isExpanded
+                          ? "border-primary/30 shadow-md"
+                          : "border-border hover:border-primary/20 hover:shadow-sm"
+                      }`}
+                    >
+                      <button
+                        className="w-full text-left p-4"
+                        onClick={() => setExpandedId(isExpanded ? null : pos.id)}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <p className="font-display text-lg leading-tight">{pos.title}</p>
+                            <span
+                              className={`mt-1.5 inline-block text-[11px] font-medium px-2 py-0.5 rounded-full border ${TIER_BADGE_CLASSES[pos.tier]}`}
+                            >
+                              {TIER_LABELS[pos.tier]}
+                            </span>
                           </div>
-                          <span className="text-sm text-muted-foreground">Unassigned</span>
-                        </>
-                      )}
-                    </div>
-                  </button>
-
-                  {isExpanded && (
-                    <div className="border-t border-border px-4 pb-4 pt-3 space-y-4">
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1.5 mb-2">
-                          <Shield className="h-3 w-3" /> Permissions
-                        </p>
-                        <ul className="space-y-1.5">
-                          {(TIER_PERMISSIONS[pos.tier] ?? []).map((perm) => (
-                            <li
-                              key={perm}
-                              className="text-xs text-muted-foreground flex items-start gap-1.5"
-                            >
-                              <Check className="h-3 w-3 text-accent shrink-0 mt-0.5" />
-                              {perm}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {canManage && (
-                        <div className="space-y-2 pt-1 border-t border-border">
-                          {pending.map((pa) => (
-                            <div
-                              key={pa.id}
-                              className="flex items-center justify-between rounded-md bg-amber-50/60 border border-amber-200/60 px-3 py-2"
-                            >
-                              <span className="text-xs text-amber-800 flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {pa.full_name ?? "Unknown"} — pending
-                              </span>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="h-6 text-xs px-2 border-amber-300 text-amber-700 hover:bg-amber-100"
-                                onClick={() => approveAssignment(pa.id)}
-                              >
-                                Approve
-                              </Button>
-                            </div>
-                          ))}
-
-                          {active.map((aa) => (
-                            <div
-                              key={aa.id}
-                              className="flex items-center justify-between text-xs text-muted-foreground"
-                            >
-                              <span>{aa.full_name ?? "Unknown"} · active</span>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-6 text-xs px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                onClick={() => removeAssignment(aa.id)}
-                              >
-                                Remove
-                              </Button>
-                            </div>
-                          ))}
-
-                          {isAssigning ? (
-                            <div className="flex items-center gap-2 pt-1">
-                              <Select value={assignUserId} onValueChange={setAssignUserId}>
-                                <SelectTrigger className="h-8 text-xs flex-1">
-                                  <SelectValue placeholder="Select member…" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {members.map((m) => (
-                                    <SelectItem
-                                      key={m.user_id}
-                                      value={m.user_id}
-                                      className="text-xs"
-                                    >
-                                      {m.full_name ?? m.user_id.slice(0, 8)}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <Button
-                                size="sm"
-                                className="h-8 text-xs px-2 shrink-0"
-                                disabled={!assignUserId}
-                                onClick={() => assignMember(pos.id)}
-                              >
-                                Assign
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-8 text-xs px-2 shrink-0"
-                                onClick={() => {
-                                  setAssigningPos(null);
-                                  setAssignUserId("");
-                                }}
-                              >
-                                Cancel
-                              </Button>
-                            </div>
+                          {isExpanded ? (
+                            <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
                           ) : (
-                            <div className="flex items-center justify-between pt-1">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="h-7 text-xs"
-                                onClick={() => {
-                                  setAssigningPos(pos.id);
-                                  setAssignUserId("");
-                                }}
-                              >
-                                <Plus className="h-3 w-3" /> Assign member
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-7 w-7 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                onClick={() => deletePosition(pos.id)}
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </Button>
+                            <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
+                          )}
+                        </div>
+
+                        <div className="mt-3 flex items-center gap-2">
+                          {assignedMember ? (
+                            <>
+                              <Avatar className="h-6 w-6 text-xs">
+                                <AvatarFallback className="bg-primary/10 text-primary text-[10px]">
+                                  {getInitials(assignedMember.full_name)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="text-sm font-medium">
+                                {assignedMember.full_name ?? "Unknown"}
+                              </span>
+                            </>
+                          ) : pendingMember ? (
+                            <>
+                              <Avatar className="h-6 w-6 text-xs">
+                                <AvatarFallback className="bg-amber-100 text-amber-700 text-[10px]">
+                                  {getInitials(pendingMember.full_name)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="text-sm text-amber-700">
+                                {pendingMember.full_name ?? "Unknown"}
+                              </span>
+                              <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full leading-none">
+                                pending
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <div className="h-6 w-6 rounded-full border-2 border-dashed border-muted-foreground/25 flex items-center justify-center">
+                                <span className="text-[9px] text-muted-foreground/40">?</span>
+                              </div>
+                              <span className="text-sm text-muted-foreground">Unassigned</span>
+                            </>
+                          )}
+                        </div>
+                      </button>
+
+                      {isExpanded && (
+                        <div className="border-t border-border px-4 pb-4 pt-3 space-y-4">
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1.5 mb-2">
+                              <Shield className="h-3 w-3" /> Permissions
+                            </p>
+                            <ul className="space-y-1.5">
+                              {(TIER_PERMISSIONS[pos.tier] ?? []).map((perm) => (
+                                <li
+                                  key={perm}
+                                  className="text-xs text-muted-foreground flex items-start gap-1.5"
+                                >
+                                  <Check className="h-3 w-3 text-accent shrink-0 mt-0.5" />
+                                  {perm}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          {canManage && (
+                            <div className="space-y-2 pt-1 border-t border-border">
+                              {pending.map((pa) => (
+                                <div
+                                  key={pa.id}
+                                  className="flex items-center justify-between rounded-md bg-amber-50/60 border border-amber-200/60 px-3 py-2"
+                                >
+                                  <span className="text-xs text-amber-800 flex items-center gap-1">
+                                    <Clock className="h-3 w-3" />
+                                    {pa.full_name ?? "Unknown"} — pending
+                                  </span>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-6 text-xs px-2 border-amber-300 text-amber-700 hover:bg-amber-100"
+                                    onClick={() => approveAssignment(pa.id)}
+                                  >
+                                    Approve
+                                  </Button>
+                                </div>
+                              ))}
+
+                              {active.map((aa) => (
+                                <div
+                                  key={aa.id}
+                                  className="flex items-center justify-between text-xs text-muted-foreground"
+                                >
+                                  <span>{aa.full_name ?? "Unknown"} · active</span>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-6 text-xs px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                    onClick={() => removeAssignment(aa.id)}
+                                  >
+                                    Remove
+                                  </Button>
+                                </div>
+                              ))}
+
+                              {isAssigning ? (
+                                <div className="flex items-center gap-2 pt-1">
+                                  <Select value={assignUserId} onValueChange={setAssignUserId}>
+                                    <SelectTrigger className="h-8 text-xs flex-1">
+                                      <SelectValue placeholder="Select member…" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {members.map((m) => (
+                                        <SelectItem
+                                          key={m.user_id}
+                                          value={m.user_id}
+                                          className="text-xs"
+                                        >
+                                          {m.full_name ?? m.user_id.slice(0, 8)}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Button
+                                    size="sm"
+                                    className="h-8 text-xs px-2 shrink-0"
+                                    disabled={!assignUserId}
+                                    onClick={() => assignMember(pos.id)}
+                                  >
+                                    Assign
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-8 text-xs px-2 shrink-0"
+                                    onClick={() => {
+                                      setAssigningPos(null);
+                                      setAssignUserId("");
+                                    }}
+                                  >
+                                    Cancel
+                                  </Button>
+                                </div>
+                              ) : (
+                                <div className="flex items-center justify-between pt-1">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-7 text-xs"
+                                    onClick={() => {
+                                      setAssigningPos(pos.id);
+                                      setAssignUserId("");
+                                    }}
+                                  >
+                                    <Plus className="h-3 w-3" /> Assign member
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-7 w-7 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                    onClick={() => deletePosition(pos.id)}
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </Button>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
                       )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </>
+      )}
 
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
         <DialogContent className="max-w-sm">

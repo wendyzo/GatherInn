@@ -320,7 +320,12 @@ function SocietyPage() {
               </div>
             </section>
           ) : (
-            <OrgChart societyId={societyId} canManage={canManage} userId={user!.id} />
+            <OrgChart
+              societyId={societyId}
+              societyName={society.name}
+              canManage={canManage}
+              userId={user!.id}
+            />
           )}
         </div>
       </div>
