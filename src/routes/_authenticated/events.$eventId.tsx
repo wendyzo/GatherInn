@@ -427,23 +427,28 @@ function RunsheetPage() {
       {/* Smart suggestion banner */}
       {showSuggestion &&
         (pastMatches.length > 0 ? (
-          <div className="rounded-lg border border-primary/30 bg-primary/5 p-4">
-            <div className="flex items-start justify-between gap-3 mb-3">
-              <div className="flex items-start gap-2.5">
-                <History className="h-5 w-5 text-primary mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium">Build on past experience</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    We found similar events in your history. Clone their runsheet to start fast.
-                  </p>
-                </div>
+          <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
+            <div className="flex items-center justify-between gap-3 mb-2">
+              <span className="text-xs font-semibold uppercase tracking-wide text-primary flex items-center gap-1.5">
+                <History className="h-3.5 w-3.5" /> Similar past events
+              </span>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-7 text-xs"
+                  onClick={runBlueprint}
+                  disabled={aiLoading}
+                >
+                  <Sparkles className="h-3 w-3" /> {aiLoading ? "Generating…" : "AI draft"}
+                </Button>
+                <button
+                  onClick={() => setSuggestionDismissed(true)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-              <button
-                onClick={() => setSuggestionDismissed(true)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-4 w-4" />
-              </button>
             </div>
             <div className="space-y-1.5">
               {pastMatches.map((m) => (
@@ -469,27 +474,15 @@ function RunsheetPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-3 pt-3 border-t border-border/60 flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Prefer a fresh draft?</span>
-              <Button size="sm" variant="ghost" onClick={runBlueprint} disabled={aiLoading}>
-                <Sparkles className="h-3.5 w-3.5" /> {aiLoading ? "Generating…" : "AI Blueprint"}
-              </Button>
-            </div>
           </div>
         ) : (
-          <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 flex items-start justify-between gap-3">
-            <div className="flex items-start gap-2.5">
-              <Sparkles className="h-5 w-5 text-primary mt-0.5" />
-              <div>
-                <p className="text-sm font-medium">No past events like this one</p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Let AI draft a starter runsheet based on "{event.name}".
-                </p>
-              </div>
-            </div>
+          <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 flex items-center justify-between gap-3">
+            <span className="text-xs font-semibold uppercase tracking-wide text-primary flex items-center gap-1.5">
+              <Sparkles className="h-3.5 w-3.5" /> No similar events found
+            </span>
             <div className="flex items-center gap-2 shrink-0">
               <Button size="sm" onClick={runBlueprint} disabled={aiLoading}>
-                <Sparkles className="h-3.5 w-3.5" /> {aiLoading ? "Generating…" : "Generate"}
+                <Sparkles className="h-3.5 w-3.5" /> {aiLoading ? "Generating…" : "AI draft"}
               </Button>
               <button
                 onClick={() => setSuggestionDismissed(true)}
@@ -503,8 +496,6 @@ function RunsheetPage() {
 
       {/* Runsheet */}
       <section>
-        <h2 className="font-display text-2xl mb-4">Runsheet</h2>
-
         {blocks.length === 0 && !inlineAdding ? (
           <div className="rounded-md border border-dashed border-border p-12 text-center bg-card/50">
             <Clock className="h-8 w-8 mx-auto text-muted-foreground" />

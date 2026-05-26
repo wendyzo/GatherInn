@@ -122,8 +122,7 @@ function Dashboard() {
     <div className="blueprint-bg space-y-12">
       {/* Portfolio */}
       <section>
-        <h2 className="font-display text-2xl mb-1">Portfolio</h2>
-        <p className="text-muted-foreground text-sm mb-6">Your activity across all societies.</p>
+        <h2 className="font-display text-2xl mb-4">Portfolio</h2>
 
         <div className="rounded-md border border-border bg-card p-5">
           <ContributionCalendar events={contributions} loading={loading} />
@@ -189,12 +188,7 @@ function Dashboard() {
       {/* Societies */}
       <section>
         <div className="flex items-end justify-between mb-6">
-          <div>
-            <h2 className="font-display text-2xl">Your societies</h2>
-            <p className="text-muted-foreground mt-1 text-sm">
-              Pick a society to view its projects, events, and historical blueprint.
-            </p>
-          </div>
+          <h2 className="font-display text-2xl">Your societies</h2>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button>

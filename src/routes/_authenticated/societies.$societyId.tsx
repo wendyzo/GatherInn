@@ -247,12 +247,9 @@ function SocietyPage() {
             <p className="text-muted-foreground mt-1 max-w-2xl">{society.description}</p>
           )}
         </div>
-        <div className="text-right shrink-0">
-          <p className="font-display text-2xl text-foreground/80 leading-tight">{society.name}</p>
-          <span className="text-xs text-muted-foreground capitalize tracking-wide">
-            {role.replace("_", " ")}
-          </span>
-        </div>
+        <span className="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full bg-muted text-muted-foreground capitalize">
+          {role.replace("_", " ")}
+        </span>
       </div>
 
       <div className="flex gap-8">
