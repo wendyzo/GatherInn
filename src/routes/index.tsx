@@ -171,10 +171,7 @@ function HeroSection() {
             <span className="w-5" />
           </div>
           {SOURCE_TASKS.map((t) => (
-            <div
-              key={t.task}
-              className="flex items-center gap-2 py-2.5 border-t border-gray-50"
-            >
+            <div key={t.task} className="flex items-center gap-2 py-2.5 border-t border-gray-50">
               <span className="flex-1 text-sm text-[#1a1a1a]">{t.task}</span>
               <span className="w-16 text-xs text-gray-400">{t.owner}</span>
               <span className="w-11 text-xs text-gray-400">{t.due}</span>
@@ -234,10 +231,7 @@ function HeroSection() {
             <span className="w-5" />
           </div>
           {SOURCE_TASKS.map((t) => (
-            <div
-              key={t.task}
-              className="flex items-center gap-2 py-2.5 border-t border-gray-50"
-            >
+            <div key={t.task} className="flex items-center gap-2 py-2.5 border-t border-gray-50">
               <span className="flex-1 text-sm text-[#1a1a1a]">{t.task}</span>
               <span className="w-16 text-xs text-gray-200">—</span>
               <span className="w-11 text-xs text-gray-200">—</span>
@@ -268,7 +262,10 @@ function RiskSection() {
           <p className="mt-2 text-gray-400">Surfaced before they repeat.</p>
         </div>
 
-        <div className="rounded-xl bg-white overflow-hidden" style={{ border: "0.5px solid #e8e8e8" }}>
+        <div
+          className="rounded-xl bg-white overflow-hidden"
+          style={{ border: "0.5px solid #e8e8e8" }}
+        >
           <div className="px-5 py-3.5 border-b border-gray-100">
             <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
               Risk panel — Finals Night 2025
@@ -335,9 +332,15 @@ function VendorSection() {
           <p className="mt-2 text-gray-400">One tab away.</p>
         </div>
 
-        <div className="rounded-xl bg-white overflow-hidden" style={{ border: "0.5px solid #e8e8e8" }}>
+        <div
+          className="rounded-xl bg-white overflow-hidden"
+          style={{ border: "0.5px solid #e8e8e8" }}
+        >
           {/* Tabs */}
-          <div className="flex border-b border-gray-100 overflow-x-auto" style={{ background: "rgba(0,0,0,0.015)" }}>
+          <div
+            className="flex border-b border-gray-100 overflow-x-auto"
+            style={{ background: "rgba(0,0,0,0.015)" }}
+          >
             {["Overview", "Timeline", "Stakeholders", "Files"].map((tab) => (
               <button
                 key={tab}
@@ -489,7 +492,10 @@ function RolesSection() {
           <p className="mt-2 text-gray-400">Access follows the role, not the person.</p>
         </div>
 
-        <div className="rounded-xl bg-white overflow-hidden" style={{ border: "0.5px solid #e8e8e8" }}>
+        <div
+          className="rounded-xl bg-white overflow-hidden"
+          style={{ border: "0.5px solid #e8e8e8" }}
+        >
           <div className="flex flex-col md:flex-row">
             {/* Role list */}
             <div className="md:w-52 shrink-0 border-b md:border-b-0 md:border-r border-gray-100">
