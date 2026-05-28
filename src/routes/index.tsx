@@ -157,114 +157,37 @@ const SEVERITY = {
 
 function HeroSection() {
   return (
-    <section className="max-w-6xl mx-auto px-6 pt-16 pb-20">
-      <div className="text-center mb-12">
-        <h1 className="text-5xl md:text-6xl font-medium text-[#1a1a1a] leading-tight tracking-tight">
-          Inherit the blueprint.
-        </h1>
-        <p className="mt-3 text-lg text-gray-400">Your society's event memory, built in.</p>
-      </div>
-
-      <div className="flex flex-col lg:flex-row items-stretch gap-3 lg:gap-0">
-        {/* Source card */}
-        <div
-          className="w-full lg:flex-1 rounded-xl bg-white p-5"
-          style={{ border: "0.5px solid #e8e8e8" }}
+    <section className="max-w-4xl mx-auto px-6 pt-24 pb-20 text-center">
+      <span
+        className="inline-block text-[10px] font-medium uppercase tracking-widest px-3 py-1 rounded-full mb-6"
+        style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
+      >
+        Society event memory
+      </span>
+      <h1 className="text-5xl md:text-6xl font-medium text-[#1a1a1a] leading-tight tracking-tight">
+        Plan your next event
+        <br />
+        without starting over.
+      </h1>
+      <p className="mt-5 text-lg text-gray-500 max-w-2xl mx-auto">
+        Inherit timelines, vendors, and risks from past events. Sign up free for your society and
+        plan your next one in minutes.
+      </p>
+      <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+        <Link
+          to="/login"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-7 py-3.5 text-base font-medium text-white hover:opacity-80 transition-opacity"
         >
-          <div className="flex items-center justify-between mb-5">
-            <span className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
-              Source event
-            </span>
-            <span
-              className="text-xs px-2.5 py-0.5 rounded-full font-medium"
-              style={{ background: "rgba(29,158,117,0.1)", color: "#1D9E75" }}
-            >
-              Completed
-            </span>
-          </div>
-          <div className="mb-5">
-            <p className="text-base font-medium text-[#1a1a1a]">Finals Night 2024</p>
-            <p className="text-xs text-gray-400 mt-0.5">Oct 15, 2024</p>
-          </div>
-          <div className="flex items-center gap-2 pb-2">
-            <span className="flex-1 text-[10px] text-gray-300 uppercase tracking-wider">Task</span>
-            <span className="w-16 text-[10px] text-gray-300 uppercase tracking-wider">Owner</span>
-            <span className="w-11 text-[10px] text-gray-300 uppercase tracking-wider">Due</span>
-            <span className="w-5" />
-          </div>
-          {SOURCE_TASKS.map((t) => (
-            <div key={t.task} className="flex items-center gap-2 py-2.5 border-t border-gray-50">
-              <span className="flex-1 text-sm text-[#1a1a1a]">{t.task}</span>
-              <span className="w-16 text-xs text-gray-400">{t.owner}</span>
-              <span className="w-11 text-xs text-gray-400">{t.due}</span>
-              <div
-                className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
-                style={{ background: "rgba(29,158,117,0.12)" }}
-              >
-                <Check className="h-3 w-3" style={{ color: "#1D9E75" }} />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Arrow */}
-        <div className="flex lg:flex-col items-center justify-center py-1 lg:py-0 lg:w-14 shrink-0">
-          <style>{`
-            @keyframes arrow-drift {
-              0%,100%{opacity:.9;transform:translateX(0)}
-              50%{opacity:.5;transform:translateX(4px)}
-            }
-            @media(max-width:1023px){
-              @keyframes arrow-drift {
-                0%,100%{opacity:.9;transform:translateY(0) rotate(90deg)}
-                50%{opacity:.5;transform:translateY(4px) rotate(90deg)}
-              }
-            }
-            .arrow-drift{animation:arrow-drift 1.8s ease-in-out infinite}
-          `}</style>
-          <ArrowRight
-            className="h-5 w-5 arrow-drift rotate-90 lg:rotate-0"
-            style={{ color: "#EF9F27" }}
-          />
-        </div>
-
-        {/* Blueprint card */}
-        <div
-          className="w-full lg:flex-1 rounded-xl bg-white p-5"
-          style={{ border: "0.5px solid #EF9F27" }}
+          Plan event <ArrowRight className="h-5 w-5" />
+        </Link>
+        <Link
+          to="/login"
+          className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-7 py-3.5 text-base font-medium text-[#1a1a1a] hover:bg-gray-50 transition-colors"
         >
-          <div className="flex items-center justify-between mb-5">
-            <span
-              className="text-[10px] font-semibold uppercase tracking-widest px-2.5 py-0.5 rounded-full"
-              style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
-            >
-              Blueprint
-            </span>
-            <span className="text-xs text-gray-300">Owners &amp; dates to assign</span>
-          </div>
-          <div className="mb-5">
-            <p className="text-base font-medium text-[#1a1a1a]">Finals Night Blueprint</p>
-            <p className="text-xs text-gray-300 mt-0.5">Date not set</p>
-          </div>
-          <div className="flex items-center gap-2 pb-2">
-            <span className="flex-1 text-[10px] text-gray-300 uppercase tracking-wider">Task</span>
-            <span className="w-16 text-[10px] text-gray-300 uppercase tracking-wider">Owner</span>
-            <span className="w-11 text-[10px] text-gray-300 uppercase tracking-wider">Due</span>
-            <span className="w-5" />
-          </div>
-          {SOURCE_TASKS.map((t) => (
-            <div key={t.task} className="flex items-center gap-2 py-2.5 border-t border-gray-50">
-              <span className="flex-1 text-sm text-[#1a1a1a]">{t.task}</span>
-              <span className="w-16 text-xs text-gray-200">—</span>
-              <span className="w-11 text-xs text-gray-200">—</span>
-              <div className="w-5 h-5 rounded-full border border-gray-200 shrink-0" />
-            </div>
-          ))}
-          <button className="mt-5 w-full flex items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-4 py-3 text-sm font-medium text-white hover:opacity-80 transition-opacity">
-            Use this blueprint <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
+          Sign up free
+        </Link>
       </div>
+      <p className="mt-4 text-sm text-gray-400">Free for student societies · No card required</p>
     </section>
   );
 }
