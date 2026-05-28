@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, X, Star, Plus, Clock, Users, AlertTriangle, Shield } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 
@@ -177,6 +177,7 @@ function HeroSection() {
 // ── Slide: Smart Runsheet ─────────────────────────────────────────
 
 function TimelineSlide() {
+  const [matched, setMatched] = useState(false);
   const [converted, setConverted] = useState(false);
 
   const pastRows = [
@@ -212,128 +213,189 @@ function TimelineSlide() {
   );
 
   return (
-    <div className="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-start">
-      {/* Left card — past event */}
-      <div
-        className="rounded-xl bg-white overflow-hidden"
-        style={{ border: "0.5px solid #e8e8e8" }}
-      >
-        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
-            What actually happened
-          </p>
-          <span
-            className="text-[10px] px-2 py-0.5 rounded-full font-medium"
-            style={{ background: "rgba(29,158,117,0.1)", color: "#1D9E75" }}
-          >
-            Completed
-          </span>
-        </div>
-        <div className="px-4 py-2.5 border-b border-gray-100">
-          <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2023</p>
-        </div>
-        {colHeader}
-        {pastRows.map((row) => (
-          <div
-            key={row.activity}
-            className="flex items-center gap-2 px-4 py-2.5 border-t border-gray-50"
-          >
-            <span className="w-10 text-xs font-mono text-gray-400">{row.time}</span>
-            <span className="flex-1 text-xs text-[#1a1a1a] truncate">{row.activity}</span>
-            <div className="w-8 shrink-0 flex items-center justify-end gap-1">
-              {row.overran && (
-                <div className="h-2 w-2 rounded-full shrink-0" style={{ background: "#E24B4A" }} />
-              )}
-              <span className="text-xs font-mono text-gray-400">{row.duration}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Connecting arrow + convert */}
-      <div className="flex md:flex-col items-center justify-center gap-2 py-3 md:pt-24">
-        <ArrowRight
-          className="hidden md:block h-4 w-4 animate-pulse"
-          style={{ color: "#EF9F27" }}
-        />
-        <button
-          onClick={() => setConverted((v) => !v)}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-[#1a1a1a] px-3 py-2 text-[11px] font-medium text-white hover:opacity-80 transition-opacity whitespace-nowrap"
-        >
-          {converted ? "Reset" : "Convert"} <ArrowRight className="h-3 w-3" />
-        </button>
-      </div>
-
-      {/* Right card — blueprint */}
+    <div className="space-y-3">
+      {/* Step 1 — event search */}
       <div
         className="rounded-xl bg-white overflow-hidden transition-all duration-300"
-        style={{ border: converted ? "0.5px solid #EF9F27" : "0.5px solid #e8e8e8" }}
+        style={{ border: matched ? "0.5px solid #1D9E75" : "0.5px solid #e8e8e8" }}
       >
-        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-          {converted ? (
-            <span
-              className="text-[10px] font-medium px-2 py-0.5 rounded-full uppercase tracking-widest"
-              style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
-            >
-              Your new blueprint
-            </span>
-          ) : (
-            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
-              New blueprint
-            </p>
-          )}
-          <span className="text-[10px] text-gray-400">14 Oct 2025</span>
-        </div>
-        <div className="px-4 py-2.5 border-b border-gray-100">
-          <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2025</p>
-        </div>
-        {colHeader}
-        {blueprintRows.map((row, i) => (
-          <div key={row.activity} className="border-t border-gray-50">
-            <div className="flex items-center gap-2 px-4 py-2.5">
-              <span
-                className="w-10 text-xs font-mono transition-all duration-300"
-                style={{ transitionDelay: `${i * 55}ms`, color: converted ? "#1a1a1a" : "#f0b04a" }}
-              >
-                {row.time}
-              </span>
-              <span
-                className="flex-1 min-w-0 text-xs flex items-center gap-1.5 transition-all duration-300"
-                style={{ transitionDelay: `${i * 55}ms`, color: converted ? "#1a1a1a" : "#d1d5db" }}
-              >
-                {converted ? (
-                  <>
-                    <span className="truncate">{row.activity}</span>
-                    {row.tag && (
-                      <span
-                        className="shrink-0 text-[9px] px-1.5 py-0.5 rounded font-medium"
-                        style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
-                      >
-                        {row.tag}
-                      </span>
-                    )}
-                  </>
-                ) : (
-                  <span>—</span>
-                )}
-              </span>
-              <span
-                className="w-8 shrink-0 text-xs font-mono text-right transition-all duration-300"
-                style={{ transitionDelay: `${i * 55}ms`, color: converted ? "#1a1a1a" : "#d1d5db" }}
-              >
-                {converted ? row.duration : "—"}
-              </span>
-            </div>
-            {converted && row.annotation && (
-              <div
-                className="mx-4 mb-2 px-3 py-2 rounded-lg text-[11px] leading-relaxed"
-                style={{ background: "rgba(239,159,39,0.07)", color: "#a07830" }}
-              >
-                Averaged 11 min across 3 past events. Audience engagement drops after 7 min.
-              </div>
-            )}
+        <div className="flex items-center gap-3 px-4 py-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] text-gray-300 uppercase tracking-wider mb-0.5">Plan event</p>
+            <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2025</p>
           </div>
-        ))}
+          <button
+            onClick={() => setMatched(true)}
+            disabled={matched}
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-[11px] font-medium transition-all whitespace-nowrap hover:opacity-80"
+            style={
+              matched
+                ? { background: "rgba(29,158,117,0.1)", color: "#1D9E75" }
+                : { background: "#1a1a1a", color: "#fff" }
+            }
+          >
+            {matched ? "✓ Match found" : "Find blueprint →"}
+          </button>
+        </div>
+        {matched && (
+          <div
+            className="px-4 py-2.5 border-t border-gray-100 flex items-center gap-2.5"
+            style={{ background: "rgba(29,158,117,0.04)" }}
+          >
+            <div className="h-2 w-2 rounded-full shrink-0" style={{ background: "#1D9E75" }} />
+            <span className="text-sm font-medium text-[#1a1a1a]">Finals Night 2023</span>
+            <span className="flex-1 text-xs text-gray-400">94% match · 5 shared segments</span>
+            <button
+              onClick={() => {
+                setMatched(false);
+                setConverted(false);
+              }}
+              className="text-xs text-gray-300 hover:text-gray-500 transition-colors"
+            >
+              ×
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Step 2+3 — split cards */}
+      <div
+        className={`grid md:grid-cols-[1fr_auto_1fr] gap-3 items-start transition-all duration-300 ${matched ? "" : "opacity-30 pointer-events-none select-none"}`}
+      >
+        {/* Left card — past event */}
+        <div
+          className="rounded-xl bg-white overflow-hidden"
+          style={{ border: "0.5px solid #e8e8e8" }}
+        >
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+              What actually happened
+            </p>
+            <span
+              className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+              style={{ background: "rgba(29,158,117,0.1)", color: "#1D9E75" }}
+            >
+              Completed
+            </span>
+          </div>
+          <div className="px-4 py-2.5 border-b border-gray-100">
+            <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2023</p>
+          </div>
+          {colHeader}
+          {pastRows.map((row) => (
+            <div
+              key={row.activity}
+              className="flex items-center gap-2 px-4 py-2.5 border-t border-gray-50"
+            >
+              <span className="w-10 text-xs font-mono text-gray-400">{row.time}</span>
+              <span className="flex-1 text-xs text-[#1a1a1a] truncate">{row.activity}</span>
+              <div className="w-8 shrink-0 flex items-center justify-end gap-1">
+                {row.overran && (
+                  <div
+                    className="h-2 w-2 rounded-full shrink-0"
+                    style={{ background: "#E24B4A" }}
+                  />
+                )}
+                <span className="text-xs font-mono text-gray-400">{row.duration}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Connecting arrow + convert */}
+        <div className="flex md:flex-col items-center justify-center gap-2 py-3 md:pt-24">
+          <ArrowRight
+            className="hidden md:block h-4 w-4 animate-pulse"
+            style={{ color: "#EF9F27" }}
+          />
+          <button
+            onClick={() => setConverted((v) => !v)}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[#1a1a1a] px-3 py-2 text-[11px] font-medium text-white hover:opacity-80 transition-opacity whitespace-nowrap"
+          >
+            {converted ? "Reset" : "Convert"} <ArrowRight className="h-3 w-3" />
+          </button>
+        </div>
+
+        {/* Right card — blueprint */}
+        <div
+          className="rounded-xl bg-white overflow-hidden transition-all duration-300"
+          style={{ border: converted ? "0.5px solid #EF9F27" : "0.5px solid #e8e8e8" }}
+        >
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+            {converted ? (
+              <span
+                className="text-[10px] font-medium px-2 py-0.5 rounded-full uppercase tracking-widest"
+                style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
+              >
+                Your new blueprint
+              </span>
+            ) : (
+              <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+                New blueprint
+              </p>
+            )}
+            <span className="text-[10px] text-gray-400">14 Oct 2025</span>
+          </div>
+          <div className="px-4 py-2.5 border-b border-gray-100">
+            <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2025</p>
+          </div>
+          {colHeader}
+          {blueprintRows.map((row, i) => (
+            <div key={row.activity} className="border-t border-gray-50">
+              <div className="flex items-center gap-2 px-4 py-2.5">
+                <span
+                  className="w-10 text-xs font-mono transition-all duration-300"
+                  style={{
+                    transitionDelay: `${i * 55}ms`,
+                    color: converted ? "#1a1a1a" : "#f0b04a",
+                  }}
+                >
+                  {row.time}
+                </span>
+                <span
+                  className="flex-1 min-w-0 text-xs flex items-center gap-1.5 transition-all duration-300"
+                  style={{
+                    transitionDelay: `${i * 55}ms`,
+                    color: converted ? "#1a1a1a" : "#d1d5db",
+                  }}
+                >
+                  {converted ? (
+                    <>
+                      <span className="truncate">{row.activity}</span>
+                      {row.tag && (
+                        <span
+                          className="shrink-0 text-[9px] px-1.5 py-0.5 rounded font-medium"
+                          style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
+                        >
+                          {row.tag}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <span>—</span>
+                  )}
+                </span>
+                <span
+                  className="w-8 shrink-0 text-xs font-mono text-right transition-all duration-300"
+                  style={{
+                    transitionDelay: `${i * 55}ms`,
+                    color: converted ? "#1a1a1a" : "#d1d5db",
+                  }}
+                >
+                  {converted ? row.duration : "—"}
+                </span>
+              </div>
+              {converted && row.annotation && (
+                <div
+                  className="mx-4 mb-2 px-3 py-2 rounded-lg text-[11px] leading-relaxed"
+                  style={{ background: "rgba(239,159,39,0.07)", color: "#a07830" }}
+                >
+                  Averaged 11 min across 3 past events. Audience engagement drops after 7 min.
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -641,16 +703,30 @@ function RolesSlide() {
 
 function StatsSection() {
   const [active, setActive] = useState(false);
+  const ref = useRef<HTMLElement>(null);
+
   useEffect(() => {
-    const t = setTimeout(() => setActive(true), 120);
-    return () => clearTimeout(t);
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setActive(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.4 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
+
   const vendorCount = useCountUp(8, active);
   const societyCount = useCountUp(5, active);
   const riskCount = useCountUp(14, active);
 
   return (
-    <section className="border-b border-gray-100 py-16">
+    <section ref={ref} className="border-b border-gray-100 py-16">
       <div className="max-w-3xl mx-auto px-6">
         <div className="grid grid-cols-3 gap-6 text-center">
           {[
@@ -679,8 +755,8 @@ const FEATURE_TABS = [
     id: "blueprint",
     Icon: Clock,
     label: "Blueprint",
-    heading: "Your runsheet, pre-filled by experience.",
-    sub: "Durations drawn from every event your society has run.",
+    heading: "Durations drawn from relevant events your society has run.",
+    sub: "Type an event name — GatherInn finds the closest one to clone.",
     Demo: TimelineSlide,
   },
   {
