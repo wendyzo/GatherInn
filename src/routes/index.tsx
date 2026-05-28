@@ -755,8 +755,8 @@ const FEATURE_TABS = [
     id: "blueprint",
     Icon: Clock,
     label: "Blueprint",
-    heading: "Durations drawn from relevant events your society has run.",
-    sub: "Type an event name — GatherInn finds the closest one to clone.",
+    heading: "Your runsheet, pre-filled by experience.",
+    sub: "Durations drawn from relevant events your society has run.",
     Demo: TimelineSlide,
   },
   {
