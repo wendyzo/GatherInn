@@ -39,11 +39,13 @@ Long term, GatherInn aims to be the standard platform university society uses to
 
 ## Features
 
+- **Interactive landing page** — four live feature demos (Blueprint, Vendors, Risk Alerts, Roles) showing real UI interactions; no prose. A stats row (vendors recommended, societies to connect, risks surfaced) counts up from zero only after the user tries the Blueprint demo.
+- **Smart runsheet** — type an event name, GatherInn finds the closest past event your society has run (e.g. "Finals Night 2023 · 94% match · 5 shared segments"), then converts it into a pre-filled blueprint. Durations are adjusted from historical data with inline annotations ("Averaged 11 min across 3 events — cap at 5").
 - **Dashboard** — contribution calendar, society overview, and event history across all your organisations
 - **Society management** — create societies, assign roles (Executive, Project Owner, Member), and manage membership
 - **Event runsheet editor** — drag-and-drop timeline builder with inline editing for title, date, location, and status
 - **Blueprint cloning** — clone a past event's runsheet, tasks, vendors, and risks into a new event as a starting point
-- **AI-powered matching** — when creating a new event, the app surfaces similar past events using keyword and AI matching (Gemini 2.5 Flash)
+- **AI-powered matching** — surfaces similar past events using keyword and AI matching (Gemini 2.5 Flash)
 - **AI runsheet generation** — generate a full runsheet draft from just an event name
 - **Authentication** — email/password login via Supabase Auth with route-level protection
 
@@ -93,7 +95,7 @@ Open `.env` and fill in your Supabase credentials (see [Environment Variables](#
 npm run dev
 ```
 
-The app will be available at `http://localhost:3000`.
+The app will be available at `http://localhost:3456`.
 
 ### Available scripts
 
