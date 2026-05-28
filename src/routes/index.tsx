@@ -749,7 +749,7 @@ const FEATURE_TABS = [
     Icon: Copy,
     label: "Blueprint",
     heading: "Your runsheet, pre-filled by experience.",
-    sub: "Durations drawn from relevant events your society has run.",
+    sub: "Drawn from relevant events your society has run.",
     Demo: TimelineSlide,
   },
   {
