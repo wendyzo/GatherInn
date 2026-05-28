@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, X, Star, Plus, Copy, Users, AlertTriangle, Shield } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 
@@ -179,6 +179,11 @@ function HeroSection() {
 function TimelineSlide() {
   const [matched, setMatched] = useState(false);
   const [converted, setConverted] = useState(false);
+
+  useEffect(() => {
+    if (converted) window.dispatchEvent(new CustomEvent("blueprint:converted"));
+  }, [converted]);
+
   const rowsCount = useCountUp(8, converted);
   const vendorsCount = useCountUp(3, converted);
   const risksCount = useCountUp(2, converted);
@@ -726,22 +731,11 @@ function RolesSlide() {
 
 function StatsSection() {
   const [active, setActive] = useState(false);
-  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setActive(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.4 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+    const handler = () => setActive(true);
+    window.addEventListener("blueprint:converted", handler);
+    return () => window.removeEventListener("blueprint:converted", handler);
   }, []);
 
   const vendorCount = useCountUp(8, active);
@@ -749,7 +743,7 @@ function StatsSection() {
   const riskCount = useCountUp(14, active);
 
   return (
-    <section ref={ref} className="border-b border-gray-100 py-16">
+    <section className="border-b border-gray-100 py-16">
       <div className="max-w-3xl mx-auto px-6">
         <div className="grid grid-cols-3 gap-6 text-center">
           {[
