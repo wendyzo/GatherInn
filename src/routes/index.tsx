@@ -67,6 +67,23 @@ const VENDORS_DATA = [
   },
 ];
 
+const RECOMMENDED_VENDORS = [
+  {
+    id: "av-solutions",
+    name: "AV Solutions Ltd",
+    role: "AV Crew",
+    reason: "Used by 4 societies for annual dinners",
+    email: "hello@avsolutions.co",
+  },
+  {
+    id: "campus-catering",
+    name: "Campus Catering Co.",
+    role: "Catering",
+    reason: "Recommended by 2 societies running similar events",
+    email: "events@campuscatering.com",
+  },
+];
+
 const ROLES_DATA = [
   { id: "president", name: "President", access: "Full access", members: 2, initials: ["PL", "QR"] },
   {
@@ -405,45 +422,29 @@ function TimelineSlide() {
 
 function VendorSlide() {
   const [openId, setOpenId] = useState<string | null>(null);
-  const vendor = VENDORS_DATA.find((v) => v.id === openId) ?? null;
+  const pastVendor = VENDORS_DATA.find((v) => v.id === openId) ?? null;
+  const recVendor = RECOMMENDED_VENDORS.find((v) => v.id === openId) ?? null;
+
+  const th = "px-4 py-3 text-left text-[10px] font-medium text-gray-400 uppercase tracking-wider";
 
   return (
     <div className="rounded-xl bg-white overflow-hidden" style={{ border: "0.5px solid #e8e8e8" }}>
-      <div
-        className="flex border-b border-gray-100 overflow-x-auto"
-        style={{ background: "rgba(0,0,0,0.015)" }}
-      >
-        {["Overview", "Timeline", "Stakeholders", "Files"].map((tab) => (
-          <button
-            key={tab}
-            className={`shrink-0 px-4 py-3 text-xs font-medium transition-colors ${
-              tab === "Stakeholders"
-                ? "-mb-px border-b-2 border-[#1a1a1a] bg-white text-[#1a1a1a]"
-                : "text-gray-400 hover:text-gray-600"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
       <div className="flex">
         <div className="flex-1 min-w-0 overflow-x-auto">
+          {/* Your vendors */}
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+              Your vendors
+            </p>
+            <span className="text-[10px] text-gray-300">{VENDORS_DATA.length} contacts</span>
+          </div>
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-100">
-                <th className="px-4 py-3 text-left text-[10px] font-medium text-gray-400 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-4 py-3 text-left text-[10px] font-medium text-gray-400 uppercase tracking-wider">
-                  Role
-                </th>
-                <th className="hidden md:table-cell px-4 py-3 text-left text-[10px] font-medium text-gray-400 uppercase tracking-wider">
-                  Last Event
-                </th>
-                <th className="hidden lg:table-cell px-4 py-3 text-left text-[10px] font-medium text-gray-400 uppercase tracking-wider">
-                  Contact
-                </th>
+                <th className={th}>Name</th>
+                <th className={th}>Role</th>
+                <th className={`hidden md:table-cell ${th}`}>Last event</th>
+                <th className={th}>Rating</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -451,9 +452,7 @@ function VendorSlide() {
               {VENDORS_DATA.map((v) => (
                 <tr
                   key={v.id}
-                  className={`border-t border-gray-50 transition-colors ${
-                    openId === v.id ? "bg-gray-50" : "hover:bg-gray-50/60"
-                  }`}
+                  className={`border-t border-gray-50 transition-colors ${openId === v.id ? "bg-gray-50" : "hover:bg-gray-50/60"}`}
                 >
                   <td className="px-4 py-3.5 text-sm font-medium text-[#1a1a1a] whitespace-nowrap">
                     {v.name}
@@ -462,8 +461,16 @@ function VendorSlide() {
                   <td className="hidden md:table-cell px-4 py-3.5 text-sm text-gray-400 whitespace-nowrap">
                     {v.lastEvent}
                   </td>
-                  <td className="hidden lg:table-cell px-4 py-3.5 text-xs text-gray-400 whitespace-nowrap">
-                    {v.email}
+                  <td className="px-4 py-3.5">
+                    <div className="flex gap-0.5">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <div
+                          key={i}
+                          className="h-1.5 w-1.5 rounded-full"
+                          style={{ background: i <= v.rating ? "#EF9F27" : "#e5e7eb" }}
+                        />
+                      ))}
+                    </div>
                   </td>
                   <td className="px-4 py-3.5 text-right">
                     <button
@@ -477,6 +484,56 @@ function VendorSlide() {
               ))}
             </tbody>
           </table>
+
+          {/* Recommended vendors */}
+          <div
+            className="px-4 py-3 border-t border-b border-gray-100 flex items-center justify-between"
+            style={{ background: "rgba(239,159,39,0.03)" }}
+          >
+            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+              Recommended
+            </p>
+            <span
+              className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+              style={{ background: "rgba(239,159,39,0.1)", color: "#EF9F27" }}
+            >
+              {RECOMMENDED_VENDORS.length} new
+            </span>
+          </div>
+          <table className="w-full">
+            <tbody>
+              {RECOMMENDED_VENDORS.map((v) => (
+                <tr
+                  key={v.id}
+                  className={`border-t border-gray-50 transition-colors ${openId === v.id ? "bg-gray-50" : "hover:bg-gray-50/60"}`}
+                >
+                  <td className="px-4 py-3.5 text-sm font-medium text-[#1a1a1a] whitespace-nowrap">
+                    {v.name}
+                  </td>
+                  <td className="px-4 py-3.5 text-sm text-gray-400 whitespace-nowrap">{v.role}</td>
+                  <td className="hidden md:table-cell px-4 py-3.5 text-xs text-gray-400">
+                    {v.reason}
+                  </td>
+                  <td className="px-4 py-3.5">
+                    <span
+                      className="text-[9px] px-1.5 py-0.5 rounded font-medium whitespace-nowrap"
+                      style={{ background: "rgba(239,159,39,0.1)", color: "#EF9F27" }}
+                    >
+                      Recommended
+                    </span>
+                  </td>
+                  <td className="px-4 py-3.5 text-right">
+                    <button
+                      onClick={() => setOpenId(openId === v.id ? null : v.id)}
+                      className="text-xs font-medium text-gray-400 hover:text-[#1a1a1a] transition-colors whitespace-nowrap"
+                    >
+                      {openId === v.id ? "Close ×" : "Get in touch →"}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         {/* Side panel */}
@@ -484,12 +541,12 @@ function VendorSlide() {
           className="overflow-hidden shrink-0 border-l border-gray-100 transition-all duration-300"
           style={{ width: openId ? "224px" : "0px" }}
         >
-          {vendor && (
+          {pastVendor && (
             <div className="w-56 p-5 flex flex-col gap-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[#1a1a1a]">{vendor.name}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{vendor.role}</p>
+                  <p className="text-sm font-medium text-[#1a1a1a]">{pastVendor.name}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{pastVendor.role}</p>
                 </div>
                 <button
                   onClick={() => setOpenId(null)}
@@ -498,7 +555,6 @@ function VendorSlide() {
                   <X className="h-4 w-4" />
                 </button>
               </div>
-
               <div>
                 <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1.5">
                   Rating
@@ -509,23 +565,55 @@ function VendorSlide() {
                       key={i}
                       className="h-3.5 w-3.5"
                       style={{
-                        fill: i <= vendor.rating ? "#EF9F27" : "transparent",
-                        color: i <= vendor.rating ? "#EF9F27" : "#e5e7eb",
+                        fill: i <= pastVendor.rating ? "#EF9F27" : "transparent",
+                        color: i <= pastVendor.rating ? "#EF9F27" : "#e5e7eb",
                       }}
                     />
                   ))}
                 </div>
               </div>
-
               <div>
                 <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1.5">
-                  Notes — {vendor.lastEvent}
+                  Notes — {pastVendor.lastEvent}
                 </p>
-                <p className="text-xs text-[#1a1a1a] leading-relaxed">{vendor.notes}</p>
+                <p className="text-xs text-[#1a1a1a] leading-relaxed">{pastVendor.notes}</p>
               </div>
-
               <button className="w-full rounded-lg bg-[#1a1a1a] text-white text-xs font-medium py-2.5 hover:opacity-80 transition-opacity">
                 Re-invite to event
+              </button>
+            </div>
+          )}
+          {recVendor && (
+            <div className="w-56 p-5 flex flex-col gap-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm font-medium text-[#1a1a1a]">{recVendor.name}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{recVendor.role}</p>
+                </div>
+                <button
+                  onClick={() => setOpenId(null)}
+                  className="text-gray-300 hover:text-gray-500 transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div>
+                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                  Why recommended
+                </p>
+                <p className="text-xs text-[#1a1a1a] leading-relaxed">{recVendor.reason}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                  Contact
+                </p>
+                <p className="text-xs text-[#1a1a1a]">{recVendor.email}</p>
+              </div>
+              <button
+                className="w-full rounded-lg text-white text-xs font-medium py-2.5 hover:opacity-80 transition-opacity"
+                style={{ background: "#EF9F27" }}
+              >
+                Get in touch
               </button>
             </div>
           )}
