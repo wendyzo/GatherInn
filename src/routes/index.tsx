@@ -1,38 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowRight, X, Star, Plus, Copy, Users, AlertTriangle, Shield } from "lucide-react";
+import { ArrowRight, X, Star, Plus, Copy, Users, Shield, UserCheck } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 
 export const Route = createFileRoute("/")({ component: Landing });
 
 // ── Data ─────────────────────────────────────────────────────────
-
-const RISKS_DATA = [
-  {
-    id: "power",
-    severity: "red" as const,
-    text: "Stage B requires high-voltage power (unresolved 2023)",
-    note: "During Finals 2023, stage B tripped twice on standard 13A circuit. Facilities confirmed a dedicated 32A supply is needed. Not resolved before event ended.",
-    date: "Finals Night 2023",
-    flaggedBy: "James W.",
-  },
-  {
-    id: "catering",
-    severity: "amber" as const,
-    text: "Caterer confirmed late in 2023 — book by Week 6",
-    note: "The Feast Table sent written confirmation only 3 days before Gala 2023. Risk of last-minute no-show. Minimum 6-week lead time recommended.",
-    date: "Spring Gala 2023",
-    flaggedBy: "Sarah K.",
-  },
-  {
-    id: "venue",
-    severity: "green" as const,
-    text: "Venue deposit accepted bank transfer in past 2 years",
-    note: "City Hall venue processed BACS transfer within 2 working days for both Finals 2023 and Gala 2023. No issues with payment method.",
-    date: "Verified Oct 2023",
-    flaggedBy: "finance@society.ac.uk",
-  },
-];
 
 const VENDORS_DATA = [
   {
@@ -132,12 +105,6 @@ const DEFAULT_PERMISSIONS: Record<string, Record<string, boolean>> = {
     "Manage Vendors": false,
     "Manage Roles": false,
   },
-};
-
-const SEVERITY = {
-  red: { dot: "#E24B4A", bg: "rgba(226,75,74,0.07)" },
-  amber: { dot: "#EF9F27", bg: "rgba(239,159,39,0.07)" },
-  green: { dot: "#1D9E75", bg: "rgba(29,158,117,0.07)" },
 };
 
 // ── Hooks ─────────────────────────────────────────────────────────
@@ -623,55 +590,6 @@ function VendorSlide() {
   );
 }
 
-// ── Slide: Risk Alerts ────────────────────────────────────────────
-
-function RiskSlide() {
-  const [expanded, setExpanded] = useState<string | null>(null);
-
-  return (
-    <div className="rounded-xl bg-white overflow-hidden" style={{ border: "0.5px solid #e8e8e8" }}>
-      <div className="px-5 py-3.5 border-b border-gray-100">
-        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
-          Risk panel — Finals Night 2025
-        </p>
-      </div>
-      {RISKS_DATA.map((risk, i) => {
-        const s = SEVERITY[risk.severity];
-        const isOpen = expanded === risk.id;
-        return (
-          <div key={risk.id}>
-            <div
-              className={`flex items-start gap-3 px-5 py-4 ${i > 0 ? "border-t border-gray-100" : ""}`}
-              style={{ background: s.bg }}
-            >
-              <div className="mt-1.5 h-2 w-2 rounded-full shrink-0" style={{ background: s.dot }} />
-              <p className="flex-1 min-w-0 text-sm text-[#1a1a1a] leading-snug">{risk.text}</p>
-              <button
-                onClick={() => setExpanded(isOpen ? null : risk.id)}
-                className="ml-2 shrink-0 text-xs font-medium text-gray-400 hover:text-[#1a1a1a] transition-colors whitespace-nowrap"
-              >
-                {isOpen ? "Hide" : "View details"}
-              </button>
-            </div>
-            <div
-              className="overflow-hidden"
-              style={{ maxHeight: isOpen ? "240px" : "0px", transition: "max-height 0.3s ease" }}
-            >
-              <div className="px-5 py-4 bg-gray-50 border-t border-gray-100 space-y-3">
-                <p className="text-sm text-[#1a1a1a] leading-relaxed">{risk.note}</p>
-                <div className="flex flex-wrap gap-5 text-xs text-gray-400">
-                  <span>{risk.date}</span>
-                  <span>Flagged by {risk.flaggedBy}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 // ── Slide: Roles ──────────────────────────────────────────────────
 
 function RolesSlide() {
@@ -787,6 +705,133 @@ function RolesSlide() {
   );
 }
 
+// ── Slide: Handover ───────────────────────────────────────────────
+
+const HANDOVER_ITEMS = [
+  { label: "3 runsheet templates" },
+  { label: "8 vendor contacts" },
+  { label: "12 risk flags" },
+  { label: "3 role templates" },
+];
+
+const HANDOVER_EVENTS = [
+  { name: "Finals Night 2024", date: "Nov 2024" },
+  { name: "Spring Gala 2024", date: "Apr 2024" },
+  { name: "Finals Night 2023", date: "Nov 2023" },
+];
+
+function HandoverSlide() {
+  const [transferred, setTransferred] = useState(false);
+
+  return (
+    <div className="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-start">
+      {/* Left card — outgoing exec */}
+      <div
+        className="rounded-xl bg-white overflow-hidden"
+        style={{ border: "0.5px solid #e8e8e8" }}
+      >
+        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+            Outgoing exec
+          </p>
+          <span
+            className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+            style={{ background: "rgba(226,75,74,0.08)", color: "#E24B4A" }}
+          >
+            Graduating
+          </span>
+        </div>
+        <div className="px-4 py-3 border-b border-gray-100">
+          <p className="text-sm font-medium text-[#1a1a1a]">Alex Chen</p>
+          <p className="text-xs text-gray-400 mt-0.5">President · 2 years</p>
+        </div>
+        <div className="px-4 py-4 space-y-3">
+          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">
+            Knowledge to transfer
+          </p>
+          {HANDOVER_ITEMS.map((item) => (
+            <div key={item.label} className="flex items-center gap-2.5">
+              <div
+                className="h-1.5 w-1.5 rounded-full shrink-0"
+                style={{ background: "#1D9E75" }}
+              />
+              <span className="text-sm text-[#1a1a1a]">{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Middle — transfer button */}
+      <div className="flex md:flex-col items-center justify-center py-3 md:pt-28">
+        <button
+          onClick={() => setTransferred((v) => !v)}
+          className="inline-flex items-center gap-1.5 rounded-lg bg-[#1a1a1a] px-3 py-2 text-[11px] font-medium text-white hover:opacity-80 transition-opacity whitespace-nowrap"
+        >
+          {transferred ? "Reset" : "Transfer"} <ArrowRight className="h-3 w-3" />
+        </button>
+      </div>
+
+      {/* Right card — incoming exec */}
+      <div
+        className="rounded-xl bg-white overflow-hidden transition-all duration-300"
+        style={{ border: transferred ? "0.5px solid #1D9E75" : "0.5px solid #e8e8e8" }}
+      >
+        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+          {transferred ? (
+            <span
+              className="text-[10px] font-medium px-2 py-0.5 rounded-full uppercase tracking-widest"
+              style={{ background: "rgba(29,158,117,0.1)", color: "#1D9E75" }}
+            >
+              Memory received
+            </span>
+          ) : (
+            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+              Incoming exec
+            </p>
+          )}
+        </div>
+        <div className="px-4 py-3 border-b border-gray-100">
+          <p className="text-sm font-medium text-[#1a1a1a]">Jamie Liu</p>
+          <p className="text-xs text-gray-400 mt-0.5">President-elect · Year 2</p>
+        </div>
+        <div className="px-4 py-4 space-y-3">
+          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">
+            Past events
+          </p>
+          {transferred
+            ? HANDOVER_EVENTS.map((ev, i) => (
+                <div
+                  key={ev.name}
+                  className="flex items-center justify-between transition-all duration-300"
+                  style={{ transitionDelay: `${i * 80}ms`, opacity: 1 }}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      className="h-1.5 w-1.5 rounded-full shrink-0"
+                      style={{ background: "#1D9E75" }}
+                    />
+                    <div>
+                      <p className="text-sm text-[#1a1a1a]">{ev.name}</p>
+                      <p className="text-xs text-gray-400">{ev.date}</p>
+                    </div>
+                  </div>
+                  <button className="text-xs font-medium text-gray-400 hover:text-[#1a1a1a] transition-colors whitespace-nowrap">
+                    Clone →
+                  </button>
+                </div>
+              ))
+            : HANDOVER_EVENTS.map((ev) => (
+                <div key={ev.name} className="flex items-center gap-2.5">
+                  <div className="h-1.5 w-1.5 rounded-full shrink-0 bg-gray-200" />
+                  <p className="text-sm text-gray-300">—</p>
+                </div>
+              ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Stats row ─────────────────────────────────────────────────────
 
 function StatsSection() {
@@ -850,20 +895,20 @@ const FEATURE_TABS = [
     Demo: VendorSlide,
   },
   {
-    id: "risk",
-    Icon: AlertTriangle,
-    label: "Risk Alerts",
-    heading: "Risks from last year.",
-    sub: "Surfaced before they repeat — flagged, dated, and attributed.",
-    Demo: RiskSlide,
-  },
-  {
     id: "roles",
     Icon: Shield,
     label: "Roles",
     heading: "Set it once.",
     sub: "Access follows the role, not the person. Granted the moment someone joins.",
     Demo: RolesSlide,
+  },
+  {
+    id: "handover",
+    Icon: UserCheck,
+    label: "Handover",
+    heading: "Nothing lost at handover.",
+    sub: "Every runsheet, vendor, and risk — ready for the next exec from day one.",
+    Demo: HandoverSlide,
   },
 ];
 
