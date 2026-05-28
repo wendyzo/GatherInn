@@ -184,10 +184,6 @@ function TimelineSlide() {
     if (converted) window.dispatchEvent(new CustomEvent("blueprint:converted"));
   }, [converted]);
 
-  const rowsCount = useCountUp(8, converted);
-  const vendorsCount = useCountUp(3, converted);
-  const risksCount = useCountUp(2, converted);
-
   const pastRows = [
     { time: "07:30", activity: "Welcome address", duration: 12, overran: true },
     { time: "07:42", activity: "Program Part 1", duration: 45, overran: false },
@@ -404,26 +400,6 @@ function TimelineSlide() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Stats — count up on convert */}
-      <div
-        className={`grid grid-cols-3 gap-3 transition-all duration-300 ${matched ? "" : "opacity-30 pointer-events-none select-none"}`}
-      >
-        {[
-          { value: rowsCount, label: "runsheet rows filled" },
-          { value: vendorsCount, label: "vendors re-attached" },
-          { value: risksCount, label: "risks pre-flagged" },
-        ].map(({ value, label }) => (
-          <div
-            key={label}
-            className="rounded-xl bg-white px-3 py-4 text-center"
-            style={{ border: "0.5px solid #e8e8e8" }}
-          >
-            <p className="text-2xl font-medium tabular-nums text-[#1a1a1a]">{value}</p>
-            <p className="mt-1 text-[10px] text-gray-400 leading-tight">{label}</p>
-          </div>
-        ))}
       </div>
     </div>
   );
