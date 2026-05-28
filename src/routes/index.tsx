@@ -17,25 +17,6 @@ export const Route = createFileRoute("/")({ component: Landing });
 
 // ── Data ─────────────────────────────────────────────────────────
 
-const SOURCE_TASKS = [
-  { task: "Venue Booking", owner: "Sarah", due: "Oct 3" },
-  { task: "AV Equipment", owner: "James", due: "Oct 5" },
-  { task: "Catering Brief", owner: "Sarah", due: "Oct 10" },
-  { task: "Tech Rehearsal", owner: "David", due: "Oct 14" },
-  { task: "Event Night", owner: "All crew", due: "Oct 15" },
-];
-
-const GANTT_TASKS = [
-  { name: "Venue booking", start: 0, width: 18 },
-  { name: "Sponsor outreach", start: 10, width: 22 },
-  { name: "Invite list", start: 28, width: 24 },
-  { name: "AV setup", start: 50, width: 16 },
-  { name: "Tech rehearsal", start: 68, width: 12 },
-  { name: "Event day", start: 82, width: 5 },
-  { name: "Debrief", start: 89, width: 10 },
-];
-
-const WEEK_LOAD = [1, 2, 3, 4, 3, 5, 7, 8, 5, 2];
 
 const RISKS_DATA = [
   {
@@ -182,61 +163,128 @@ function HeroSection() {
   );
 }
 
-// ── Slide: Timeline ───────────────────────────────────────────────
+// ── Slide: Past event → Blueprint ─────────────────────────────────
+
+const PAST_EVENT = {
+  name: "Finals Night 2024",
+  date: "15 Oct 2024",
+  tasks: [
+    { task: "Venue booking", offset: "−12 days" },
+    { task: "AV equipment", offset: "−10 days" },
+    { task: "Catering brief", offset: "−5 days" },
+    { task: "Tech rehearsal", offset: "−1 day" },
+    { task: "Event night", offset: "Day 0" },
+  ],
+  vendors: 3,
+  risks: 2,
+};
+
+const BLUEPRINT = {
+  name: "Finals Night 2025",
+  date: "14 Oct 2025",
+  tasks: [
+    { task: "Venue booking", due: "2 Oct" },
+    { task: "AV equipment", due: "4 Oct" },
+    { task: "Catering brief", due: "9 Oct" },
+    { task: "Tech rehearsal", due: "13 Oct" },
+    { task: "Event night", due: "14 Oct" },
+  ],
+};
 
 function TimelineSlide() {
-  const maxLoad = Math.max(...WEEK_LOAD);
-  return (
-    <div className="space-y-8">
-      <div>
-        <p className="mb-4 text-[10px] font-medium text-gray-400 uppercase tracking-widest">
-          Task schedule — Finals Night 2025
-        </p>
-        <div className="space-y-2.5">
-          {GANTT_TASKS.map((task, i) => (
-            <div key={task.name} className="flex items-center gap-3">
-              <span className="w-28 shrink-0 text-right text-[11px] text-gray-400 truncate">
-                {task.name}
-              </span>
-              <div className="relative flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
-                <div
-                  className="absolute h-full rounded-sm bg-[#1a1a1a]"
-                  style={{ left: `${task.start}%`, width: `${task.width}%`, opacity: 1 - i * 0.08 }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+  const [converted, setConverted] = useState(false);
 
-      <div>
-        <p className="mb-4 text-[10px] font-medium text-gray-400 uppercase tracking-widest">
-          Task density by week
-        </p>
-        <div className="flex items-end gap-1.5 h-20">
-          {WEEK_LOAD.map((load, i) => (
-            <div key={i} className="flex-1 flex flex-col justify-end">
-              <div
-                className="w-full rounded-t-sm bg-[#1a1a1a]"
-                style={{
-                  height: `${(load / maxLoad) * 100}%`,
-                  opacity: 0.25 + (load / maxLoad) * 0.75,
-                }}
-              />
+  return (
+    <div className="space-y-5">
+      <div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 items-stretch">
+        {/* Past event */}
+        <div
+          className="rounded-xl bg-white overflow-hidden"
+          style={{ border: "0.5px solid #e8e8e8" }}
+        >
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+              Past event
+            </p>
+            <span className="text-[10px] text-gray-400">{PAST_EVENT.date}</span>
+          </div>
+          <div className="px-4 py-3">
+            <p className="text-sm font-medium text-[#1a1a1a]">{PAST_EVENT.name}</p>
+            <div className="mt-3 space-y-1.5">
+              {PAST_EVENT.tasks.map((t) => (
+                <div key={t.task} className="flex items-center justify-between gap-3">
+                  <span className="text-xs text-[#1a1a1a] truncate">{t.task}</span>
+                  <span className="text-[10px] text-gray-400 shrink-0">{t.offset}</span>
+                </div>
+              ))}
             </div>
-          ))}
+            <div className="mt-3 pt-3 border-t border-gray-100 flex gap-4 text-[10px] text-gray-400">
+              <span>{PAST_EVENT.vendors} vendors</span>
+              <span>{PAST_EVENT.risks} risks logged</span>
+            </div>
+          </div>
         </div>
-        <div className="flex justify-between mt-1.5">
-          <span className="text-[10px] text-gray-400">10 wks out</span>
-          <span className="text-[10px] text-gray-400">Event day</span>
+
+        {/* Convert button */}
+        <div className="flex md:flex-col items-center justify-center gap-2">
+          <button
+            onClick={() => setConverted((v) => !v)}
+            className="inline-flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-3 py-2 text-[11px] font-medium text-white hover:opacity-80 transition-opacity whitespace-nowrap"
+          >
+            {converted ? "Reset" : "Convert"} <ArrowRight className="h-3 w-3" />
+          </button>
+          <span className="text-[10px] text-gray-400">Clone &amp; shift</span>
+        </div>
+
+        {/* Blueprint */}
+        <div
+          className="rounded-xl overflow-hidden transition-all duration-500"
+          style={{
+            border: "0.5px solid #e8e8e8",
+            background: converted ? "#ffffff" : "rgba(0,0,0,0.02)",
+            opacity: converted ? 1 : 0.55,
+          }}
+        >
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+            <p className="text-[10px] font-medium text-[#1a1a1a] uppercase tracking-widest">
+              New blueprint
+            </p>
+            <span className="text-[10px] text-gray-400">{BLUEPRINT.date}</span>
+          </div>
+          <div className="px-4 py-3">
+            <p className="text-sm font-medium text-[#1a1a1a]">{BLUEPRINT.name}</p>
+            <div className="mt-3 space-y-1.5">
+              {BLUEPRINT.tasks.map((t, i) => (
+                <div
+                  key={t.task}
+                  className="flex items-center justify-between gap-3 transition-all"
+                  style={{
+                    transitionDelay: `${i * 60}ms`,
+                    opacity: converted ? 1 : 0.4,
+                    transform: converted ? "translateX(0)" : "translateX(-4px)",
+                  }}
+                >
+                  <span className="text-xs text-[#1a1a1a] truncate flex items-center gap-1.5">
+                    {converted && <Check className="h-3 w-3 text-[#1D9E75]" />}
+                    {t.task}
+                  </span>
+                  <span className="text-[10px] text-gray-400 shrink-0">{t.due}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 pt-3 border-t border-gray-100 flex gap-4 text-[10px] text-gray-400">
+              <span>Vendors carried over</span>
+              <span>Risks pre-flagged</span>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
         {[
-          { value: "28", label: "tasks auto-scheduled" },
-          { value: "7", label: "stakeholders notified" },
-          { value: "0", label: "conflicts detected" },
+          { value: "5", label: "tasks auto-shifted" },
+          { value: "3", label: "vendors re-attached" },
+          { value: "2", label: "risks pre-flagged" },
         ].map(({ value, label }) => (
           <div
             key={label}
@@ -554,11 +602,11 @@ function RolesSlide() {
 
 const FEATURE_TABS = [
   {
-    id: "timeline",
+    id: "blueprint",
     Icon: Clock,
-    label: "Timeline",
-    heading: "Every deadline, mapped.",
-    sub: "Clone a past blueprint and watch every task auto-shift to your new date.",
+    label: "Blueprint",
+    heading: "Past event → New blueprint.",
+    sub: "One click clones a past event into a dated blueprint — tasks shifted, vendors re-attached, risks pre-flagged.",
     Demo: TimelineSlide,
   },
   {
@@ -588,7 +636,7 @@ const FEATURE_TABS = [
 ];
 
 function FeatureSlideshow() {
-  const [active, setActive] = useState("timeline");
+  const [active, setActive] = useState("blueprint");
   const [visible, setVisible] = useState(true);
 
   const handleSelect = (id: string) => {
