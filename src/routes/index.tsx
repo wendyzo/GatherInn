@@ -148,7 +148,7 @@ function HeroSection() {
         Plan events without starting over.
       </h1>
       <p className="mt-4 text-base text-gray-500 max-w-xl mx-auto">
-        Inherit past timelines, vendors, and risks.
+        Inherit past runsheets, vendors, and risks.
       </p>
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <Link
@@ -1089,7 +1089,6 @@ function Landing() {
           >
             Open your society <ArrowRight className="h-5 w-5" />
           </Link>
-          <p className="mt-3 text-sm text-gray-400">Free for student societies</p>
         </div>
       </section>
     </div>
