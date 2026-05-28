@@ -845,10 +845,11 @@ function HandoverSlide() {
 // ── Slide: Experience ─────────────────────────────────────────────
 
 const EXPERIENCE_BULLETS = [
-  "420 attendees",
-  "11 vendors coordinated",
-  "3 risks flagged and resolved",
-  "Runsheet delivered on time",
+  "280 participants across 56 teams supported",
+  "8 technical workshops planned and delivered",
+  "42 mentor check-ins facilitated",
+  "12 sponsors and judges coordinated",
+  "24-hour event delivered on schedule",
 ];
 
 function ExperienceSlide() {
@@ -862,11 +863,11 @@ function ExperienceSlide() {
         <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-4">
           Traditional CV
         </p>
-        <p className="text-sm font-medium text-gray-600">Event Executive</p>
+        <p className="text-sm font-medium text-gray-600">Hackathon Organiser</p>
         <p className="mt-2 text-sm text-gray-500 leading-snug">
           UNSW Computer Science &amp; Engineering Society
         </p>
-        <p className="mt-2 text-sm text-gray-400">Feb 2024 – Nov 2024</p>
+        <p className="mt-2 text-sm text-gray-400">Aug 2024 – Oct 2024</p>
       </div>
 
       {/* Right — verified GatherInn record */}
@@ -887,8 +888,8 @@ function ExperienceSlide() {
         </div>
         <div className="px-5 py-5 flex flex-col gap-4 flex-1">
           <div>
-            <p className="text-sm font-medium text-[#1a1a1a]">CSESoc Annual Gala 2024</p>
-            <p className="text-xs text-gray-400 mt-0.5">Event Executive · CSESoc UNSW</p>
+            <p className="text-sm font-medium text-[#1a1a1a]">CSESoc Hackathon 2024</p>
+            <p className="text-xs text-gray-400 mt-0.5">Lead Organiser · CSESoc UNSW</p>
           </div>
           <div className="space-y-2.5">
             {EXPERIENCE_BULLETS.map((item) => (
@@ -903,7 +904,7 @@ function ExperienceSlide() {
           </div>
           <div className="mt-auto pt-3 border-t border-gray-100 flex items-center gap-1.5">
             <span className="text-xs text-gray-400">
-              Verified by Ethan Park, President · Nov 2024
+              Verified by Ethan Park, President · Oct 2024
             </span>
             <span className="text-xs font-semibold" style={{ color: "#1D9E75" }}>
               ✓
