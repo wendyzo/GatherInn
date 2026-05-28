@@ -927,6 +927,8 @@ function FeatureSlideshow() {
           <current.Demo />
         </div>
       </section>
+
+      {active === "blueprint" && <StatsSection />}
     </>
   );
 }
@@ -950,7 +952,6 @@ function Landing() {
 
       <HeroSection />
       <FeatureSlideshow />
-      <StatsSection />
 
       <section className="py-24">
         <div className="max-w-6xl mx-auto px-6 text-center">
