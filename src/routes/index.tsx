@@ -181,7 +181,7 @@ function TimelineSlide() {
   const [converted, setConverted] = useState(false);
 
   useEffect(() => {
-    if (converted) window.dispatchEvent(new CustomEvent("blueprint:converted"));
+    window.dispatchEvent(new CustomEvent(converted ? "blueprint:converted" : "blueprint:reset"));
   }, [converted]);
 
   const pastRows = [
@@ -709,9 +709,14 @@ function StatsSection() {
   const [active, setActive] = useState(false);
 
   useEffect(() => {
-    const handler = () => setActive(true);
-    window.addEventListener("blueprint:converted", handler);
-    return () => window.removeEventListener("blueprint:converted", handler);
+    const onConvert = () => setActive(true);
+    const onReset = () => setActive(false);
+    window.addEventListener("blueprint:converted", onConvert);
+    window.addEventListener("blueprint:reset", onReset);
+    return () => {
+      window.removeEventListener("blueprint:converted", onConvert);
+      window.removeEventListener("blueprint:reset", onReset);
+    };
   }, []);
 
   const vendorCount = useCountUp(8, active);
