@@ -17,7 +17,6 @@ export const Route = createFileRoute("/")({ component: Landing });
 
 // ── Data ─────────────────────────────────────────────────────────
 
-
 const RISKS_DATA = [
   {
     id: "power",
