@@ -2,7 +2,7 @@
 
 > Society event management platform for university clubs and organisations.
 
-**[gatherinn.lovable.app](https://gatherinn.lovable.app)** · [Demo](https://gatherinn.lovable.app/demo) · [Sign up](https://gatherinn.lovable.app/login)
+**[gatherinn.lovable.app](https://gatherinn.lovable.app)** · [Sign up](https://gatherinn.lovable.app/login)
 
 [![CI](https://github.com/wendyzo/GatherInn/actions/workflows/ci.yml/badge.svg)](https://github.com/wendyzo/GatherInn/actions/workflows/ci.yml)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)
@@ -39,7 +39,11 @@ Long term, GatherInn aims to be the standard platform university society uses to
 
 ## Features
 
-- **Interactive landing page** — four live feature demos (Blueprint, Vendors, Risk Alerts, Roles) showing real UI interactions; no prose. A stats row (vendors recommended, societies to connect, risks surfaced) counts up from zero only after the user tries the Blueprint demo.
+- **Interactive landing page** — four live feature demos showing real UI interactions with no prose:
+  - **Blueprint** — type an event name, find the closest past match (e.g. "Finals Night 2023 · 94% match"), convert it into a pre-filled runsheet with inline annotations. A stats row counts up from zero only after the user converts a blueprint.
+  - **Vendors** — society's past vendor table (ratings, notes, re-invite) alongside recommended vendors from similar societies, with a sliding detail panel.
+  - **Roles** — role list with per-role permission toggles and member management; access is granted the moment someone joins a role.
+  - **Experience** — side-by-side contrast of a traditional CV line vs a verified GatherInn record (attendees, workshops delivered, mentor sessions, sponsors coordinated, verified by society president).
 - **Smart runsheet** — type an event name, GatherInn finds the closest past event your society has run (e.g. "Finals Night 2023 · 94% match · 5 shared segments"), then converts it into a pre-filled blueprint. Durations are adjusted from historical data with inline annotations ("Averaged 11 min across 3 events — cap at 5").
 - **Dashboard** — contribution calendar, society overview, and event history across all your organisations
 - **Society management** — create societies, assign roles (Executive, Project Owner, Member), and manage membership
@@ -129,7 +133,6 @@ GatherInn/
 │   │   └── __tests__/          # Unit tests
 │   └── routes/
 │       ├── login.tsx           # Login page
-│       ├── demo.tsx            # Public demo page
 │       └── _authenticated/
 │           ├── dashboard.tsx           # Portfolio & societies overview
 │           ├── societies.$societyId.tsx  # Society detail & event list
