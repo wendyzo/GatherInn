@@ -602,11 +602,11 @@ function RolesSlide() {
 
 const FEATURE_TABS = [
   {
-    id: "timeline",
+    id: "blueprint",
     Icon: Clock,
-    label: "Timeline",
-    heading: "Every deadline, mapped.",
-    sub: "Clone a past blueprint and watch every task auto-shift to your new date.",
+    label: "Blueprint",
+    heading: "Past event → New blueprint.",
+    sub: "One click clones a past event into a dated blueprint — tasks shifted, vendors re-attached, risks pre-flagged.",
     Demo: TimelineSlide,
   },
   {
