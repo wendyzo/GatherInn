@@ -307,11 +307,7 @@ function TimelineSlide() {
         </div>
 
         {/* Connecting arrow + convert */}
-        <div className="flex md:flex-col items-center justify-center gap-2 py-3 md:pt-24">
-          <ArrowRight
-            className="hidden md:block h-4 w-4 animate-pulse"
-            style={{ color: "#EF9F27" }}
-          />
+        <div className="flex md:flex-col items-center justify-center py-3 md:pt-28">
           <button
             onClick={() => setConverted((v) => !v)}
             className="inline-flex items-center gap-1.5 rounded-lg bg-[#1a1a1a] px-3 py-2 text-[11px] font-medium text-white hover:opacity-80 transition-opacity whitespace-nowrap"
