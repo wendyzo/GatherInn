@@ -859,14 +859,14 @@ function ExperienceSlide() {
         className="rounded-xl overflow-hidden flex flex-col justify-center px-8 py-10"
         style={{ background: "#f7f7f7", border: "0.5px solid #e8e8e8" }}
       >
-        <p className="text-[10px] font-medium text-gray-300 uppercase tracking-widest mb-4">
+        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-4">
           Traditional CV
         </p>
-        <p className="text-sm text-gray-400 font-medium">Event Executive</p>
-        <p className="mt-2 text-sm text-gray-400 leading-snug">
+        <p className="text-sm font-medium text-gray-600">Event Executive</p>
+        <p className="mt-2 text-sm text-gray-500 leading-snug">
           UNSW Computer Science &amp; Engineering Society
         </p>
-        <p className="mt-2 text-sm text-gray-300">Feb 2024 – Nov 2024</p>
+        <p className="mt-2 text-sm text-gray-400">Feb 2024 – Nov 2024</p>
       </div>
 
       {/* Right — verified GatherInn record */}
@@ -1020,15 +1020,15 @@ function FeatureSlideshow() {
               <button
                 key={id}
                 onClick={() => handleSelect(id)}
-                className={`flex items-center justify-center gap-2.5 py-5 transition-colors ${
+                className={`flex items-center justify-center gap-2.5 py-5 transition-colors border-b-2 ${
                   i > 0 ? "border-l border-gray-100" : ""
-                } ${active === id ? "bg-gray-50" : "hover:bg-gray-50/50"}`}
+                } ${active === id ? "bg-gray-50 border-b-[#1a1a1a]" : "border-b-transparent hover:bg-gray-50/50"}`}
               >
                 <Icon
-                  className={`h-4 w-4 transition-colors ${active === id ? "text-[#1a1a1a]" : "text-gray-400"}`}
+                  className={`h-4 w-4 transition-colors ${active === id ? "text-[#1a1a1a]" : "text-gray-300"}`}
                 />
                 <span
-                  className={`text-sm font-medium transition-colors ${active === id ? "text-[#1a1a1a]" : "text-gray-400"}`}
+                  className={`text-sm font-medium transition-colors ${active === id ? "text-[#1a1a1a]" : "text-gray-300"}`}
                 >
                   {label}
                 </span>
