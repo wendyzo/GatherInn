@@ -1,6 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowRight, X, Star, Plus, Copy, Users, Shield, UserCheck } from "lucide-react";
+import {
+  ArrowRight,
+  X,
+  Star,
+  Plus,
+  Copy,
+  Users,
+  Shield,
+  UserCheck,
+  BadgeCheck,
+} from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 
 export const Route = createFileRoute("/")({ component: Landing });
@@ -832,6 +842,62 @@ function HandoverSlide() {
   );
 }
 
+// ── Slide: Experience ─────────────────────────────────────────────
+
+const EXPERIENCE_BULLETS = [
+  "420 attendees",
+  "11 vendors coordinated",
+  "3 risks flagged and resolved",
+  "Runsheet delivered on time",
+];
+
+function ExperienceSlide() {
+  return (
+    <div className="rounded-xl bg-white overflow-hidden" style={{ border: "0.5px solid #e8e8e8" }}>
+      <div className="grid grid-cols-2">
+        {/* Left — bare CV line */}
+        <div
+          className="px-8 py-10 flex flex-col justify-center"
+          style={{ borderRight: "0.5px solid #e8e8e8" }}
+        >
+          <p className="text-sm text-gray-300">Event Executive</p>
+          <p className="mt-1.5 text-sm text-gray-300 leading-snug">
+            UNSW Computer Science &amp; Engineering Society
+          </p>
+          <p className="mt-1.5 text-sm text-gray-300">Feb 2024 – Nov 2024</p>
+        </div>
+
+        {/* Right — verified record */}
+        <div className="px-6 py-8 flex flex-col gap-4">
+          <div>
+            <p className="text-sm font-medium text-[#1a1a1a]">CSESoc Annual Gala 2024</p>
+            <p className="text-xs text-gray-400 mt-0.5">Event Executive · CSESoc UNSW</p>
+          </div>
+          <div className="space-y-2.5">
+            {EXPERIENCE_BULLETS.map((item) => (
+              <div key={item} className="flex items-center gap-2.5">
+                <div
+                  className="h-1.5 w-1.5 rounded-full shrink-0"
+                  style={{ background: "#1D9E75" }}
+                />
+                <span className="text-sm text-[#1a1a1a]">{item}</span>
+              </div>
+            ))}
+          </div>
+          <div className="pt-3 border-t border-gray-100 flex items-center gap-1.5">
+            <span className="text-xs text-gray-400">
+              Verified by Ethan Park, President · Nov 2024
+            </span>
+            <span className="text-xs font-semibold" style={{ color: "#1D9E75" }}>
+              ✓
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Stats row ─────────────────────────────────────────────────────
 
 function StatsSection() {
@@ -903,12 +969,12 @@ const FEATURE_TABS = [
     Demo: RolesSlide,
   },
   {
-    id: "handover",
-    Icon: UserCheck,
-    label: "Handover",
-    heading: "Nothing lost at handover.",
-    sub: "Every runsheet, vendor, and risk — ready for the next exec from day one.",
-    Demo: HandoverSlide,
+    id: "experience",
+    Icon: BadgeCheck,
+    label: "Experience",
+    heading: "Anyone can list a title.",
+    sub: "GatherInn shows the proof.",
+    Demo: ExperienceSlide,
   },
 ];
 
