@@ -157,37 +157,27 @@ const SEVERITY = {
 
 function HeroSection() {
   return (
-    <section className="max-w-4xl mx-auto px-6 pt-24 pb-20 text-center">
-      <span
-        className="inline-block text-[10px] font-medium uppercase tracking-widest px-3 py-1 rounded-full mb-6"
-        style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
-      >
-        Society event memory
-      </span>
-      <h1 className="text-5xl md:text-6xl font-medium text-[#1a1a1a] leading-tight tracking-tight">
-        Plan your next event
-        <br />
-        without starting over.
+    <section className="max-w-3xl mx-auto px-6 pt-24 pb-20 text-center">
+      <h1 className="text-4xl md:text-5xl font-medium text-[#1a1a1a] leading-tight tracking-tight">
+        Plan events without starting over.
       </h1>
-      <p className="mt-5 text-lg text-gray-500 max-w-2xl mx-auto">
-        Inherit timelines, vendors, and risks from past events. Sign up free for your society and
-        plan your next one in minutes.
+      <p className="mt-4 text-base text-gray-500 max-w-xl mx-auto">
+        Inherit past timelines, vendors, and risks.
       </p>
-      <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <Link
           to="/login"
-          className="inline-flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-7 py-3.5 text-base font-medium text-white hover:opacity-80 transition-opacity"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-6 py-3 text-sm font-medium text-white hover:opacity-80 transition-opacity"
         >
-          Plan event <ArrowRight className="h-5 w-5" />
+          Start planning <ArrowRight className="h-4 w-4" />
         </Link>
         <Link
           to="/login"
-          className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-7 py-3.5 text-base font-medium text-[#1a1a1a] hover:bg-gray-50 transition-colors"
+          className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-6 py-3 text-sm font-medium text-[#1a1a1a] hover:bg-gray-50 transition-colors"
         >
-          Sign up free
+          Sign up
         </Link>
       </div>
-      <p className="mt-4 text-sm text-gray-400">Free for student societies · No card required</p>
     </section>
   );
 }
