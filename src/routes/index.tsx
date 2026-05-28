@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Check,
@@ -133,6 +133,28 @@ const SEVERITY = {
   green: { dot: "#1D9E75", bg: "rgba(29,158,117,0.07)" },
 };
 
+// ── Hooks ─────────────────────────────────────────────────────────
+
+function useCountUp(target: number, active: boolean, duration = 700) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!active) {
+      setCount(0);
+      return;
+    }
+    const steps = 20;
+    const stepMs = duration / steps;
+    let step = 0;
+    const timer = setInterval(() => {
+      step += 1;
+      setCount(Math.round((step / steps) * target));
+      if (step >= steps) clearInterval(timer);
+    }, stepMs);
+    return () => clearInterval(timer);
+  }, [active, target, duration]);
+  return count;
+}
+
 // ── Hero ──────────────────────────────────────────────────────────
 
 function HeroSection() {
@@ -177,6 +199,9 @@ const RUNSHEET_ROWS = [
 
 function TimelineSlide() {
   const [converted, setConverted] = useState(false);
+  const rowsCount = useCountUp(8, converted);
+  const vendorsCount = useCountUp(3, converted);
+  const risksCount = useCountUp(2, converted);
 
   const colHeader = (
     <div className="flex items-center gap-2 px-4 py-2 border-b border-gray-50">
@@ -264,10 +289,10 @@ function TimelineSlide() {
                 className="w-10 text-xs font-mono transition-all duration-300"
                 style={{
                   transitionDelay: `${i * 55}ms`,
-                  color: converted ? "#1a1a1a" : "#d1d5db",
+                  color: converted ? "#1a1a1a" : "#f0b04a",
                 }}
               >
-                {converted ? row.time : "—"}
+                {row.time}
               </span>
               <span
                 className="flex-1 text-xs truncate flex items-center gap-1 transition-all duration-300"
@@ -301,16 +326,16 @@ function TimelineSlide() {
 
       <div className="grid grid-cols-3 gap-3">
         {[
-          { value: "8", label: "runsheet rows filled" },
-          { value: "3", label: "vendors re-attached" },
-          { value: "2", label: "risks pre-flagged" },
+          { value: rowsCount, label: "runsheet rows filled" },
+          { value: vendorsCount, label: "vendors re-attached" },
+          { value: risksCount, label: "risks pre-flagged" },
         ].map(({ value, label }) => (
           <div
             key={label}
             className="rounded-xl bg-white px-3 py-4 text-center"
             style={{ border: "0.5px solid #e8e8e8" }}
           >
-            <p className="text-2xl font-medium text-[#1a1a1a]">{value}</p>
+            <p className="text-2xl font-medium tabular-nums text-[#1a1a1a]">{value}</p>
             <p className="mt-1 text-[10px] text-gray-400 leading-tight">{label}</p>
           </div>
         ))}
@@ -617,6 +642,41 @@ function RolesSlide() {
   );
 }
 
+// ── Stats row ─────────────────────────────────────────────────────
+
+function StatsSection() {
+  const [active, setActive] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setActive(true), 120);
+    return () => clearTimeout(t);
+  }, []);
+  const vendorCount = useCountUp(8, active);
+  const societyCount = useCountUp(5, active);
+  const riskCount = useCountUp(14, active);
+
+  return (
+    <section className="border-b border-gray-100 py-16">
+      <div className="max-w-3xl mx-auto px-6">
+        <div className="grid grid-cols-3 gap-6 text-center">
+          {[
+            { count: vendorCount, top: "vendors", bottom: "recommended" },
+            { count: societyCount, top: "societies", bottom: "suggested to connect" },
+            { count: riskCount, top: "risks", bottom: "surfaced from history" },
+          ].map(({ count, top, bottom }) => (
+            <div key={top}>
+              <p className="text-4xl md:text-5xl font-medium tabular-nums text-[#1a1a1a]">
+                {count}
+              </p>
+              <p className="mt-2 text-sm font-medium text-[#1a1a1a]">{top}</p>
+              <p className="text-sm text-gray-400">{bottom}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── Feature slideshow ─────────────────────────────────────────────
 
 const FEATURE_TABS = [
@@ -737,6 +797,7 @@ function Landing() {
 
       <HeroSection />
       <FeatureSlideshow />
+      <StatsSection />
 
       <section className="py-24">
         <div className="max-w-6xl mx-auto px-6 text-center">
