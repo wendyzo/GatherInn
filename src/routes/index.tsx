@@ -17,25 +17,6 @@ export const Route = createFileRoute("/")({ component: Landing });
 
 // ── Data ─────────────────────────────────────────────────────────
 
-const SOURCE_TASKS = [
-  { task: "Venue Booking", owner: "Sarah", due: "Oct 3" },
-  { task: "AV Equipment", owner: "James", due: "Oct 5" },
-  { task: "Catering Brief", owner: "Sarah", due: "Oct 10" },
-  { task: "Tech Rehearsal", owner: "David", due: "Oct 14" },
-  { task: "Event Night", owner: "All crew", due: "Oct 15" },
-];
-
-const GANTT_TASKS = [
-  { name: "Venue booking", start: 0, width: 18 },
-  { name: "Sponsor outreach", start: 10, width: 22 },
-  { name: "Invite list", start: 28, width: 24 },
-  { name: "AV setup", start: 50, width: 16 },
-  { name: "Tech rehearsal", start: 68, width: 12 },
-  { name: "Event day", start: 82, width: 5 },
-  { name: "Debrief", start: 89, width: 10 },
-];
-
-const WEEK_LOAD = [1, 2, 3, 4, 3, 5, 7, 8, 5, 2];
 
 const RISKS_DATA = [
   {
