@@ -1,16 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import {
-  ArrowRight,
-  Check,
-  X,
-  Star,
-  Plus,
-  Clock,
-  Users,
-  AlertTriangle,
-  Shield,
-} from "lucide-react";
+import { ArrowRight, X, Star, Plus, Clock, Users, AlertTriangle, Shield } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 
 export const Route = createFileRoute("/")({ component: Landing });
@@ -184,159 +174,130 @@ function HeroSection() {
   );
 }
 
-// ── Slide: Past event → Blueprint ─────────────────────────────────
-
-const RUNSHEET_ROWS = [
-  { activity: "Venue setup", time: "17:00", owner: "AV Lead" },
-  { activity: "Volunteer briefing", time: "18:00", owner: "Events Exec" },
-  { activity: "Doors open", time: "19:00", owner: "Committee" },
-  { activity: "Welcome address", time: "19:30", owner: "President" },
-  { activity: "Main programme", time: "20:15", owner: "MC" },
-  { activity: "Catering service", time: "21:30", owner: "Caterer" },
-  { activity: "Closing remarks", time: "22:30", owner: "President" },
-  { activity: "Venue clear", time: "23:00", owner: "AV Lead" },
-];
+// ── Slide: Smart Runsheet ─────────────────────────────────────────
 
 function TimelineSlide() {
-  const [converted, setConverted] = useState(false);
-  const rowsCount = useCountUp(8, converted);
-  const vendorsCount = useCountUp(3, converted);
-  const risksCount = useCountUp(2, converted);
+  const pastRows = [
+    { time: "07:30", activity: "Welcome address", duration: 12, overran: true },
+    { time: "07:42", activity: "Program Part 1", duration: 45, overran: false },
+    { time: "08:27", activity: "Break", duration: 15, overran: false },
+    { time: "08:42", activity: "Trivia", duration: 20, overran: false },
+    { time: "09:02", activity: "Program Part 2", duration: 40, overran: false },
+  ];
+
+  const blueprintRows = [
+    {
+      time: "07:30",
+      activity: "Welcome address",
+      duration: 5,
+      tag: "Cap at 5 min",
+      annotation: true,
+    },
+    { time: "07:35", activity: "Program Part 1", duration: 45, tag: null, annotation: false },
+    { time: "08:20", activity: "Break", duration: 15, tag: null, annotation: false },
+    { time: "08:35", activity: "Trivia", duration: 20, tag: null, annotation: false },
+    { time: "08:55", activity: "Program Part 2", duration: 40, tag: null, annotation: false },
+  ];
 
   const colHeader = (
     <div className="flex items-center gap-2 px-4 py-2 border-b border-gray-50">
       <span className="w-10 text-[10px] text-gray-300 uppercase tracking-wider">Time</span>
       <span className="flex-1 text-[10px] text-gray-300 uppercase tracking-wider">Activity</span>
-      <span className="w-16 shrink-0 text-[10px] text-gray-300 uppercase tracking-wider">
-        Owner
+      <span className="w-8 shrink-0 text-[10px] text-gray-300 uppercase tracking-wider text-right">
+        Min
       </span>
     </div>
   );
 
   return (
-    <div className="space-y-4">
-      <div className="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-start">
-        {/* Past event — full runsheet */}
-        <div
-          className="rounded-xl bg-white overflow-hidden"
-          style={{ border: "0.5px solid #e8e8e8" }}
-        >
-          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
-              Past event
-            </p>
-            <span
-              className="text-[10px] px-2 py-0.5 rounded-full font-medium"
-              style={{ background: "rgba(29,158,117,0.1)", color: "#1D9E75" }}
-            >
-              Completed
-            </span>
-          </div>
-          <div className="px-4 py-2.5 border-b border-gray-100">
-            <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2024</p>
-            <p className="text-[10px] text-gray-400 mt-0.5">15 Oct 2024 · Runsheet</p>
-          </div>
-          {colHeader}
-          {RUNSHEET_ROWS.map((row) => (
-            <div
-              key={row.activity}
-              className="flex items-center gap-2 px-4 py-2 border-t border-gray-50"
-            >
-              <span className="w-10 text-xs font-mono text-[#1a1a1a]">{row.time}</span>
-              <span className="flex-1 text-xs text-[#1a1a1a] truncate">{row.activity}</span>
-              <span className="w-16 shrink-0 text-[10px] text-gray-400 truncate">{row.owner}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Convert button */}
-        <div className="flex md:flex-col items-center justify-center gap-1.5 py-3">
-          <button
-            onClick={() => setConverted((v) => !v)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#1a1a1a] px-3 py-2 text-[11px] font-medium text-white hover:opacity-80 transition-opacity whitespace-nowrap"
+    <div className="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-start">
+      {/* Left card — past event */}
+      <div
+        className="rounded-xl bg-white overflow-hidden"
+        style={{ border: "0.5px solid #e8e8e8" }}
+      >
+        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+            What actually happened
+          </p>
+          <span
+            className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+            style={{ background: "rgba(29,158,117,0.1)", color: "#1D9E75" }}
           >
-            {converted ? "Reset" : "Convert"} <ArrowRight className="h-3 w-3" />
-          </button>
+            Completed
+          </span>
         </div>
-
-        {/* New blueprint — blank until converted */}
-        <div
-          className="rounded-xl bg-white overflow-hidden transition-all duration-300"
-          style={{ border: converted ? "0.5px solid #EF9F27" : "0.5px solid #e8e8e8" }}
-        >
-          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-            <p
-              className="text-[10px] font-medium uppercase tracking-widest transition-colors duration-300"
-              style={{ color: converted ? "#EF9F27" : "#9ca3af" }}
-            >
-              {converted ? "Blueprint" : "New blueprint"}
-            </p>
-            <span className="text-[10px] text-gray-400">14 Oct 2025</span>
-          </div>
-          <div className="px-4 py-2.5 border-b border-gray-100">
-            <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2025</p>
-            <p className="text-[10px] text-gray-400 mt-0.5">
-              {converted ? "Runsheet filled from blueprint" : "Runsheet · awaiting conversion"}
-            </p>
-          </div>
-          {colHeader}
-          {RUNSHEET_ROWS.map((row, i) => (
-            <div
-              key={row.activity}
-              className="flex items-center gap-2 px-4 py-2 border-t border-gray-50"
-            >
-              <span
-                className="w-10 text-xs font-mono transition-all duration-300"
-                style={{
-                  transitionDelay: `${i * 55}ms`,
-                  color: converted ? "#1a1a1a" : "#f0b04a",
-                }}
-              >
-                {row.time}
-              </span>
-              <span
-                className="flex-1 text-xs truncate flex items-center gap-1 transition-all duration-300"
-                style={{
-                  transitionDelay: `${i * 55}ms`,
-                  color: converted ? "#1a1a1a" : "#d1d5db",
-                }}
-              >
-                {converted && <Check className="h-3 w-3 shrink-0" style={{ color: "#1D9E75" }} />}
-                {converted ? row.activity : "—"}
-              </span>
-              <span
-                className="w-16 shrink-0 text-[10px] truncate transition-all duration-300"
-                style={{
-                  transitionDelay: `${i * 55}ms`,
-                  color: converted ? "#6b7280" : "#d1d5db",
-                }}
-              >
-                {converted ? row.owner : "—"}
-              </span>
-            </div>
-          ))}
-          {converted && (
-            <div className="px-4 py-2.5 border-t border-gray-100 flex gap-4 text-[10px]">
-              <span style={{ color: "#1D9E75" }}>3 vendors carried over</span>
-              <span style={{ color: "#EF9F27" }}>2 risks pre-flagged</span>
-            </div>
-          )}
+        <div className="px-4 py-2.5 border-b border-gray-100">
+          <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2023</p>
         </div>
+        {colHeader}
+        {pastRows.map((row) => (
+          <div
+            key={row.activity}
+            className="flex items-center gap-2 px-4 py-2.5 border-t border-gray-50"
+          >
+            <span className="w-10 text-xs font-mono text-gray-400">{row.time}</span>
+            <span className="flex-1 text-xs text-[#1a1a1a] truncate">{row.activity}</span>
+            <div className="w-8 shrink-0 flex items-center justify-end gap-1">
+              {row.overran && (
+                <div className="h-2 w-2 rounded-full shrink-0" style={{ background: "#E24B4A" }} />
+              )}
+              <span className="text-xs font-mono text-gray-400">{row.duration}</span>
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
-        {[
-          { value: rowsCount, label: "runsheet rows filled" },
-          { value: vendorsCount, label: "vendors re-attached" },
-          { value: risksCount, label: "risks pre-flagged" },
-        ].map(({ value, label }) => (
-          <div
-            key={label}
-            className="rounded-xl bg-white px-3 py-4 text-center"
-            style={{ border: "0.5px solid #e8e8e8" }}
+      {/* Connecting arrow */}
+      <div className="hidden md:flex flex-col items-center pt-28">
+        <ArrowRight className="h-4 w-4 animate-pulse" style={{ color: "#EF9F27" }} />
+      </div>
+
+      {/* Right card — blueprint */}
+      <div
+        className="rounded-xl bg-white overflow-hidden"
+        style={{ border: "0.5px solid #EF9F27" }}
+      >
+        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+          <span
+            className="text-[10px] font-medium px-2 py-0.5 rounded-full uppercase tracking-widest"
+            style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
           >
-            <p className="text-2xl font-medium tabular-nums text-[#1a1a1a]">{value}</p>
-            <p className="mt-1 text-[10px] text-gray-400 leading-tight">{label}</p>
+            Your new blueprint
+          </span>
+          <span className="text-[10px] text-gray-400">14 Oct 2025</span>
+        </div>
+        <div className="px-4 py-2.5 border-b border-gray-100">
+          <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2025</p>
+        </div>
+        {colHeader}
+        {blueprintRows.map((row) => (
+          <div key={row.activity} className="border-t border-gray-50">
+            <div className="flex items-center gap-2 px-4 py-2.5">
+              <span className="w-10 text-xs font-mono text-gray-400">{row.time}</span>
+              <span className="flex-1 min-w-0 text-xs text-[#1a1a1a] flex items-center gap-1.5">
+                <span className="truncate">{row.activity}</span>
+                {row.tag && (
+                  <span
+                    className="shrink-0 text-[9px] px-1.5 py-0.5 rounded font-medium"
+                    style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
+                  >
+                    {row.tag}
+                  </span>
+                )}
+              </span>
+              <span className="w-8 shrink-0 text-xs font-mono text-[#1a1a1a] text-right">
+                {row.duration}
+              </span>
+            </div>
+            {row.annotation && (
+              <div
+                className="mx-4 mb-2 px-3 py-2 rounded-lg text-[11px] leading-relaxed"
+                style={{ background: "rgba(239,159,39,0.07)", color: "#a07830" }}
+              >
+                Averaged 11 min across 3 past events. Audience engagement drops after 7 min.
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -684,8 +645,8 @@ const FEATURE_TABS = [
     id: "blueprint",
     Icon: Clock,
     label: "Blueprint",
-    heading: "Past event → New blueprint.",
-    sub: "One click clones a past event into a dated blueprint — tasks shifted, vendors re-attached, risks pre-flagged.",
+    heading: "Your runsheet, pre-filled by experience.",
+    sub: "Durations drawn from every event your society has run.",
     Demo: TimelineSlide,
   },
   {
