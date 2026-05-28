@@ -177,6 +177,8 @@ function HeroSection() {
 // ── Slide: Smart Runsheet ─────────────────────────────────────────
 
 function TimelineSlide() {
+  const [converted, setConverted] = useState(false);
+
   const pastRows = [
     { time: "07:30", activity: "Welcome address", duration: 12, overran: true },
     { time: "07:42", activity: "Program Part 1", duration: 45, overran: false },
@@ -248,49 +250,81 @@ function TimelineSlide() {
         ))}
       </div>
 
-      {/* Connecting arrow */}
-      <div className="hidden md:flex flex-col items-center pt-28">
-        <ArrowRight className="h-4 w-4 animate-pulse" style={{ color: "#EF9F27" }} />
+      {/* Connecting arrow + convert */}
+      <div className="flex md:flex-col items-center justify-center gap-2 py-3 md:pt-24">
+        <ArrowRight
+          className="hidden md:block h-4 w-4 animate-pulse"
+          style={{ color: "#EF9F27" }}
+        />
+        <button
+          onClick={() => setConverted((v) => !v)}
+          className="inline-flex items-center gap-1.5 rounded-lg bg-[#1a1a1a] px-3 py-2 text-[11px] font-medium text-white hover:opacity-80 transition-opacity whitespace-nowrap"
+        >
+          {converted ? "Reset" : "Convert"} <ArrowRight className="h-3 w-3" />
+        </button>
       </div>
 
       {/* Right card — blueprint */}
       <div
-        className="rounded-xl bg-white overflow-hidden"
-        style={{ border: "0.5px solid #EF9F27" }}
+        className="rounded-xl bg-white overflow-hidden transition-all duration-300"
+        style={{ border: converted ? "0.5px solid #EF9F27" : "0.5px solid #e8e8e8" }}
       >
         <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-          <span
-            className="text-[10px] font-medium px-2 py-0.5 rounded-full uppercase tracking-widest"
-            style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
-          >
-            Your new blueprint
-          </span>
+          {converted ? (
+            <span
+              className="text-[10px] font-medium px-2 py-0.5 rounded-full uppercase tracking-widest"
+              style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
+            >
+              Your new blueprint
+            </span>
+          ) : (
+            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+              New blueprint
+            </p>
+          )}
           <span className="text-[10px] text-gray-400">14 Oct 2025</span>
         </div>
         <div className="px-4 py-2.5 border-b border-gray-100">
           <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2025</p>
         </div>
         {colHeader}
-        {blueprintRows.map((row) => (
+        {blueprintRows.map((row, i) => (
           <div key={row.activity} className="border-t border-gray-50">
             <div className="flex items-center gap-2 px-4 py-2.5">
-              <span className="w-10 text-xs font-mono text-gray-400">{row.time}</span>
-              <span className="flex-1 min-w-0 text-xs text-[#1a1a1a] flex items-center gap-1.5">
-                <span className="truncate">{row.activity}</span>
-                {row.tag && (
-                  <span
-                    className="shrink-0 text-[9px] px-1.5 py-0.5 rounded font-medium"
-                    style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
-                  >
-                    {row.tag}
-                  </span>
+              <span
+                className="w-10 text-xs font-mono transition-all duration-300"
+                style={{ transitionDelay: `${i * 55}ms`, color: converted ? "#1a1a1a" : "#f0b04a" }}
+              >
+                {row.time}
+              </span>
+              <span
+                className="flex-1 min-w-0 text-xs flex items-center gap-1.5 transition-all duration-300"
+                style={{ transitionDelay: `${i * 55}ms`, color: converted ? "#1a1a1a" : "#d1d5db" }}
+              >
+                {converted ? (
+                  <>
+                    <span className="truncate">{row.activity}</span>
+                    {row.tag && (
+                      <span
+                        className="shrink-0 text-[9px] px-1.5 py-0.5 rounded font-medium"
+                        style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
+                      >
+                        {row.tag}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span>—</span>
                 )}
               </span>
-              <span className="w-8 shrink-0 text-xs font-mono text-[#1a1a1a] text-right">
-                {row.duration}
+              <span
+                className="w-8 shrink-0 text-xs font-mono text-right transition-all duration-300"
+                style={{ transitionDelay: `${i * 55}ms`, color: converted ? "#1a1a1a" : "#d1d5db" }}
+              >
+                {converted ? row.duration : "—"}
               </span>
             </div>
-            {row.annotation && (
+            {converted && row.annotation && (
               <div
                 className="mx-4 mb-2 px-3 py-2 rounded-lg text-[11px] leading-relaxed"
                 style={{ background: "rgba(239,159,39,0.07)", color: "#a07830" }}
