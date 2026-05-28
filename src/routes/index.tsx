@@ -853,22 +853,39 @@ const EXPERIENCE_BULLETS = [
 
 function ExperienceSlide() {
   return (
-    <div className="rounded-xl bg-white overflow-hidden" style={{ border: "0.5px solid #e8e8e8" }}>
-      <div className="grid grid-cols-2">
-        {/* Left — bare CV line */}
-        <div
-          className="px-8 py-10 flex flex-col justify-center"
-          style={{ borderRight: "0.5px solid #e8e8e8" }}
-        >
-          <p className="text-sm text-gray-300">Event Executive</p>
-          <p className="mt-1.5 text-sm text-gray-300 leading-snug">
-            UNSW Computer Science &amp; Engineering Society
-          </p>
-          <p className="mt-1.5 text-sm text-gray-300">Feb 2024 – Nov 2024</p>
-        </div>
+    <div className="grid grid-cols-2 gap-3 items-stretch">
+      {/* Left — bare CV */}
+      <div
+        className="rounded-xl overflow-hidden flex flex-col justify-center px-8 py-10"
+        style={{ background: "#f7f7f7", border: "0.5px solid #e8e8e8" }}
+      >
+        <p className="text-[10px] font-medium text-gray-300 uppercase tracking-widest mb-4">
+          Traditional CV
+        </p>
+        <p className="text-sm text-gray-400 font-medium">Event Executive</p>
+        <p className="mt-2 text-sm text-gray-400 leading-snug">
+          UNSW Computer Science &amp; Engineering Society
+        </p>
+        <p className="mt-2 text-sm text-gray-300">Feb 2024 – Nov 2024</p>
+      </div>
 
-        {/* Right — verified record */}
-        <div className="px-6 py-8 flex flex-col gap-4">
+      {/* Right — verified GatherInn record */}
+      <div
+        className="rounded-xl bg-white overflow-hidden flex flex-col"
+        style={{ border: "0.5px solid #e8e8e8" }}
+      >
+        <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+            GatherInn record
+          </p>
+          <span
+            className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+            style={{ background: "rgba(29,158,117,0.1)", color: "#1D9E75" }}
+          >
+            Verified
+          </span>
+        </div>
+        <div className="px-5 py-5 flex flex-col gap-4 flex-1">
           <div>
             <p className="text-sm font-medium text-[#1a1a1a]">CSESoc Annual Gala 2024</p>
             <p className="text-xs text-gray-400 mt-0.5">Event Executive · CSESoc UNSW</p>
@@ -884,7 +901,7 @@ function ExperienceSlide() {
               </div>
             ))}
           </div>
-          <div className="pt-3 border-t border-gray-100 flex items-center gap-1.5">
+          <div className="mt-auto pt-3 border-t border-gray-100 flex items-center gap-1.5">
             <span className="text-xs text-gray-400">
               Verified by Ethan Park, President · Nov 2024
             </span>
