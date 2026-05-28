@@ -1,723 +1,598 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { addDays, format, parseISO } from "date-fns";
-import {
-  Clock,
-  Users,
-  AlertTriangle,
-  Shield,
-  ArrowRight,
-  Check,
-  ChevronDown,
-} from "lucide-react";
+import { ArrowRight, Check, X, Star, Plus } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 
 export const Route = createFileRoute("/")({ component: Landing });
 
 // ── Data ─────────────────────────────────────────────────────────
 
-type TaskTemplate = { name: string; offsetDays: number; duration: number };
-type EventTemplate = { label: string; tasks: TaskTemplate[] };
+const SOURCE_TASKS = [
+  { task: "Venue Booking", owner: "Sarah", due: "Oct 3" },
+  { task: "AV Equipment", owner: "James", due: "Oct 5" },
+  { task: "Catering Brief", owner: "Sarah", due: "Oct 10" },
+  { task: "Tech Rehearsal", owner: "David", due: "Oct 14" },
+  { task: "Event Night", owner: "All crew", due: "Oct 15" },
+];
 
-const EVENT_TEMPLATES: EventTemplate[] = [
+const RISKS_DATA = [
   {
-    label: "Finals 2024",
-    tasks: [
-      { name: "Book venue", offsetDays: -28, duration: 7 },
-      { name: "Brief catering", offsetDays: -14, duration: 5 },
-      { name: "Tech rehearsal", offsetDays: -5, duration: 2 },
-      { name: "Event day", offsetDays: 0, duration: 1 },
-      { name: "Debrief", offsetDays: 2, duration: 2 },
-    ],
+    id: "power",
+    severity: "red" as const,
+    text: "Stage B requires high-voltage power (unresolved 2023)",
+    note: "During Finals 2023, stage B tripped twice on standard 13A circuit. Facilities confirmed a dedicated 32A supply is needed. Not resolved before event ended.",
+    date: "Finals Night 2023",
+    flaggedBy: "James W.",
   },
   {
-    label: "Gala 2023",
-    tasks: [
-      { name: "Venue deposit", offsetDays: -45, duration: 5 },
-      { name: "Invite list", offsetDays: -30, duration: 10 },
-      { name: "Dress rehearsal", offsetDays: -3, duration: 2 },
-      { name: "Gala night", offsetDays: 0, duration: 1 },
-      { name: "Thank-you notes", offsetDays: 3, duration: 3 },
-    ],
+    id: "catering",
+    severity: "amber" as const,
+    text: "Caterer confirmed late in 2023 — book by Week 6",
+    note: "The Feast Table sent written confirmation only 3 days before Gala 2023. Risk of last-minute no-show. Minimum 6-week lead time recommended.",
+    date: "Spring Gala 2023",
+    flaggedBy: "Sarah K.",
   },
   {
-    label: "Hackathon 2022",
-    tasks: [
-      { name: "Platform setup", offsetDays: -21, duration: 7 },
-      { name: "Sponsor brief", offsetDays: -14, duration: 4 },
-      { name: "Registration", offsetDays: -7, duration: 5 },
-      { name: "Hackathon", offsetDays: 0, duration: 2 },
-      { name: "Winners live", offsetDays: 3, duration: 1 },
-    ],
+    id: "venue",
+    severity: "green" as const,
+    text: "Venue deposit accepted bank transfer in past 2 years",
+    note: "City Hall venue processed BACS transfer within 2 working days for both Finals 2023 and Gala 2023. No issues with payment method.",
+    date: "Verified Oct 2023",
+    flaggedBy: "finance@society.ac.uk",
   },
 ];
 
-const GANTT_TASKS = [
-  { name: "Venue booking", start: 0, width: 18 },
-  { name: "Sponsor outreach", start: 10, width: 22 },
-  { name: "Invite list", start: 28, width: 24 },
-  { name: "AV setup", start: 50, width: 16 },
-  { name: "Tech rehearsal", start: 68, width: 12 },
-  { name: "Event day", start: 82, width: 5 },
-  { name: "Debrief", start: 89, width: 10 },
-];
-
-const WEEK_LOAD = [1, 2, 3, 4, 3, 5, 7, 8, 5, 2];
-
-const VENDOR_METRICS = [
+const VENDORS_DATA = [
   {
-    name: "City Catering Co.",
-    type: "Catering",
-    stars: 5,
-    reliability: 92,
-    value: 78,
-    speed: 85,
-    usedIn: ["Finals '24", "Gala '23"],
+    id: "lights",
+    name: "Bright Lights Co.",
+    role: "Lighting",
+    lastEvent: "Gala 2023",
+    email: "hello@brightlights.co",
+    rating: 4,
+    notes:
+      "Excellent setup, arrived 2h early. Slight issue with gel colours — brought wrong shades but resolved quickly on-site. Would book again.",
   },
   {
-    name: "ProAV Systems",
-    type: "AV Crew",
-    stars: 4,
-    reliability: 75,
-    value: 88,
-    speed: 70,
-    usedIn: ["Finals '24", "Hack '22"],
+    id: "av",
+    name: "SoundWave AV",
+    role: "AV Crew",
+    lastEvent: "Finals 2024",
+    email: "bookings@soundwave.av",
+    rating: 5,
+    notes:
+      "Flawless delivery. Mic battery issue caught in tech rehearsal and self-resolved before doors. Best AV crew we've worked with.",
   },
   {
-    name: "Stage Lighting Ltd",
-    type: "Lighting",
-    stars: 5,
-    reliability: 90,
-    value: 65,
-    speed: 80,
-    usedIn: ["Gala '23"],
+    id: "catering",
+    name: "The Feast Table",
+    role: "Catering",
+    lastEvent: "Gala 2023",
+    email: "events@thefeasttable.com",
+    rating: 3,
+    notes:
+      "Food quality excellent. Arrived 45 min late for setup — catering area not ready when doors opened. Must confirm arrival window at booking.",
   },
 ];
 
-const RISKS = [
+const ROLES_DATA = [
+  { id: "president", name: "President", access: "Full access", members: 2, initials: ["PL", "QR"] },
   {
-    text: "High-voltage power required for Stage B",
-    severity: "high",
-    status: "pending",
-    event: "Finals '24",
+    id: "exec",
+    name: "Event Executive",
+    access: "Edit access",
+    members: 5,
+    initials: ["AJ", "BK", "CL"],
   },
   {
-    text: "Venue capacity exceeded fire limit by 12%",
-    severity: "high",
-    status: "acknowledged",
-    event: "Gala '23",
-  },
-  {
-    text: "Catering delivery arrived 2h late",
-    severity: "medium",
-    status: "resolved",
-    event: "Gala '23",
-  },
-  {
-    text: "Backup microphone unavailable on the night",
-    severity: "low",
-    status: "resolved",
-    event: "Hack '22",
+    id: "member",
+    name: "General Member",
+    access: "View only",
+    members: 34,
+    initials: ["XY", "YZ", "ZA"],
   },
 ];
 
-const RISK_CATEGORIES = [
-  { label: "Technical", count: 4 },
-  { label: "Venue", count: 3 },
-  { label: "Logistics", count: 2 },
-  { label: "Budget", count: 1 },
+const PERM_LABELS = [
+  "View History",
+  "Clone Events",
+  "Edit Timeline",
+  "Manage Vendors",
+  "Manage Roles",
 ];
 
-const TASK_LABELS = ["Venue", "Catering", "Budget", "AV"];
-const ROLE_MATRIX = [
-  { role: "President", tasks: [true, false, true, false] },
-  { role: "VP Events", tasks: [true, true, false, true] },
-  { role: "Treasurer", tasks: [false, false, true, false] },
-  { role: "Logistics Lead", tasks: [false, true, false, true] },
-  { role: "AV Lead", tasks: [false, false, false, true] },
-];
+const DEFAULT_PERMISSIONS: Record<string, Record<string, boolean>> = {
+  president: {
+    "View History": true,
+    "Clone Events": true,
+    "Edit Timeline": true,
+    "Manage Vendors": true,
+    "Manage Roles": true,
+  },
+  exec: {
+    "View History": true,
+    "Clone Events": true,
+    "Edit Timeline": true,
+    "Manage Vendors": false,
+    "Manage Roles": false,
+  },
+  member: {
+    "View History": true,
+    "Clone Events": false,
+    "Edit Timeline": false,
+    "Manage Vendors": false,
+    "Manage Roles": false,
+  },
+};
 
-const HANDOVER_ITEMS = [
-  { item: "Event documentation", done: true },
-  { item: "Vendor contacts exported", done: true },
-  { item: "Budget report filed", done: true },
-  { item: "Photo archive uploaded", done: false },
-  { item: "Post-event survey sent", done: false },
-];
+const SEVERITY = {
+  red: { dot: "#E24B4A", bg: "rgba(226,75,74,0.07)" },
+  amber: { dot: "#EF9F27", bg: "rgba(239,159,39,0.07)" },
+  green: { dot: "#1D9E75", bg: "rgba(29,158,117,0.07)" },
+};
 
-// ── Mini Gantt ────────────────────────────────────────────────────
+// ── Hero ──────────────────────────────────────────────────────────
 
-type GanttTask = { name: string; start: Date; end: Date };
-
-function MiniGantt({ tasks, visible }: { tasks: GanttTask[]; visible: boolean }) {
-  const times = tasks.flatMap((t) => [t.start.getTime(), t.end.getTime()]);
-  const min = Math.min(...times);
-  const max = Math.max(...times);
-  const span = max - min || 1;
-
+function HeroSection() {
   return (
-    <div
-      className="mt-5 space-y-2"
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(6px)",
-        transition: "opacity 0.35s ease, transform 0.35s ease",
-        pointerEvents: visible ? "auto" : "none",
-      }}
-    >
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-3">
-        Shifted timeline
-      </p>
-      {tasks.map((task, i) => {
-        const leftPct = ((task.start.getTime() - min) / span) * 100;
-        const widthPct = Math.max(
-          ((task.end.getTime() - task.start.getTime()) / span) * 100,
-          4,
-        );
-        return (
-          <div
-            key={task.name}
-            className="flex items-center gap-3"
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? "none" : "translateY(4px)",
-              transition: `opacity 0.3s ease ${i * 70}ms, transform 0.3s ease ${i * 70}ms`,
-            }}
-          >
-            <span className="w-28 shrink-0 text-right text-[11px] leading-tight text-muted-foreground truncate">
-              {task.name}
+    <section className="max-w-6xl mx-auto px-6 pt-16 pb-20">
+      <div className="text-center mb-12">
+        <h1 className="text-5xl md:text-6xl font-medium text-[#1a1a1a] leading-tight tracking-tight">
+          Inherit the blueprint.
+        </h1>
+        <p className="mt-3 text-lg text-gray-400">Your society's event memory, built in.</p>
+      </div>
+
+      <div className="flex flex-col lg:flex-row items-stretch gap-3 lg:gap-0">
+        {/* Source card */}
+        <div
+          className="w-full lg:flex-1 rounded-xl bg-white p-5"
+          style={{ border: "0.5px solid #e8e8e8" }}
+        >
+          <div className="flex items-center justify-between mb-5">
+            <span className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+              Source event
             </span>
-            <div className="relative h-3 flex-1 overflow-hidden rounded-sm bg-muted">
-              <div
-                className="absolute h-full rounded-sm bg-foreground"
-                style={{ left: `${leftPct}%`, width: `${widthPct}%` }}
-              />
-            </div>
-            <span className="w-12 shrink-0 text-right text-[10px] text-muted-foreground">
-              {format(task.start, "d MMM")}
-            </span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ── Clone Card ────────────────────────────────────────────────────
-
-function CloneCard() {
-  const defaultDate = format(addDays(new Date(), 60), "yyyy-MM-dd");
-  const [selectedLabel, setSelectedLabel] = useState("Finals 2024");
-  const [newDate, setNewDate] = useState(defaultDate);
-  const [cloned, setCloned] = useState(false);
-
-  const template = EVENT_TEMPLATES.find((e) => e.label === selectedLabel)!;
-
-  const ganttTasks: GanttTask[] =
-    newDate && /^\d{4}-\d{2}-\d{2}$/.test(newDate)
-      ? template.tasks.map((t) => {
-          const start = addDays(parseISO(newDate), t.offsetDays);
-          return { name: t.name, start, end: addDays(start, t.duration) };
-        })
-      : [];
-
-  const handleClone = () => {
-    setCloned(false);
-    setTimeout(() => setCloned(true), 40);
-  };
-
-  return (
-    <div className="rounded-lg border border-border bg-card p-6">
-      <p className="mb-5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-        Clone a blueprint
-      </p>
-
-      <div className="space-y-4">
-        <div>
-          <label className="mb-1.5 block text-xs text-muted-foreground">Past event</label>
-          <div className="relative">
-            <select
-              value={selectedLabel}
-              onChange={(e) => {
-                setSelectedLabel(e.target.value);
-                setCloned(false);
-              }}
-              className="w-full appearance-none rounded-md border border-border bg-card px-3 py-2 pr-8 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+            <span
+              className="text-xs px-2.5 py-0.5 rounded-full font-medium"
+              style={{ background: "rgba(29,158,117,0.1)", color: "#1D9E75" }}
             >
-              {EVENT_TEMPLATES.map((t) => (
-                <option key={t.label} value={t.label}>
-                  {t.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              Completed
+            </span>
           </div>
+          <div className="mb-5">
+            <p className="text-base font-medium text-[#1a1a1a]">Finals Night 2024</p>
+            <p className="text-xs text-gray-400 mt-0.5">Oct 15, 2024</p>
+          </div>
+          <div className="flex items-center gap-2 pb-2">
+            <span className="flex-1 text-[10px] text-gray-300 uppercase tracking-wider">Task</span>
+            <span className="w-16 text-[10px] text-gray-300 uppercase tracking-wider">Owner</span>
+            <span className="w-11 text-[10px] text-gray-300 uppercase tracking-wider">Due</span>
+            <span className="w-5" />
+          </div>
+          {SOURCE_TASKS.map((t) => (
+            <div
+              key={t.task}
+              className="flex items-center gap-2 py-2.5 border-t border-gray-50"
+            >
+              <span className="flex-1 text-sm text-[#1a1a1a]">{t.task}</span>
+              <span className="w-16 text-xs text-gray-400">{t.owner}</span>
+              <span className="w-11 text-xs text-gray-400">{t.due}</span>
+              <div
+                className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                style={{ background: "rgba(29,158,117,0.12)" }}
+              >
+                <Check className="h-3 w-3" style={{ color: "#1D9E75" }} />
+              </div>
+            </div>
+          ))}
         </div>
 
-        <div>
-          <label className="mb-1.5 block text-xs text-muted-foreground">New start date</label>
-          <input
-            type="date"
-            value={newDate}
-            onChange={(e) => {
-              setNewDate(e.target.value);
-              setCloned(false);
-            }}
-            className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+        {/* Arrow connector */}
+        <div className="flex lg:flex-col items-center justify-center py-1 lg:py-0 lg:w-14 shrink-0">
+          <style>{`
+            @keyframes arrow-drift {
+              0%, 100% { transform: translateX(0) rotate(0deg); opacity: 0.9; }
+              50% { transform: translateX(4px) rotate(0deg); opacity: 0.5; }
+            }
+            @media (max-width: 1023px) {
+              @keyframes arrow-drift {
+                0%, 100% { transform: translateY(0) rotate(90deg); opacity: 0.9; }
+                50% { transform: translateY(4px) rotate(90deg); opacity: 0.5; }
+              }
+            }
+            .arrow-drift { animation: arrow-drift 1.8s ease-in-out infinite; }
+          `}</style>
+          <ArrowRight
+            className="h-5 w-5 arrow-drift rotate-90 lg:rotate-0"
+            style={{ color: "#EF9F27" }}
           />
         </div>
-      </div>
 
-      <button
-        onClick={handleClone}
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-md bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-80"
-      >
-        {cloned ? (
-          <>
-            <Check className="h-4 w-4" /> Cloned
-          </>
-        ) : (
-          <>
-            Clone blueprint <ArrowRight className="h-4 w-4" />
-          </>
-        )}
-      </button>
-
-      <MiniGantt tasks={ganttTasks} visible={cloned} />
-    </div>
-  );
-}
-
-// ── Stars ─────────────────────────────────────────────────────────
-
-function Stars({ count }: { count: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <span
-          key={i}
-          className={`text-sm ${i <= count ? "text-warning" : "text-muted-foreground/30"}`}
+        {/* Blueprint card */}
+        <div
+          className="w-full lg:flex-1 rounded-xl bg-white p-5"
+          style={{ border: "0.5px solid #EF9F27" }}
         >
-          ★
-        </span>
-      ))}
-    </div>
-  );
-}
-
-// ── Slide: Timeline ───────────────────────────────────────────────
-
-function TimelineSlide() {
-  const maxLoad = Math.max(...WEEK_LOAD);
-  return (
-    <div className="space-y-8">
-      <div>
-        <p className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Task schedule — Finals Night 2025
-        </p>
-        <div className="space-y-2.5">
-          {GANTT_TASKS.map((task, i) => (
-            <div key={task.name} className="flex items-center gap-3">
-              <span className="w-28 shrink-0 text-right text-[11px] text-muted-foreground truncate">
-                {task.name}
-              </span>
-              <div className="relative flex-1 h-3 bg-muted rounded-sm overflow-hidden">
-                <div
-                  className="absolute h-full rounded-sm bg-foreground"
-                  style={{
-                    left: `${task.start}%`,
-                    width: `${task.width}%`,
-                    opacity: 1 - i * 0.08,
-                  }}
-                />
-              </div>
-              <span className="w-8 shrink-0 text-right text-[10px] text-muted-foreground">
-                W{i + 1}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <p className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Task density by week
-        </p>
-        <div className="flex items-end gap-1.5 h-20">
-          {WEEK_LOAD.map((load, i) => (
-            <div key={i} className="flex-1 flex flex-col justify-end gap-1">
-              <div
-                className="w-full rounded-t-sm bg-foreground"
-                style={{
-                  height: `${(load / maxLoad) * 100}%`,
-                  opacity: 0.35 + (load / maxLoad) * 0.65,
-                }}
-              />
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-between mt-1.5">
-          <span className="text-[10px] text-muted-foreground">10 wks out</span>
-          <span className="text-[10px] text-muted-foreground">Event day</span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-3">
-        {[
-          { value: "28", label: "tasks auto-scheduled" },
-          { value: "7", label: "stakeholders notified" },
-          { value: "0", label: "conflicts detected" },
-        ].map(({ value, label }) => (
-          <div key={label} className="rounded-lg border border-border bg-card px-3 py-4 text-center">
-            <p className="font-display text-2xl text-foreground">{value}</p>
-            <p className="mt-1 text-[10px] text-muted-foreground leading-tight">{label}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Slide: Vendors ────────────────────────────────────────────────
-
-function VendorSlide() {
-  const [selected, setSelected] = useState<string | null>(null);
-  return (
-    <div className="space-y-4">
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-        Vendor scorecards
-      </p>
-      {VENDOR_METRICS.map((v) => {
-        const isSelected = selected === v.name;
-        return (
-          <button
-            key={v.name}
-            onClick={() => setSelected(isSelected ? null : v.name)}
-            className={`w-full rounded-lg border bg-card px-4 py-4 text-left transition-all ${
-              isSelected ? "border-foreground" : "border-border hover:border-foreground/40"
-            }`}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <span className="text-sm font-medium text-foreground">{v.name}</span>
-                <span className="ml-2 text-[10px] text-muted-foreground">{v.type}</span>
-              </div>
-              <Stars count={v.stars} />
-            </div>
-
-            <div className="space-y-2">
-              {[
-                { label: "Reliability", value: v.reliability },
-                { label: "Value", value: v.value },
-                { label: "Speed", value: v.speed },
-              ].map(({ label, value }) => (
-                <div key={label} className="flex items-center gap-2">
-                  <span className="w-16 shrink-0 text-[10px] text-muted-foreground">{label}</span>
-                  <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-foreground rounded-full transition-all duration-500"
-                      style={{ width: `${value}%` }}
-                    />
-                  </div>
-                  <span className="w-8 shrink-0 text-right text-[10px] text-muted-foreground">
-                    {value}%
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <div
-              className="overflow-hidden transition-all duration-300"
-              style={{ maxHeight: isSelected ? "60px" : "0px", opacity: isSelected ? 1 : 0 }}
+          <div className="flex items-center justify-between mb-5">
+            <span
+              className="text-[10px] font-semibold uppercase tracking-widest px-2.5 py-0.5 rounded-full"
+              style={{ background: "rgba(239,159,39,0.12)", color: "#EF9F27" }}
             >
-              <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5">
-                <span className="text-[10px] text-muted-foreground">Used in:</span>
-                {v.usedIn.map((e) => (
-                  <span
-                    key={e}
-                    className="rounded-sm bg-secondary px-1.5 py-0.5 text-[10px] text-foreground"
-                  >
-                    {e}
-                  </span>
-                ))}
-              </div>
+              Blueprint
+            </span>
+            <span className="text-xs text-gray-300">Owners & dates to assign</span>
+          </div>
+          <div className="mb-5">
+            <p className="text-base font-medium text-[#1a1a1a]">Finals Night Blueprint</p>
+            <p className="text-xs text-gray-300 mt-0.5">Date not set</p>
+          </div>
+          <div className="flex items-center gap-2 pb-2">
+            <span className="flex-1 text-[10px] text-gray-300 uppercase tracking-wider">Task</span>
+            <span className="w-16 text-[10px] text-gray-300 uppercase tracking-wider">Owner</span>
+            <span className="w-11 text-[10px] text-gray-300 uppercase tracking-wider">Due</span>
+            <span className="w-5" />
+          </div>
+          {SOURCE_TASKS.map((t) => (
+            <div
+              key={t.task}
+              className="flex items-center gap-2 py-2.5 border-t border-gray-50"
+            >
+              <span className="flex-1 text-sm text-[#1a1a1a]">{t.task}</span>
+              <span className="w-16 text-xs text-gray-200">—</span>
+              <span className="w-11 text-xs text-gray-200">—</span>
+              <div className="w-5 h-5 rounded-full border border-gray-200 shrink-0" />
             </div>
+          ))}
+          <button className="mt-5 w-full flex items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-4 py-3 text-sm font-medium text-white hover:opacity-80 transition-opacity">
+            Use this blueprint <ArrowRight className="h-4 w-4" />
           </button>
-        );
-      })}
-    </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
-// ── Slide: Risk Alerts ────────────────────────────────────────────
+// ── Risk Alerts ───────────────────────────────────────────────────
 
-function RiskSlide() {
-  const maxCount = Math.max(...RISK_CATEGORIES.map((c) => c.count));
+function RiskSection() {
+  const [expanded, setExpanded] = useState<string | null>(null);
+
   return (
-    <div className="space-y-8">
-      <div>
-        <p className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Inherited alerts
-        </p>
-        <div className="space-y-2">
-          {RISKS.map((risk, i) => (
-            <div
-              key={i}
-              className="flex items-start gap-3 rounded-lg border border-border bg-card px-4 py-3"
-            >
-              <div
-                className={`mt-1 h-2 w-2 rounded-full shrink-0 ${
-                  risk.severity === "high"
-                    ? "bg-destructive"
-                    : risk.severity === "medium"
-                      ? "bg-warning"
-                      : "bg-muted-foreground"
-                }`}
-              />
-              <div className="flex-1 min-w-0">
-                <p className="text-[12px] text-foreground leading-snug">{risk.text}</p>
-                <span className="text-[10px] text-muted-foreground">{risk.event}</span>
-              </div>
-              <span
-                className={`shrink-0 text-[10px] font-medium px-2 py-0.5 rounded-sm ${
-                  risk.status === "resolved"
-                    ? "bg-secondary text-muted-foreground"
-                    : risk.status === "acknowledged"
-                      ? "bg-foreground/10 text-foreground"
-                      : "bg-warning/20 text-warning"
-                }`}
-              >
-                {risk.status}
-              </span>
-            </div>
-          ))}
+    <section className="border-t border-gray-100 py-20">
+      <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20 items-start">
+        <div className="lg:sticky lg:top-16">
+          <h2 className="text-2xl font-medium text-[#1a1a1a] leading-snug">
+            Risks from last year.
+          </h2>
+          <p className="mt-2 text-gray-400">Surfaced before they repeat.</p>
         </div>
-      </div>
 
-      <div>
-        <p className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Risks by category
-        </p>
-        <div className="space-y-3">
-          {RISK_CATEGORIES.map(({ label, count }) => (
-            <div key={label} className="flex items-center gap-3">
-              <span className="w-16 text-[11px] text-muted-foreground">{label}</span>
-              <div className="flex-1 h-2.5 bg-muted rounded-full overflow-hidden">
+        <div className="rounded-xl bg-white overflow-hidden" style={{ border: "0.5px solid #e8e8e8" }}>
+          <div className="px-5 py-3.5 border-b border-gray-100">
+            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+              Risk panel — Finals Night 2025
+            </p>
+          </div>
+          {RISKS_DATA.map((risk, i) => {
+            const s = SEVERITY[risk.severity];
+            const isOpen = expanded === risk.id;
+            return (
+              <div key={risk.id}>
                 <div
-                  className="h-full bg-foreground rounded-full"
-                  style={{ width: `${(count / maxCount) * 100}%` }}
-                />
-              </div>
-              <span className="w-4 text-right text-[11px] font-medium text-foreground">{count}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        {[
-          { value: "4", label: "unresolved from last year" },
-          { value: "100%", label: "surfaced on day one" },
-        ].map(({ value, label }) => (
-          <div key={label} className="rounded-lg border border-border bg-card px-3 py-4 text-center">
-            <p className="font-display text-2xl text-foreground">{value}</p>
-            <p className="mt-1 text-[10px] text-muted-foreground leading-tight">{label}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Slide: Roles ──────────────────────────────────────────────────
-
-function RolesSlide() {
-  const doneCount = HANDOVER_ITEMS.filter((h) => h.done).length;
-  return (
-    <div className="space-y-8">
-      <div>
-        <p className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Role × responsibility matrix
-        </p>
-        <div className="overflow-hidden rounded-lg border border-border">
-          <table className="w-full text-[11px]">
-            <thead>
-              <tr className="border-b border-border bg-secondary/40">
-                <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Role</th>
-                {TASK_LABELS.map((t) => (
-                  <th
-                    key={t}
-                    className="px-2 py-2.5 text-center font-medium text-muted-foreground"
-                  >
-                    {t}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {ROLE_MATRIX.map((row, i) => (
-                <tr key={row.role} className={i > 0 ? "border-t border-border" : ""}>
-                  <td className="px-4 py-3 font-medium text-foreground">{row.role}</td>
-                  {row.tasks.map((has, j) => (
-                    <td key={j} className="px-2 py-3 text-center">
-                      <span
-                        className={`inline-block h-2 w-2 rounded-full ${
-                          has ? "bg-foreground" : "bg-muted"
-                        }`}
-                      />
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div>
-        <p className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Handover checklist
-        </p>
-        <div className="space-y-2.5">
-          {HANDOVER_ITEMS.map((item) => (
-            <div key={item.item} className="flex items-center gap-2.5">
-              <div
-                className={`h-4 w-4 shrink-0 rounded-sm border flex items-center justify-center ${
-                  item.done ? "border-foreground bg-foreground" : "border-border"
-                }`}
-              >
-                {item.done && <Check className="h-3 w-3 text-background" />}
-              </div>
-              <span
-                className={`text-[12px] ${
-                  item.done ? "text-muted-foreground line-through" : "text-foreground"
-                }`}
-              >
-                {item.item}
-              </span>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 space-y-1">
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-            <div
-              className="h-full bg-foreground rounded-full"
-              style={{ width: `${(doneCount / HANDOVER_ITEMS.length) * 100}%` }}
-            />
-          </div>
-          <p className="text-[10px] text-muted-foreground">
-            {doneCount}/{HANDOVER_ITEMS.length} items handed over
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Feature slideshow ─────────────────────────────────────────────
-
-const FEATURE_SLIDES = [
-  {
-    id: "timeline",
-    Icon: Clock,
-    label: "Timeline",
-    heading: "Every deadline, mapped.",
-    sub: "Clone a past blueprint and watch every task auto-shift to your new date. No re-planning from scratch.",
-    Demo: TimelineSlide,
-  },
-  {
-    id: "vendors",
-    Icon: Users,
-    label: "Vendors",
-    heading: "Bring the team that delivered.",
-    sub: "Compare vendors by reliability, value, and speed. Import the ones that worked in one click.",
-    Demo: VendorSlide,
-  },
-  {
-    id: "risk",
-    Icon: AlertTriangle,
-    label: "Risk Alerts",
-    heading: "Risks surface before they repeat.",
-    sub: "Every clone opens with last year's unresolved alerts — categorised, prioritised, and ready to action.",
-    Demo: RiskSlide,
-  },
-  {
-    id: "roles",
-    Icon: Shield,
-    label: "Roles",
-    heading: "Clear ownership, zero confusion.",
-    sub: "Assign roles once. Responsibilities and handover checklists carry forward with every blueprint.",
-    Demo: RolesSlide,
-  },
-];
-
-function FeatureSlideshow() {
-  const [active, setActive] = useState("timeline");
-  const [visible, setVisible] = useState(true);
-
-  const handleSelect = (id: string) => {
-    if (id === active) return;
-    setVisible(false);
-    setTimeout(() => {
-      setActive(id);
-      setVisible(true);
-    }, 150);
-  };
-
-  const current = FEATURE_SLIDES.find((f) => f.id === active)!;
-
-  return (
-    <>
-      <div className="border-y border-border">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid grid-cols-2 md:grid-cols-4">
-            {FEATURE_SLIDES.map(({ id, Icon, label }, i) => (
-              <button
-                key={id}
-                onClick={() => handleSelect(id)}
-                className={`flex items-center justify-center gap-2.5 py-5 transition-colors ${
-                  i > 0 ? "border-l border-border" : ""
-                } ${active === id ? "bg-secondary/70" : "hover:bg-secondary/30"}`}
-              >
-                <Icon
-                  className={`h-4 w-4 transition-colors ${
-                    active === id ? "text-foreground" : "text-muted-foreground"
-                  }`}
-                />
-                <span
-                  className={`text-sm font-medium transition-colors ${
-                    active === id ? "text-foreground" : "text-muted-foreground"
-                  }`}
+                  className={`flex items-start gap-3 px-5 py-4 ${i > 0 ? "border-t border-gray-100" : ""}`}
+                  style={{ background: s.bg }}
                 >
-                  {label}
-                </span>
+                  <div
+                    className="mt-1.5 h-2 w-2 rounded-full shrink-0"
+                    style={{ background: s.dot }}
+                  />
+                  <p className="flex-1 min-w-0 text-sm text-[#1a1a1a] leading-snug">{risk.text}</p>
+                  <button
+                    onClick={() => setExpanded(isOpen ? null : risk.id)}
+                    className="shrink-0 ml-2 text-xs font-medium text-gray-400 hover:text-[#1a1a1a] transition-colors whitespace-nowrap"
+                  >
+                    {isOpen ? "Hide" : "View details"}
+                  </button>
+                </div>
+                <div
+                  className="overflow-hidden"
+                  style={{
+                    maxHeight: isOpen ? "240px" : "0px",
+                    transition: "max-height 0.3s ease",
+                  }}
+                >
+                  <div className="px-5 py-4 bg-gray-50 border-t border-gray-100 space-y-3">
+                    <p className="text-sm text-[#1a1a1a] leading-relaxed">{risk.note}</p>
+                    <div className="flex flex-wrap gap-5 text-xs text-gray-400">
+                      <span>{risk.date}</span>
+                      <span>Flagged by {risk.flaggedBy}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Vendors / Stakeholders ────────────────────────────────────────
+
+function VendorSection() {
+  const [openId, setOpenId] = useState<string | null>(null);
+  const vendor = VENDORS_DATA.find((v) => v.id === openId) ?? null;
+
+  return (
+    <section className="border-t border-gray-100 py-20">
+      <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20 items-start">
+        <div className="lg:sticky lg:top-16">
+          <h2 className="text-2xl font-medium text-[#1a1a1a] leading-snug">
+            Every vendor your society has ever worked with.
+          </h2>
+          <p className="mt-2 text-gray-400">One tab away.</p>
+        </div>
+
+        <div className="rounded-xl bg-white overflow-hidden" style={{ border: "0.5px solid #e8e8e8" }}>
+          {/* Tabs */}
+          <div className="flex border-b border-gray-100 overflow-x-auto" style={{ background: "rgba(0,0,0,0.015)" }}>
+            {["Overview", "Timeline", "Stakeholders", "Files"].map((tab) => (
+              <button
+                key={tab}
+                className={`shrink-0 px-4 py-3 text-xs font-medium transition-colors ${
+                  tab === "Stakeholders"
+                    ? "text-[#1a1a1a] bg-white border-b-2 border-[#1a1a1a] -mb-px"
+                    : "text-gray-400 hover:text-gray-600"
+                }`}
+              >
+                {tab}
               </button>
             ))}
           </div>
-        </div>
-      </div>
 
-      <section
-        className="border-b border-border py-20"
-        style={{
-          opacity: visible ? 1 : 0,
-          transform: visible ? "translateY(0)" : "translateY(8px)",
-          transition: "opacity 0.2s ease, transform 0.2s ease",
-        }}
-      >
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="grid items-start gap-16 lg:grid-cols-[2fr_3fr]">
-            <div className="lg:sticky lg:top-10">
-              <h2 className="font-display text-3xl leading-tight text-foreground">
-                {current.heading}
-              </h2>
-              <p className="mt-3 text-lg text-muted-foreground">{current.sub}</p>
+          {/* Table + side panel */}
+          <div className="flex">
+            <div className="flex-1 min-w-0 overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-100">
+                    <th className="px-4 py-3 text-left text-[10px] font-medium text-gray-400 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th className="px-4 py-3 text-left text-[10px] font-medium text-gray-400 uppercase tracking-wider">
+                      Role
+                    </th>
+                    <th className="px-4 py-3 text-left text-[10px] font-medium text-gray-400 uppercase tracking-wider hidden md:table-cell">
+                      Last Event
+                    </th>
+                    <th className="px-4 py-3 text-left text-[10px] font-medium text-gray-400 uppercase tracking-wider hidden lg:table-cell">
+                      Contact
+                    </th>
+                    <th className="px-4 py-3" />
+                  </tr>
+                </thead>
+                <tbody>
+                  {VENDORS_DATA.map((v) => (
+                    <tr
+                      key={v.id}
+                      className={`border-t border-gray-50 transition-colors ${
+                        openId === v.id ? "bg-gray-50" : "hover:bg-gray-50/60"
+                      }`}
+                    >
+                      <td className="px-4 py-3.5 text-sm font-medium text-[#1a1a1a] whitespace-nowrap">
+                        {v.name}
+                      </td>
+                      <td className="px-4 py-3.5 text-sm text-gray-400 whitespace-nowrap">
+                        {v.role}
+                      </td>
+                      <td className="px-4 py-3.5 text-sm text-gray-400 whitespace-nowrap hidden md:table-cell">
+                        {v.lastEvent}
+                      </td>
+                      <td className="px-4 py-3.5 text-xs text-gray-400 whitespace-nowrap hidden lg:table-cell">
+                        {v.email}
+                      </td>
+                      <td className="px-4 py-3.5 text-right">
+                        <button
+                          onClick={() => setOpenId(openId === v.id ? null : v.id)}
+                          className="text-xs font-medium text-gray-400 hover:text-[#1a1a1a] transition-colors whitespace-nowrap"
+                        >
+                          {openId === v.id ? "Close ×" : "View record →"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <current.Demo />
+
+            {/* Side panel — slides in */}
+            <div
+              className="overflow-hidden shrink-0 border-l border-gray-100 transition-all duration-300"
+              style={{ width: openId ? "232px" : "0px" }}
+            >
+              {vendor && (
+                <div className="w-[232px] p-5 flex flex-col gap-4 h-full">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-[#1a1a1a]">{vendor.name}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{vendor.role}</p>
+                    </div>
+                    <button
+                      onClick={() => setOpenId(null)}
+                      className="text-gray-300 hover:text-gray-500 transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  <div>
+                    <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                      Rating
+                    </p>
+                    <div className="flex gap-0.5">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <Star
+                          key={i}
+                          className="h-3.5 w-3.5"
+                          style={{
+                            fill: i <= vendor.rating ? "#EF9F27" : "transparent",
+                            color: i <= vendor.rating ? "#EF9F27" : "#e5e7eb",
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                      Notes — {vendor.lastEvent}
+                    </p>
+                    <p className="text-xs text-[#1a1a1a] leading-relaxed">{vendor.notes}</p>
+                  </div>
+
+                  <button className="w-full rounded-lg bg-[#1a1a1a] text-white text-xs font-medium py-2.5 hover:opacity-80 transition-opacity mt-auto">
+                    Re-invite to event
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
+  );
+}
+
+// ── Roles & Access ────────────────────────────────────────────────
+
+function RolesSection() {
+  const [selectedRole, setSelectedRole] = useState("exec");
+  const [permissions, setPermissions] = useState(DEFAULT_PERMISSIONS);
+
+  const toggle = (perm: string) => {
+    setPermissions((prev) => ({
+      ...prev,
+      [selectedRole]: { ...prev[selectedRole], [perm]: !prev[selectedRole][perm] },
+    }));
+  };
+
+  const role = ROLES_DATA.find((r) => r.id === selectedRole)!;
+  const perms = permissions[selectedRole];
+
+  return (
+    <section className="border-t border-gray-100 py-20">
+      <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20 items-start">
+        <div className="lg:sticky lg:top-16">
+          <h2 className="text-2xl font-medium text-[#1a1a1a] leading-snug">Set it once.</h2>
+          <p className="mt-2 text-gray-400">Access follows the role, not the person.</p>
+        </div>
+
+        <div className="rounded-xl bg-white overflow-hidden" style={{ border: "0.5px solid #e8e8e8" }}>
+          <div className="flex flex-col md:flex-row">
+            {/* Role list */}
+            <div className="md:w-52 shrink-0 border-b md:border-b-0 md:border-r border-gray-100">
+              <div className="px-4 py-3 border-b border-gray-100">
+                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+                  Roles
+                </p>
+              </div>
+              {ROLES_DATA.map((r, i) => (
+                <button
+                  key={r.id}
+                  onClick={() => setSelectedRole(r.id)}
+                  className={`w-full px-4 py-4 text-left transition-colors ${
+                    i > 0 ? "border-t border-gray-50" : ""
+                  } ${selectedRole === r.id ? "bg-gray-50" : "hover:bg-gray-50/50"}`}
+                >
+                  <p
+                    className={`text-sm font-medium ${
+                      selectedRole === r.id ? "text-[#1a1a1a]" : "text-gray-500"
+                    }`}
+                  >
+                    {r.name}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-0.5">{r.access}</p>
+                  <div className="flex items-center mt-2.5">
+                    {r.initials.slice(0, 3).map((init, j) => (
+                      <div
+                        key={init}
+                        className="h-5 w-5 rounded-full bg-gray-100 border border-white flex items-center justify-center"
+                        style={{ marginLeft: j > 0 ? "-5px" : "0", zIndex: 3 - j }}
+                      >
+                        <span className="text-[8px] font-semibold text-gray-500">{init[0]}</span>
+                      </div>
+                    ))}
+                    {r.members > 3 && (
+                      <span className="text-[10px] text-gray-400 ml-2">+{r.members - 3}</span>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Permissions panel */}
+            <div className="flex-1 min-w-0 flex flex-col">
+              <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+                  {role.name}
+                </p>
+                <button className="text-xs text-gray-400 hover:text-[#1a1a1a] transition-colors font-medium">
+                  Edit role
+                </button>
+              </div>
+
+              <div className="px-5 py-5 flex-1">
+                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-4">
+                  Permissions
+                </p>
+                <div className="space-y-4">
+                  {PERM_LABELS.map((perm) => (
+                    <div key={perm} className="flex items-center justify-between gap-4">
+                      <span className="text-sm text-[#1a1a1a]">{perm}</span>
+                      <button
+                        onClick={() => toggle(perm)}
+                        className="relative h-5 w-9 rounded-full shrink-0 transition-colors duration-200"
+                        style={{ background: perms[perm] ? "#1a1a1a" : "#e5e7eb" }}
+                      >
+                        <span
+                          className="absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white transition-transform duration-200"
+                          style={{ transform: perms[perm] ? "translateX(16px)" : "translateX(0)" }}
+                        />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Add member */}
+              <div className="px-5 py-4 border-t border-gray-100">
+                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-3">
+                  Add member
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Name or email address"
+                    className="flex-1 min-w-0 rounded-lg border border-gray-200 px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-300 focus:outline-none focus:border-[#1a1a1a]/40 transition-colors"
+                  />
+                  <button className="shrink-0 h-9 w-9 rounded-lg bg-[#1a1a1a] text-white flex items-center justify-center hover:opacity-80 transition-opacity">
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="px-5 py-3 border-t border-gray-100 bg-gray-50/60">
+                <p className="text-xs text-gray-400">
+                  Access granted the moment they join the role.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -725,46 +600,33 @@ function FeatureSlideshow() {
 
 function Landing() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Nav */}
-      <header className="mx-auto max-w-6xl px-6 py-5 flex items-center justify-between">
-        <BrandLogo />
-        <Link
-          to="/login"
-          className="text-sm font-medium text-foreground transition-opacity hover:opacity-60"
-        >
-          Sign in →
-        </Link>
-      </header>
-
-      {/* Hero */}
-      <section className="mx-auto max-w-6xl px-6 pb-24 pt-16">
-        <div className="grid items-center gap-16 lg:grid-cols-2">
-          <div>
-            <h1 className="font-display text-5xl leading-[1.05] text-foreground md:text-6xl">
-              Inherit the
-              <br />
-              blueprint.
-            </h1>
-            <p className="mt-4 text-xl text-muted-foreground">Never plan from zero.</p>
-          </div>
-          <CloneCard />
-        </div>
-      </section>
-
-      {/* Feature slideshow */}
-      <FeatureSlideshow />
-
-      {/* CTA */}
-      <section className="py-24">
-        <div className="mx-auto max-w-6xl px-6 text-center">
+    <div className="min-h-screen bg-background">
+      <header className="border-b border-gray-100">
+        <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+          <BrandLogo />
           <Link
             to="/login"
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-8 py-4 text-base font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="text-sm font-medium text-[#1a1a1a] hover:opacity-60 transition-opacity"
+          >
+            Sign in →
+          </Link>
+        </div>
+      </header>
+
+      <HeroSection />
+      <RiskSection />
+      <VendorSection />
+      <RolesSection />
+
+      <section className="border-t border-gray-100 py-24">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <Link
+            to="/login"
+            className="inline-flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-8 py-4 text-base font-medium text-white hover:opacity-80 transition-opacity"
           >
             Open your society <ArrowRight className="h-5 w-5" />
           </Link>
-          <p className="mt-4 text-sm text-muted-foreground">Free for student societies</p>
+          <p className="mt-3 text-sm text-gray-400">Free for student societies</p>
         </div>
       </section>
     </div>
