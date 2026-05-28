@@ -636,7 +636,7 @@ const FEATURE_TABS = [
 ];
 
 function FeatureSlideshow() {
-  const [active, setActive] = useState("timeline");
+  const [active, setActive] = useState("blueprint");
   const [visible, setVisible] = useState(true);
 
   const handleSelect = (id: string) => {
