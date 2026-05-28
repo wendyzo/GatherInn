@@ -165,14 +165,14 @@ function HeroSection() {
 // ── Slide: Past event → Blueprint ─────────────────────────────────
 
 const RUNSHEET_ROWS = [
-  { activity: "Venue setup", time: "17:00", owner: "James" },
-  { activity: "Volunteer briefing", time: "18:00", owner: "Sarah" },
-  { activity: "Doors open", time: "19:00", owner: "All crew" },
+  { activity: "Venue setup", time: "17:00", owner: "AV Lead" },
+  { activity: "Volunteer briefing", time: "18:00", owner: "Events Exec" },
+  { activity: "Doors open", time: "19:00", owner: "Committee" },
   { activity: "Welcome address", time: "19:30", owner: "President" },
   { activity: "Main programme", time: "20:15", owner: "MC" },
   { activity: "Catering service", time: "21:30", owner: "Caterer" },
   { activity: "Closing remarks", time: "22:30", owner: "President" },
-  { activity: "Venue clear", time: "23:00", owner: "James" },
+  { activity: "Venue clear", time: "23:00", owner: "AV Lead" },
 ];
 
 function TimelineSlide() {
@@ -269,18 +269,15 @@ function TimelineSlide() {
               >
                 {converted ? row.time : "—"}
               </span>
-              <span className="flex-1 text-xs text-[#1a1a1a] truncate flex items-center gap-1">
-                {converted && (
-                  <Check
-                    className="h-3 w-3 shrink-0"
-                    style={{
-                      color: "#1D9E75",
-                      opacity: 1,
-                      transition: `opacity 0.3s ease ${i * 55}ms`,
-                    }}
-                  />
-                )}
-                {row.activity}
+              <span
+                className="flex-1 text-xs truncate flex items-center gap-1 transition-all duration-300"
+                style={{
+                  transitionDelay: `${i * 55}ms`,
+                  color: converted ? "#1a1a1a" : "#d1d5db",
+                }}
+              >
+                {converted && <Check className="h-3 w-3 shrink-0" style={{ color: "#1D9E75" }} />}
+                {converted ? row.activity : "—"}
               </span>
               <span
                 className="w-16 shrink-0 text-[10px] truncate transition-all duration-300"
