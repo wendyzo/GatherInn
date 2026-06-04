@@ -1120,7 +1120,7 @@ function Landing() {
           <BrandLogo />
           <Link
             to="/login"
-            className="text-sm font-medium text-[#1a1a1a] hover:opacity-60 transition-opacity"
+            className="text-sm font-medium text-gray-400 hover:text-[#1a1a1a] transition-colors"
           >
             Sign in →
           </Link>
@@ -1130,13 +1130,23 @@ function Landing() {
       <HeroSection />
       <FeatureSlideshow />
 
-      <section className="py-24">
-        <div className="max-w-6xl mx-auto px-6 text-center">
+      <section className="py-24 border-t border-gray-100">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h2 className="text-2xl font-medium text-[#1a1a1a]">
+            Ready to stop starting from zero?
+          </h2>
+          <p className="mt-2 text-gray-400">
+            Join the waitlist and be the first to build your society's memory.
+          </p>
           <Link
-            to="/login"
-            className="inline-flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-8 py-4 text-base font-medium text-white hover:opacity-80 transition-opacity"
+            to="/"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-8 py-4 text-base font-medium text-white hover:opacity-80 transition-opacity"
           >
-            Open your society <ArrowRight className="h-5 w-5" />
+            Join waitlist <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
       </section>
