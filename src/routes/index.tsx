@@ -145,6 +145,28 @@ function useCountUp(target: number, active: boolean, duration = 700) {
 // ── Hero ──────────────────────────────────────────────────────────
 
 function HeroSection() {
+  const [email, setEmail] = useState("");
+  const [societyName, setSocietyName] = useState("");
+  const [busy, setBusy] = useState(false);
+  const submitWaitlist = useServerFn(joinWaitlist);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setBusy(true);
+    try {
+      const res = await submitWaitlist({ data: { email, societyName } });
+      toast.success(res.message);
+      setEmail("");
+      setSocietyName("");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      toast.error(msg);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <section className="max-w-3xl mx-auto px-6 pt-24 pb-20 text-center">
       <h1 className="text-4xl md:text-5xl font-medium text-[#1a1a1a] leading-tight tracking-tight">
@@ -153,20 +175,43 @@ function HeroSection() {
       <p className="mt-4 text-base text-gray-500 max-w-xl mx-auto">
         Inherit past runsheets, vendors, and risks.
       </p>
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <Link
-          to="/login"
-          className="inline-flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-6 py-3 text-sm font-medium text-white hover:opacity-80 transition-opacity"
-        >
-          Start planning <ArrowRight className="h-4 w-4" />
+
+      <form onSubmit={handleSubmit} className="mt-8 max-w-md mx-auto">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Your email address"
+            required
+            className="flex-1 min-w-0 rounded-lg border border-gray-200 px-4 py-3 text-sm text-[#1a1a1a] placeholder:text-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
+          />
+          <button
+            type="submit"
+            disabled={busy}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-6 py-3 text-sm font-medium text-white hover:opacity-80 transition-opacity disabled:opacity-50 whitespace-nowrap"
+          >
+            {busy ? "Joining…" : "Join waitlist"} <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+        <input
+          type="text"
+          value={societyName}
+          onChange={(e) => setSocietyName(e.target.value)}
+          placeholder="Society or university name (optional)"
+          className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-[#1a1a1a] placeholder:text-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
+        />
+        <p className="mt-3 text-xs text-gray-400">
+          Be the first to get access when we launch. No spam.
+        </p>
+      </form>
+
+      <p className="mt-6 text-xs text-gray-400">
+        Already have access?{" "}
+        <Link to="/login" className="underline underline-offset-2 hover:text-[#1a1a1a] transition-colors">
+          Sign in
         </Link>
-        <Link
-          to="/login"
-          className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-6 py-3 text-sm font-medium text-[#1a1a1a] hover:bg-gray-50 transition-colors"
-        >
-          Sign up
-        </Link>
-      </div>
+      </p>
     </section>
   );
 }
