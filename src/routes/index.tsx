@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowRight,
   X,
@@ -12,6 +13,8 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
+import { joinWaitlist } from "@/lib/waitlist.functions";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({ component: Landing });
 
