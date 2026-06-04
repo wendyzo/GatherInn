@@ -208,7 +208,10 @@ function HeroSection() {
 
       <p className="mt-6 text-xs text-gray-400">
         Already have access?{" "}
-        <Link to="/login" className="underline underline-offset-2 hover:text-[#1a1a1a] transition-colors">
+        <Link
+          to="/login"
+          className="underline underline-offset-2 hover:text-[#1a1a1a] transition-colors"
+        >
           Sign in
         </Link>
       </p>
