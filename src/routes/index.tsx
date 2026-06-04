@@ -1132,22 +1132,15 @@ function Landing() {
 
       <section className="py-24 border-t border-gray-100">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-2xl font-medium text-[#1a1a1a]">
-            Ready to stop starting from zero?
-          </h2>
-          <p className="mt-2 text-gray-400">
-            Join the waitlist and be the first to build your society's memory.
+          <p className="text-sm text-gray-400">
+            Contact us{" "}
+            <a
+              href="mailto:wendyliu0109@gmail.com"
+              className="text-[#1a1a1a] hover:opacity-60 transition-opacity"
+            >
+              wendyliu0109@gmail.com
+            </a>
           </p>
-          <Link
-            to="/"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-8 py-4 text-base font-medium text-white hover:opacity-80 transition-opacity"
-          >
-            Join waitlist <ArrowRight className="h-5 w-5" />
-          </Link>
         </div>
       </section>
     </div>
