@@ -50,7 +50,7 @@ Long term, GatherInn aims to be the standard platform university society uses to
 - **Event runsheet editor** — drag-and-drop timeline builder with inline editing for title, date, location, and status
 - **Blueprint cloning** — clone a past event's runsheet, tasks, vendors, and risks into a new event as a starting point
 - **AI-powered matching** — surfaces similar past events using keyword and AI matching (Gemini 2.5 Flash)
-- **AI runsheet generation** — generate a full runsheet draft from just an event name
+- **RAG runsheet generation** — generate a runsheet grounded in your society's own history: similar past events are retrieved from Supabase, their runsheet blocks are injected as context, and the LLM produces a draft tailored to what your society has actually run before
 - **Authentication** — email/password login via Supabase Auth with route-level protection
 
 ---
@@ -128,7 +128,7 @@ GatherInn/
 │   ├── lib/
 │   │   ├── auth.tsx            # Auth context and provider
 │   │   ├── event.utils.ts      # Pure utility functions (tested)
-│   │   ├── blueprint.functions.ts  # AI runsheet generation (server fn)
+│   │   ├── blueprint.functions.ts  # RAG runsheet generation — retrieves past blocks as context (server fn)
 │   │   ├── match.functions.ts  # AI past-event matching (server fn)
 │   │   └── __tests__/          # Unit tests
 │   └── routes/
@@ -151,12 +151,13 @@ GatherInn/
 
 Copy `.env.example` to `.env` and populate the values. **Never commit `.env` to version control.**
 
-| Variable                        | Required | Description                       |
-| ------------------------------- | -------- | --------------------------------- |
-| `VITE_SUPABASE_URL`             | Yes      | Supabase project URL (browser)    |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Yes      | Supabase anon key (browser)       |
-| `SUPABASE_URL`                  | Yes      | Supabase project URL (server/SSR) |
-| `SUPABASE_PUBLISHABLE_KEY`      | Yes      | Supabase anon key (server/SSR)    |
+| Variable                        | Required | Description                                              |
+| ------------------------------- | -------- | -------------------------------------------------------- |
+| `VITE_SUPABASE_URL`             | Yes      | Supabase project URL (browser)                           |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Yes      | Supabase anon key (browser)                              |
+| `SUPABASE_URL`                  | Yes      | Supabase project URL (server/SSR)                        |
+| `SUPABASE_PUBLISHABLE_KEY`      | Yes      | Supabase anon key (server/SSR)                           |
+| `LOVABLE_API_KEY`               | Yes      | Lovable AI Gateway key — used for RAG runsheet generation |
 
 ---
 

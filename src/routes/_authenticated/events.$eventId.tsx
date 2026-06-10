@@ -329,7 +329,26 @@ function RunsheetPage() {
     if (!event) return;
     setAiLoading(true);
     try {
-      const { blocks: gen } = await callBlueprint({ data: { eventName: event.name } });
+      let pastContext: { eventName: string; blocks: { title: string; duration_minutes: number; description?: string | null }[] }[] = [];
+      if (pastMatches.length > 0) {
+        const ids = pastMatches.map((m) => m.id);
+        const { data: pastBlocks } = await supabase
+          .from("runsheet_blocks")
+          .select("event_id, title, duration_minutes, description")
+          .in("event_id", ids);
+        if (pastBlocks && pastBlocks.length > 0) {
+          const blocksByEvent = new Map<string, typeof pastBlocks>();
+          pastBlocks.forEach((b) => {
+            const arr = blocksByEvent.get(b.event_id) ?? [];
+            arr.push(b);
+            blocksByEvent.set(b.event_id, arr);
+          });
+          pastContext = pastMatches
+            .map((m) => ({ eventName: m.name, blocks: blocksByEvent.get(m.id) ?? [] }))
+            .filter((e) => e.blocks.length > 0);
+        }
+      }
+      const { blocks: gen } = await callBlueprint({ data: { eventName: event.name, pastContext } });
       if (!gen.length) {
         toast.error("AI returned no blocks");
         return;
