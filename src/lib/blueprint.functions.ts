@@ -2,7 +2,10 @@ import { createServerFn } from "@tanstack/react-start";
 import { findSeedTemplate } from "./blueprint.templates";
 
 type Block = { title: string; start_time: string; duration_minutes: number; description?: string };
-type PastEvent = { eventName: string; blocks: { title: string; duration_minutes: number; description?: string | null }[] };
+type PastEvent = {
+  eventName: string;
+  blocks: { title: string; duration_minutes: number; description?: string | null }[];
+};
 
 export const generateBlueprint = createServerFn({ method: "POST" })
   .inputValidator((d: { eventName: string; pastContext?: PastEvent[] }) => {
@@ -19,7 +22,10 @@ export const generateBlueprint = createServerFn({ method: "POST" })
     const context =
       data.pastContext.length > 0
         ? data.pastContext
-        : (() => { const seed = findSeedTemplate(data.eventName); return seed ? [seed] : []; })();
+        : (() => {
+            const seed = findSeedTemplate(data.eventName);
+            return seed ? [seed] : [];
+          })();
 
     const contextSection =
       context.length > 0
@@ -29,7 +35,10 @@ export const generateBlueprint = createServerFn({ method: "POST" })
               (e) =>
                 `Past event: "${e.eventName}"\n` +
                 e.blocks
-                  .map((b) => `- ${b.title} (${b.duration_minutes}min)${b.description ? `: ${b.description}` : ""}`)
+                  .map(
+                    (b) =>
+                      `- ${b.title} (${b.duration_minutes}min)${b.description ? `: ${b.description}` : ""}`,
+                  )
                   .join("\n"),
             )
             .join("\n\n")

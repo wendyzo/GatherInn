@@ -151,12 +151,12 @@ GatherInn/
 
 Copy `.env.example` to `.env` and populate the values. **Never commit `.env` to version control.**
 
-| Variable                        | Required | Description                                              |
-| ------------------------------- | -------- | -------------------------------------------------------- |
-| `VITE_SUPABASE_URL`             | Yes      | Supabase project URL (browser)                           |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Yes      | Supabase anon key (browser)                              |
-| `SUPABASE_URL`                  | Yes      | Supabase project URL (server/SSR)                        |
-| `SUPABASE_PUBLISHABLE_KEY`      | Yes      | Supabase anon key (server/SSR)                           |
+| Variable                        | Required | Description                                               |
+| ------------------------------- | -------- | --------------------------------------------------------- |
+| `VITE_SUPABASE_URL`             | Yes      | Supabase project URL (browser)                            |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Yes      | Supabase anon key (browser)                               |
+| `SUPABASE_URL`                  | Yes      | Supabase project URL (server/SSR)                         |
+| `SUPABASE_PUBLISHABLE_KEY`      | Yes      | Supabase anon key (server/SSR)                            |
 | `LOVABLE_API_KEY`               | Yes      | Lovable AI Gateway key — used for RAG runsheet generation |
 
 ---

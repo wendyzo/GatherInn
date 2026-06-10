@@ -329,7 +329,10 @@ function RunsheetPage() {
     if (!event) return;
     setAiLoading(true);
     try {
-      let pastContext: { eventName: string; blocks: { title: string; duration_minutes: number; description?: string | null }[] }[] = [];
+      let pastContext: {
+        eventName: string;
+        blocks: { title: string; duration_minutes: number; description?: string | null }[];
+      }[] = [];
       if (pastMatches.length > 0) {
         const ids = pastMatches.map((m) => m.id);
         const { data: pastBlocks } = await supabase
