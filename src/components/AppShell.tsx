@@ -10,26 +10,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const onDashboard = useMatch({ from: "/_authenticated/dashboard", shouldThrow: false });
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-sidebar/80 backdrop-blur sticky top-0 z-30">
-        <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between">
-          <Link to="/dashboard" className="flex items-center gap-2 group">
-            <BrandLogo />
-          </Link>
+      <header className="bg-sidebar text-sidebar-foreground sticky top-0 z-30 border-b border-sidebar-border">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <nav className="flex items-center gap-2">
             {!onDashboard && (
               <Link
                 to="/dashboard"
-                className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5"
+                className="inline-flex items-center gap-1.5 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground"
               >
                 <LayoutDashboard className="h-4 w-4" /> Dashboard
               </Link>
             )}
-            <span className="text-xs text-muted-foreground hidden sm:inline px-3">
+            <span className="hidden px-3 text-xs text-sidebar-foreground/70 sm:inline">
               {user?.email}
             </span>
             <Button
               variant="ghost"
               size="sm"
+              className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
               onClick={async () => {
                 await signOut();
                 nav({ to: "/login" });
@@ -38,6 +36,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <LogOut className="h-4 w-4" />
             </Button>
           </nav>
+          <Link to="/dashboard" className="group flex items-center gap-2">
+            <BrandLogo />
+          </Link>
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-6 py-8">{children}</main>
