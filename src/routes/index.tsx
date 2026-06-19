@@ -169,10 +169,10 @@ function HeroSection() {
 
   return (
     <section className="max-w-3xl mx-auto px-6 pt-24 pb-20 text-center">
-      <h1 className="text-4xl md:text-5xl font-medium text-[#1a1a1a] leading-tight tracking-tight">
+      <h1 className="text-4xl md:text-5xl font-medium text-foreground leading-tight tracking-tight">
         Plan events without starting over.
       </h1>
-      <p className="mt-4 text-base text-gray-500 max-w-xl mx-auto">
+      <p className="mt-4 text-base text-muted-foreground max-w-xl mx-auto">
         Inherit past runsheets, vendors, and risks.
       </p>
 
@@ -184,12 +184,12 @@ function HeroSection() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Your email address"
             required
-            className="flex-1 min-w-0 rounded-lg border border-gray-200 px-4 py-3 text-sm text-[#1a1a1a] placeholder:text-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
+            className="flex-1 min-w-0 rounded-lg border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/40 transition-colors"
           />
           <button
             type="submit"
             disabled={busy}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-6 py-3 text-sm font-medium text-white hover:opacity-80 transition-opacity disabled:opacity-50 whitespace-nowrap"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-white hover:opacity-80 transition-opacity disabled:opacity-50 whitespace-nowrap"
           >
             {busy ? "Joining…" : "Join waitlist"} <ArrowRight className="h-4 w-4" />
           </button>
@@ -199,18 +199,18 @@ function HeroSection() {
           value={societyName}
           onChange={(e) => setSocietyName(e.target.value)}
           placeholder="Society or university name (optional)"
-          className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-[#1a1a1a] placeholder:text-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
+          className="mt-2 w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/40 transition-colors"
         />
-        <p className="mt-3 text-xs text-gray-400">
+        <p className="mt-3 text-xs text-muted-foreground">
           Be the first to get access when we launch. No spam.
         </p>
       </form>
 
-      <p className="mt-6 text-xs text-gray-400">
+      <p className="mt-6 text-xs text-muted-foreground">
         Already have access?{" "}
         <Link
           to="/login"
-          className="underline underline-offset-2 hover:text-[#1a1a1a] transition-colors"
+          className="underline underline-offset-2 hover:text-foreground transition-colors"
         >
           Sign in
         </Link>
@@ -253,9 +253,9 @@ function TimelineSlide() {
 
   const colHeader = (
     <div className="flex items-center gap-2 px-4 py-2 border-b border-gray-50">
-      <span className="w-10 text-[10px] text-gray-300 uppercase tracking-wider">Time</span>
-      <span className="flex-1 text-[10px] text-gray-300 uppercase tracking-wider">Activity</span>
-      <span className="w-8 shrink-0 text-[10px] text-gray-300 uppercase tracking-wider text-right">
+      <span className="w-10 text-[10px] text-muted-foreground/60 uppercase tracking-wider">Time</span>
+      <span className="flex-1 text-[10px] text-muted-foreground/60 uppercase tracking-wider">Activity</span>
+      <span className="w-8 shrink-0 text-[10px] text-muted-foreground/60 uppercase tracking-wider text-right">
         Min
       </span>
     </div>
@@ -265,13 +265,13 @@ function TimelineSlide() {
     <div className="space-y-3">
       {/* Step 1 — event search */}
       <div
-        className="rounded-xl bg-white overflow-hidden transition-all duration-300"
+        className="rounded-xl bg-card overflow-hidden transition-all duration-300"
         style={{ border: matched ? "0.5px solid #1D9E75" : "0.5px solid #e8e8e8" }}
       >
         <div className="flex items-center gap-3 px-4 py-3">
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] text-gray-300 uppercase tracking-wider mb-0.5">Plan event</p>
-            <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2025</p>
+            <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider mb-0.5">Plan event</p>
+            <p className="text-sm font-medium text-foreground">Finals Night 2025</p>
           </div>
           <button
             onClick={() => setMatched(true)}
@@ -292,14 +292,14 @@ function TimelineSlide() {
             style={{ background: "rgba(29,158,117,0.04)" }}
           >
             <div className="h-2 w-2 rounded-full shrink-0" style={{ background: "#1D9E75" }} />
-            <span className="text-sm font-medium text-[#1a1a1a]">Finals Night 2023</span>
-            <span className="flex-1 text-xs text-gray-400">94% match · 5 shared segments</span>
+            <span className="text-sm font-medium text-foreground">Finals Night 2023</span>
+            <span className="flex-1 text-xs text-muted-foreground">94% match · 5 shared segments</span>
             <button
               onClick={() => {
                 setMatched(false);
                 setConverted(false);
               }}
-              className="text-xs text-gray-300 hover:text-gray-500 transition-colors"
+              className="text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
             >
               ×
             </button>
@@ -313,11 +313,11 @@ function TimelineSlide() {
       >
         {/* Left card — past event */}
         <div
-          className="rounded-xl bg-white overflow-hidden"
-          style={{ border: "0.5px solid #e8e8e8" }}
+          className="rounded-xl bg-card overflow-hidden"
+          style={{ border: "1px solid rgba(61, 90, 62, 0.1)" }}
         >
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
               What actually happened
             </p>
             <span
@@ -328,7 +328,7 @@ function TimelineSlide() {
             </span>
           </div>
           <div className="px-4 py-2.5 border-b border-gray-100">
-            <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2023</p>
+            <p className="text-sm font-medium text-foreground">Finals Night 2023</p>
           </div>
           {colHeader}
           {pastRows.map((row) => (
@@ -336,8 +336,8 @@ function TimelineSlide() {
               key={row.activity}
               className="flex items-center gap-2 px-4 py-2.5 border-t border-gray-50"
             >
-              <span className="w-10 text-xs font-mono text-gray-400">{row.time}</span>
-              <span className="flex-1 text-xs text-[#1a1a1a] truncate">{row.activity}</span>
+              <span className="w-10 text-xs font-mono text-muted-foreground">{row.time}</span>
+              <span className="flex-1 text-xs text-foreground truncate">{row.activity}</span>
               <div className="w-8 shrink-0 flex items-center justify-end gap-1">
                 {row.overran && (
                   <div
@@ -345,7 +345,7 @@ function TimelineSlide() {
                     style={{ background: "#E24B4A" }}
                   />
                 )}
-                <span className="text-xs font-mono text-gray-400">{row.duration}</span>
+                <span className="text-xs font-mono text-muted-foreground">{row.duration}</span>
               </div>
             </div>
           ))}
@@ -355,7 +355,7 @@ function TimelineSlide() {
         <div className="flex md:flex-col items-center justify-center py-3 md:pt-28">
           <button
             onClick={() => setConverted((v) => !v)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#1a1a1a] px-3 py-2 text-[11px] font-medium text-white hover:opacity-80 transition-opacity whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-[11px] font-medium text-white hover:opacity-80 transition-opacity whitespace-nowrap"
           >
             {converted ? "Reset" : "Convert"} <ArrowRight className="h-3 w-3" />
           </button>
@@ -363,7 +363,7 @@ function TimelineSlide() {
 
         {/* Right card — blueprint */}
         <div
-          className="rounded-xl bg-white overflow-hidden transition-all duration-300"
+          className="rounded-xl bg-card overflow-hidden transition-all duration-300"
           style={{ border: converted ? "0.5px solid #EF9F27" : "0.5px solid #e8e8e8" }}
         >
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
@@ -375,14 +375,14 @@ function TimelineSlide() {
                 Your new blueprint
               </span>
             ) : (
-              <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
                 New blueprint
               </p>
             )}
-            <span className="text-[10px] text-gray-400">14 Oct 2025</span>
+            <span className="text-[10px] text-muted-foreground">14 Oct 2025</span>
           </div>
           <div className="px-4 py-2.5 border-b border-gray-100">
-            <p className="text-sm font-medium text-[#1a1a1a]">Finals Night 2025</p>
+            <p className="text-sm font-medium text-foreground">Finals Night 2025</p>
           </div>
           {colHeader}
           {blueprintRows.map((row, i) => (
@@ -453,18 +453,18 @@ function VendorSlide() {
   const pastVendor = VENDORS_DATA.find((v) => v.id === openId) ?? null;
   const recVendor = RECOMMENDED_VENDORS.find((v) => v.id === openId) ?? null;
 
-  const th = "px-4 py-3 text-left text-[10px] font-medium text-gray-400 uppercase tracking-wider";
+  const th = "px-4 py-3 text-left text-[10px] font-medium text-muted-foreground uppercase tracking-wider";
 
   return (
-    <div className="rounded-xl bg-white overflow-hidden" style={{ border: "0.5px solid #e8e8e8" }}>
+    <div className="rounded-xl bg-card overflow-hidden" style={{ border: "1px solid rgba(61, 90, 62, 0.1)" }}>
       <div className="flex">
         <div className="flex-1 min-w-0 overflow-x-auto">
           {/* Your vendors */}
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
               Your vendors
             </p>
-            <span className="text-[10px] text-gray-300">{VENDORS_DATA.length} contacts</span>
+            <span className="text-[10px] text-muted-foreground/60">{VENDORS_DATA.length} contacts</span>
           </div>
           <table className="w-full">
             <thead>
@@ -482,11 +482,11 @@ function VendorSlide() {
                   key={v.id}
                   className={`border-t border-gray-50 transition-colors ${openId === v.id ? "bg-gray-50" : "hover:bg-gray-50/60"}`}
                 >
-                  <td className="px-4 py-3.5 text-sm font-medium text-[#1a1a1a] whitespace-nowrap">
+                  <td className="px-4 py-3.5 text-sm font-medium text-foreground whitespace-nowrap">
                     {v.name}
                   </td>
-                  <td className="px-4 py-3.5 text-sm text-gray-400 whitespace-nowrap">{v.role}</td>
-                  <td className="hidden md:table-cell px-4 py-3.5 text-sm text-gray-400 whitespace-nowrap">
+                  <td className="px-4 py-3.5 text-sm text-muted-foreground whitespace-nowrap">{v.role}</td>
+                  <td className="hidden md:table-cell px-4 py-3.5 text-sm text-muted-foreground whitespace-nowrap">
                     {v.lastEvent}
                   </td>
                   <td className="px-4 py-3.5">
@@ -503,7 +503,7 @@ function VendorSlide() {
                   <td className="px-4 py-3.5 text-right">
                     <button
                       onClick={() => setOpenId(openId === v.id ? null : v.id)}
-                      className="text-xs font-medium text-gray-400 hover:text-[#1a1a1a] transition-colors whitespace-nowrap"
+                      className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
                     >
                       {openId === v.id ? "Close ×" : "View record →"}
                     </button>
@@ -518,7 +518,7 @@ function VendorSlide() {
             className="px-4 py-3 border-t border-b border-gray-100 flex items-center justify-between"
             style={{ background: "rgba(239,159,39,0.03)" }}
           >
-            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
               Recommended
             </p>
             <span
@@ -535,11 +535,11 @@ function VendorSlide() {
                   key={v.id}
                   className={`border-t border-gray-50 transition-colors ${openId === v.id ? "bg-gray-50" : "hover:bg-gray-50/60"}`}
                 >
-                  <td className="px-4 py-3.5 text-sm font-medium text-[#1a1a1a] whitespace-nowrap">
+                  <td className="px-4 py-3.5 text-sm font-medium text-foreground whitespace-nowrap">
                     {v.name}
                   </td>
-                  <td className="px-4 py-3.5 text-sm text-gray-400 whitespace-nowrap">{v.role}</td>
-                  <td className="hidden md:table-cell px-4 py-3.5 text-xs text-gray-400">
+                  <td className="px-4 py-3.5 text-sm text-muted-foreground whitespace-nowrap">{v.role}</td>
+                  <td className="hidden md:table-cell px-4 py-3.5 text-xs text-muted-foreground">
                     {v.reason}
                   </td>
                   <td className="px-4 py-3.5">
@@ -553,7 +553,7 @@ function VendorSlide() {
                   <td className="px-4 py-3.5 text-right">
                     <button
                       onClick={() => setOpenId(openId === v.id ? null : v.id)}
-                      className="text-xs font-medium text-gray-400 hover:text-[#1a1a1a] transition-colors whitespace-nowrap"
+                      className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
                     >
                       {openId === v.id ? "Close ×" : "Get in touch →"}
                     </button>
@@ -573,18 +573,18 @@ function VendorSlide() {
             <div className="w-56 p-5 flex flex-col gap-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[#1a1a1a]">{pastVendor.name}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{pastVendor.role}</p>
+                  <p className="text-sm font-medium text-foreground">{pastVendor.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{pastVendor.role}</p>
                 </div>
                 <button
                   onClick={() => setOpenId(null)}
-                  className="text-gray-300 hover:text-gray-500 transition-colors"
+                  className="text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                 >
                   <X className="h-4 w-4" />
                 </button>
               </div>
               <div>
-                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">
                   Rating
                 </p>
                 <div className="flex gap-0.5">
@@ -601,12 +601,12 @@ function VendorSlide() {
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">
                   Notes — {pastVendor.lastEvent}
                 </p>
-                <p className="text-xs text-[#1a1a1a] leading-relaxed">{pastVendor.notes}</p>
+                <p className="text-xs text-foreground leading-relaxed">{pastVendor.notes}</p>
               </div>
-              <button className="w-full rounded-lg bg-[#1a1a1a] text-white text-xs font-medium py-2.5 hover:opacity-80 transition-opacity">
+              <button className="w-full rounded-lg bg-primary text-white text-xs font-medium py-2.5 hover:opacity-80 transition-opacity">
                 Re-invite to event
               </button>
             </div>
@@ -615,27 +615,27 @@ function VendorSlide() {
             <div className="w-56 p-5 flex flex-col gap-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[#1a1a1a]">{recVendor.name}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{recVendor.role}</p>
+                  <p className="text-sm font-medium text-foreground">{recVendor.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{recVendor.role}</p>
                 </div>
                 <button
                   onClick={() => setOpenId(null)}
-                  className="text-gray-300 hover:text-gray-500 transition-colors"
+                  className="text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                 >
                   <X className="h-4 w-4" />
                 </button>
               </div>
               <div>
-                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">
                   Why recommended
                 </p>
-                <p className="text-xs text-[#1a1a1a] leading-relaxed">{recVendor.reason}</p>
+                <p className="text-xs text-foreground leading-relaxed">{recVendor.reason}</p>
               </div>
               <div>
-                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">
                   Contact
                 </p>
-                <p className="text-xs text-[#1a1a1a]">{recVendor.email}</p>
+                <p className="text-xs text-foreground">{recVendor.email}</p>
               </div>
               <button
                 className="w-full rounded-lg text-white text-xs font-medium py-2.5 hover:opacity-80 transition-opacity"
@@ -668,12 +668,12 @@ function RolesSlide() {
   const perms = permissions[selectedRole];
 
   return (
-    <div className="rounded-xl bg-white overflow-hidden" style={{ border: "0.5px solid #e8e8e8" }}>
+    <div className="rounded-xl bg-card overflow-hidden" style={{ border: "1px solid rgba(61, 90, 62, 0.1)" }}>
       <div className="flex flex-col md:flex-row">
         {/* Role list */}
         <div className="md:w-48 shrink-0 border-b md:border-b-0 md:border-r border-gray-100">
           <div className="px-4 py-3 border-b border-gray-100">
-            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">Roles</p>
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Roles</p>
           </div>
           {ROLES_DATA.map((r, i) => (
             <button
@@ -684,11 +684,11 @@ function RolesSlide() {
               }`}
             >
               <p
-                className={`text-sm font-medium ${selectedRole === r.id ? "text-[#1a1a1a]" : "text-gray-500"}`}
+                className={`text-sm font-medium ${selectedRole === r.id ? "text-foreground" : "text-muted-foreground"}`}
               >
                 {r.name}
               </p>
-              <p className="text-xs text-gray-400 mt-0.5">{r.access}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{r.access}</p>
               <div className="flex items-center mt-2">
                 {r.initials.slice(0, 3).map((init, j) => (
                   <div
@@ -696,11 +696,11 @@ function RolesSlide() {
                     className="h-5 w-5 rounded-full bg-gray-100 border border-white flex items-center justify-center"
                     style={{ marginLeft: j > 0 ? "-5px" : "0", zIndex: 3 - j }}
                   >
-                    <span className="text-[8px] font-semibold text-gray-500">{init[0]}</span>
+                    <span className="text-[8px] font-semibold text-muted-foreground">{init[0]}</span>
                   </div>
                 ))}
                 {r.members > 3 && (
-                  <span className="ml-2 text-[10px] text-gray-400">+{r.members - 3}</span>
+                  <span className="ml-2 text-[10px] text-muted-foreground">+{r.members - 3}</span>
                 )}
               </div>
             </button>
@@ -710,29 +710,29 @@ function RolesSlide() {
         {/* Permissions */}
         <div className="flex-1 min-w-0 flex flex-col">
           <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
-            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
               {role.name}
             </p>
-            <button className="text-xs font-medium text-gray-400 hover:text-[#1a1a1a] transition-colors">
+            <button className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
               Edit role
             </button>
           </div>
 
           <div className="px-5 py-5 flex-1">
-            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-4">
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-4">
               Permissions
             </p>
             <div className="space-y-4">
               {PERM_LABELS.map((perm) => (
                 <div key={perm} className="flex items-center justify-between gap-4">
-                  <span className="text-sm text-[#1a1a1a]">{perm}</span>
+                  <span className="text-sm text-foreground">{perm}</span>
                   <button
                     onClick={() => toggle(perm)}
                     className="relative h-5 w-9 rounded-full shrink-0 transition-colors duration-200"
                     style={{ background: perms[perm] ? "#1a1a1a" : "#e5e7eb" }}
                   >
                     <span
-                      className="absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white transition-transform duration-200"
+                      className="absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-card transition-transform duration-200"
                       style={{ transform: perms[perm] ? "translateX(16px)" : "translateX(0)" }}
                     />
                   </button>
@@ -742,23 +742,23 @@ function RolesSlide() {
           </div>
 
           <div className="px-5 py-4 border-t border-gray-100">
-            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-3">
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-3">
               Add member
             </p>
             <div className="flex gap-2">
               <input
                 type="text"
                 placeholder="Name or email address"
-                className="flex-1 min-w-0 rounded-lg border border-gray-200 px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
+                className="flex-1 min-w-0 rounded-lg border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/40 transition-colors"
               />
-              <button className="shrink-0 h-9 w-9 rounded-lg bg-[#1a1a1a] text-white flex items-center justify-center hover:opacity-80 transition-opacity">
+              <button className="shrink-0 h-9 w-9 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-80 transition-opacity">
                 <Plus className="h-4 w-4" />
               </button>
             </div>
           </div>
 
           <div className="px-5 py-3 border-t border-gray-100 bg-gray-50/60">
-            <p className="text-xs text-gray-400">Access granted the moment they join the role.</p>
+            <p className="text-xs text-muted-foreground">Access granted the moment they join the role.</p>
           </div>
         </div>
       </div>
@@ -788,11 +788,11 @@ function HandoverSlide() {
     <div className="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-start">
       {/* Left card — outgoing exec */}
       <div
-        className="rounded-xl bg-white overflow-hidden"
-        style={{ border: "0.5px solid #e8e8e8" }}
+        className="rounded-xl bg-card overflow-hidden"
+        style={{ border: "1px solid rgba(61, 90, 62, 0.1)" }}
       >
         <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
             Outgoing exec
           </p>
           <span
@@ -803,11 +803,11 @@ function HandoverSlide() {
           </span>
         </div>
         <div className="px-4 py-3 border-b border-gray-100">
-          <p className="text-sm font-medium text-[#1a1a1a]">Alex Chen</p>
-          <p className="text-xs text-gray-400 mt-0.5">President · 2 years</p>
+          <p className="text-sm font-medium text-foreground">Alex Chen</p>
+          <p className="text-xs text-muted-foreground mt-0.5">President · 2 years</p>
         </div>
         <div className="px-4 py-4 space-y-3">
-          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">
+          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
             Knowledge to transfer
           </p>
           {HANDOVER_ITEMS.map((item) => (
@@ -816,7 +816,7 @@ function HandoverSlide() {
                 className="h-1.5 w-1.5 rounded-full shrink-0"
                 style={{ background: "#1D9E75" }}
               />
-              <span className="text-sm text-[#1a1a1a]">{item.label}</span>
+              <span className="text-sm text-foreground">{item.label}</span>
             </div>
           ))}
         </div>
@@ -826,7 +826,7 @@ function HandoverSlide() {
       <div className="flex md:flex-col items-center justify-center py-3 md:pt-28">
         <button
           onClick={() => setTransferred((v) => !v)}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-[#1a1a1a] px-3 py-2 text-[11px] font-medium text-white hover:opacity-80 transition-opacity whitespace-nowrap"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-[11px] font-medium text-white hover:opacity-80 transition-opacity whitespace-nowrap"
         >
           {transferred ? "Reset" : "Transfer"} <ArrowRight className="h-3 w-3" />
         </button>
@@ -834,7 +834,7 @@ function HandoverSlide() {
 
       {/* Right card — incoming exec */}
       <div
-        className="rounded-xl bg-white overflow-hidden transition-all duration-300"
+        className="rounded-xl bg-card overflow-hidden transition-all duration-300"
         style={{ border: transferred ? "0.5px solid #1D9E75" : "0.5px solid #e8e8e8" }}
       >
         <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
@@ -846,17 +846,17 @@ function HandoverSlide() {
               Memory received
             </span>
           ) : (
-            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
               Incoming exec
             </p>
           )}
         </div>
         <div className="px-4 py-3 border-b border-gray-100">
-          <p className="text-sm font-medium text-[#1a1a1a]">Jamie Liu</p>
-          <p className="text-xs text-gray-400 mt-0.5">President-elect · Year 2</p>
+          <p className="text-sm font-medium text-foreground">Jamie Liu</p>
+          <p className="text-xs text-muted-foreground mt-0.5">President-elect · Year 2</p>
         </div>
         <div className="px-4 py-4 space-y-3">
-          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">
+          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
             Past events
           </p>
           {transferred
@@ -872,11 +872,11 @@ function HandoverSlide() {
                       style={{ background: "#1D9E75" }}
                     />
                     <div>
-                      <p className="text-sm text-[#1a1a1a]">{ev.name}</p>
-                      <p className="text-xs text-gray-400">{ev.date}</p>
+                      <p className="text-sm text-foreground">{ev.name}</p>
+                      <p className="text-xs text-muted-foreground">{ev.date}</p>
                     </div>
                   </div>
-                  <button className="text-xs font-medium text-gray-400 hover:text-[#1a1a1a] transition-colors whitespace-nowrap">
+                  <button className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">
                     Clone →
                   </button>
                 </div>
@@ -884,7 +884,7 @@ function HandoverSlide() {
             : HANDOVER_EVENTS.map((ev) => (
                 <div key={ev.name} className="flex items-center gap-2.5">
                   <div className="h-1.5 w-1.5 rounded-full shrink-0 bg-gray-200" />
-                  <p className="text-sm text-gray-300">—</p>
+                  <p className="text-sm text-muted-foreground/60">—</p>
                 </div>
               ))}
         </div>
@@ -909,25 +909,25 @@ function ExperienceSlide() {
       {/* Left — bare CV */}
       <div
         className="rounded-xl overflow-hidden flex flex-col justify-center px-8 py-10"
-        style={{ background: "#f7f7f7", border: "0.5px solid #e8e8e8" }}
+        style={{ background: "#f7f7f7", border: "1px solid rgba(61, 90, 62, 0.1)" }}
       >
-        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-4">
+        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-4">
           Traditional CV
         </p>
         <p className="text-sm font-medium text-gray-600">Hackathon Organiser</p>
-        <p className="mt-2 text-sm text-gray-500 leading-snug">
+        <p className="mt-2 text-sm text-muted-foreground leading-snug">
           UNSW Computer Science &amp; Engineering Society
         </p>
-        <p className="mt-2 text-sm text-gray-400">Aug 2024 – Oct 2024</p>
+        <p className="mt-2 text-sm text-muted-foreground">Aug 2024 – Oct 2024</p>
       </div>
 
       {/* Right — verified GatherInn record */}
       <div
-        className="rounded-xl bg-white overflow-hidden flex flex-col"
-        style={{ border: "0.5px solid #e8e8e8" }}
+        className="rounded-xl bg-card overflow-hidden flex flex-col"
+        style={{ border: "1px solid rgba(61, 90, 62, 0.1)" }}
       >
         <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
-          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
             GatherInn record
           </p>
           <span
@@ -939,8 +939,8 @@ function ExperienceSlide() {
         </div>
         <div className="px-5 py-5 flex flex-col gap-4 flex-1">
           <div>
-            <p className="text-sm font-medium text-[#1a1a1a]">CSESoc Hackathon 2024</p>
-            <p className="text-xs text-gray-400 mt-0.5">Lead Organiser · CSESoc UNSW</p>
+            <p className="text-sm font-medium text-foreground">CSESoc Hackathon 2024</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Lead Organiser · CSESoc UNSW</p>
           </div>
           <div className="space-y-2.5">
             {EXPERIENCE_BULLETS.map((item) => (
@@ -949,12 +949,12 @@ function ExperienceSlide() {
                   className="h-1.5 w-1.5 rounded-full shrink-0"
                   style={{ background: "#1D9E75" }}
                 />
-                <span className="text-sm text-[#1a1a1a]">{item}</span>
+                <span className="text-sm text-foreground">{item}</span>
               </div>
             ))}
           </div>
           <div className="mt-auto pt-3 border-t border-gray-100 flex items-center gap-1.5">
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-muted-foreground">
               Verified by Ethan Park, President · Oct 2024
             </span>
             <span className="text-xs font-semibold" style={{ color: "#1D9E75" }}>
@@ -997,11 +997,11 @@ function StatsSection() {
             { count: riskCount, top: "risks", bottom: "surfaced from history" },
           ].map(({ count, top, bottom }) => (
             <div key={top}>
-              <p className="text-4xl md:text-5xl font-medium tabular-nums text-[#1a1a1a]">
+              <p className="text-4xl md:text-5xl font-medium tabular-nums text-foreground">
                 {count}
               </p>
-              <p className="mt-2 text-sm font-medium text-[#1a1a1a]">{top}</p>
-              <p className="text-sm text-gray-400">{bottom}</p>
+              <p className="mt-2 text-sm font-medium text-foreground">{top}</p>
+              <p className="text-sm text-muted-foreground">{bottom}</p>
             </div>
           ))}
         </div>
@@ -1077,10 +1077,10 @@ function FeatureSlideshow() {
                 } ${active === id ? "bg-gray-50 border-b-[#1a1a1a]" : "border-b-transparent hover:bg-gray-50/50"}`}
               >
                 <Icon
-                  className={`h-4 w-4 transition-colors ${active === id ? "text-[#1a1a1a]" : "text-gray-300"}`}
+                  className={`h-4 w-4 transition-colors ${active === id ? "text-foreground" : "text-muted-foreground/60"}`}
                 />
                 <span
-                  className={`text-sm font-medium transition-colors ${active === id ? "text-[#1a1a1a]" : "text-gray-300"}`}
+                  className={`text-sm font-medium transition-colors ${active === id ? "text-foreground" : "text-muted-foreground/60"}`}
                 >
                   {label}
                 </span>
@@ -1101,8 +1101,8 @@ function FeatureSlideshow() {
       >
         <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-[2fr_3fr] gap-16 items-start">
           <div className="lg:sticky lg:top-10">
-            <h2 className="text-2xl font-medium text-[#1a1a1a] leading-snug">{current.heading}</h2>
-            <p className="mt-2 text-gray-400">{current.sub}</p>
+            <h2 className="text-2xl font-medium text-foreground leading-snug">{current.heading}</h2>
+            <p className="mt-2 text-muted-foreground">{current.sub}</p>
           </div>
           <current.Demo />
         </div>
@@ -1123,7 +1123,7 @@ function Landing() {
           <BrandLogo />
           <Link
             to="/login"
-            className="text-sm font-medium text-gray-400 hover:text-[#1a1a1a] transition-colors"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Sign in →
           </Link>
@@ -1135,11 +1135,11 @@ function Landing() {
 
       <section className="py-24 border-t border-gray-100">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-muted-foreground">
             Contact us{" "}
             <a
               href="mailto:wendyliu0109@gmail.com"
-              className="text-[#1a1a1a] hover:opacity-60 transition-opacity"
+              className="text-foreground hover:opacity-60 transition-opacity"
             >
               wendyliu0109@gmail.com
             </a>
