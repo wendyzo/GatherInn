@@ -252,7 +252,7 @@ function TimelineSlide() {
   ];
 
   const colHeader = (
-    <div className="flex items-center gap-2 px-4 py-2 border-b border-gray-50">
+    <div className="flex items-center gap-2 px-4 py-2 border-b border-border/60">
       <span className="w-10 text-[10px] text-muted-foreground/60 uppercase tracking-wider">Time</span>
       <span className="flex-1 text-[10px] text-muted-foreground/60 uppercase tracking-wider">Activity</span>
       <span className="w-8 shrink-0 text-[10px] text-muted-foreground/60 uppercase tracking-wider text-right">
@@ -266,7 +266,7 @@ function TimelineSlide() {
       {/* Step 1 — event search */}
       <div
         className="rounded-xl bg-card overflow-hidden transition-all duration-300"
-        style={{ border: matched ? "0.5px solid #1D9E75" : "0.5px solid #e8e8e8" }}
+        style={{ border: matched ? "0.5px solid #1D9E75" : "1px solid rgba(61, 90, 62, 0.1)" }}
       >
         <div className="flex items-center gap-3 px-4 py-3">
           <div className="flex-1 min-w-0">
@@ -280,7 +280,7 @@ function TimelineSlide() {
             style={
               matched
                 ? { background: "rgba(29,158,117,0.1)", color: "#1D9E75" }
-                : { background: "#1a1a1a", color: "#fff" }
+                : { background: "#3D5A3E", color: "#F6F3EE" }
             }
           >
             {matched ? "✓ Match found" : "Find blueprint →"}
@@ -288,7 +288,7 @@ function TimelineSlide() {
         </div>
         {matched && (
           <div
-            className="px-4 py-2.5 border-t border-gray-100 flex items-center gap-2.5"
+            className="px-4 py-2.5 border-t border-border flex items-center gap-2.5"
             style={{ background: "rgba(29,158,117,0.04)" }}
           >
             <div className="h-2 w-2 rounded-full shrink-0" style={{ background: "#1D9E75" }} />
@@ -316,7 +316,7 @@ function TimelineSlide() {
           className="rounded-xl bg-card overflow-hidden"
           style={{ border: "1px solid rgba(61, 90, 62, 0.1)" }}
         >
-          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+          <div className="px-4 py-3 border-b border-border flex items-center justify-between">
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
               What actually happened
             </p>
@@ -327,14 +327,14 @@ function TimelineSlide() {
               Completed
             </span>
           </div>
-          <div className="px-4 py-2.5 border-b border-gray-100">
+          <div className="px-4 py-2.5 border-b border-border">
             <p className="text-sm font-medium text-foreground">Finals Night 2023</p>
           </div>
           {colHeader}
           {pastRows.map((row) => (
             <div
               key={row.activity}
-              className="flex items-center gap-2 px-4 py-2.5 border-t border-gray-50"
+              className="flex items-center gap-2 px-4 py-2.5 border-t border-border/60"
             >
               <span className="w-10 text-xs font-mono text-muted-foreground">{row.time}</span>
               <span className="flex-1 text-xs text-foreground truncate">{row.activity}</span>
@@ -364,9 +364,9 @@ function TimelineSlide() {
         {/* Right card — blueprint */}
         <div
           className="rounded-xl bg-card overflow-hidden transition-all duration-300"
-          style={{ border: converted ? "0.5px solid #EF9F27" : "0.5px solid #e8e8e8" }}
+          style={{ border: converted ? "0.5px solid #EF9F27" : "1px solid rgba(61, 90, 62, 0.1)" }}
         >
-          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+          <div className="px-4 py-3 border-b border-border flex items-center justify-between">
             {converted ? (
               <span
                 className="text-[10px] font-medium px-2 py-0.5 rounded-full uppercase tracking-widest"
@@ -381,12 +381,12 @@ function TimelineSlide() {
             )}
             <span className="text-[10px] text-muted-foreground">14 Oct 2025</span>
           </div>
-          <div className="px-4 py-2.5 border-b border-gray-100">
+          <div className="px-4 py-2.5 border-b border-border">
             <p className="text-sm font-medium text-foreground">Finals Night 2025</p>
           </div>
           {colHeader}
           {blueprintRows.map((row, i) => (
-            <div key={row.activity} className="border-t border-gray-50">
+            <div key={row.activity} className="border-t border-border/60">
               <div className="flex items-center gap-2 px-4 py-2.5">
                 <span
                   className="w-10 text-xs font-mono transition-all duration-300"
@@ -401,7 +401,7 @@ function TimelineSlide() {
                   className="flex-1 min-w-0 text-xs flex items-center gap-1.5 transition-all duration-300"
                   style={{
                     transitionDelay: `${i * 55}ms`,
-                    color: converted ? "#1a1a1a" : "#d1d5db",
+                    color: converted ? "#1a1a1a" : "#5A6B5B",
                   }}
                 >
                   {converted ? (
@@ -424,7 +424,7 @@ function TimelineSlide() {
                   className="w-8 shrink-0 text-xs font-mono text-right transition-all duration-300"
                   style={{
                     transitionDelay: `${i * 55}ms`,
-                    color: converted ? "#1a1a1a" : "#d1d5db",
+                    color: converted ? "#1a1a1a" : "#5A6B5B",
                   }}
                 >
                   {converted ? row.duration : "—"}
@@ -460,7 +460,7 @@ function VendorSlide() {
       <div className="flex">
         <div className="flex-1 min-w-0 overflow-x-auto">
           {/* Your vendors */}
-          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+          <div className="px-4 py-3 border-b border-border flex items-center justify-between">
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
               Your vendors
             </p>
@@ -468,7 +468,7 @@ function VendorSlide() {
           </div>
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border-border">
                 <th className={th}>Name</th>
                 <th className={th}>Role</th>
                 <th className={`hidden md:table-cell ${th}`}>Last event</th>
@@ -480,7 +480,7 @@ function VendorSlide() {
               {VENDORS_DATA.map((v) => (
                 <tr
                   key={v.id}
-                  className={`border-t border-gray-50 transition-colors ${openId === v.id ? "bg-gray-50" : "hover:bg-gray-50/60"}`}
+                  className={`border-t border-border/60 transition-colors ${openId === v.id ? "bg-muted/60" : "hover:bg-muted/40"}`}
                 >
                   <td className="px-4 py-3.5 text-sm font-medium text-foreground whitespace-nowrap">
                     {v.name}
@@ -515,7 +515,7 @@ function VendorSlide() {
 
           {/* Recommended vendors */}
           <div
-            className="px-4 py-3 border-t border-b border-gray-100 flex items-center justify-between"
+            className="px-4 py-3 border-t border-b border-border flex items-center justify-between"
             style={{ background: "rgba(239,159,39,0.03)" }}
           >
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
@@ -533,7 +533,7 @@ function VendorSlide() {
               {RECOMMENDED_VENDORS.map((v) => (
                 <tr
                   key={v.id}
-                  className={`border-t border-gray-50 transition-colors ${openId === v.id ? "bg-gray-50" : "hover:bg-gray-50/60"}`}
+                  className={`border-t border-border/60 transition-colors ${openId === v.id ? "bg-muted/60" : "hover:bg-muted/40"}`}
                 >
                   <td className="px-4 py-3.5 text-sm font-medium text-foreground whitespace-nowrap">
                     {v.name}
@@ -566,7 +566,7 @@ function VendorSlide() {
 
         {/* Side panel */}
         <div
-          className="overflow-hidden shrink-0 border-l border-gray-100 transition-all duration-300"
+          className="overflow-hidden shrink-0 border-l border-border transition-all duration-300"
           style={{ width: openId ? "224px" : "0px" }}
         >
           {pastVendor && (
@@ -671,16 +671,16 @@ function RolesSlide() {
     <div className="rounded-xl bg-card overflow-hidden" style={{ border: "1px solid rgba(61, 90, 62, 0.1)" }}>
       <div className="flex flex-col md:flex-row">
         {/* Role list */}
-        <div className="md:w-48 shrink-0 border-b md:border-b-0 md:border-r border-gray-100">
-          <div className="px-4 py-3 border-b border-gray-100">
+        <div className="md:w-48 shrink-0 border-b md:border-b-0 md:border-r border-border">
+          <div className="px-4 py-3 border-b border-border">
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Roles</p>
           </div>
           {ROLES_DATA.map((r, i) => (
             <button
               key={r.id}
               onClick={() => setSelectedRole(r.id)}
-              className={`w-full px-4 py-4 text-left transition-colors ${i > 0 ? "border-t border-gray-50" : ""} ${
-                selectedRole === r.id ? "bg-gray-50" : "hover:bg-gray-50/50"
+              className={`w-full px-4 py-4 text-left transition-colors ${i > 0 ? "border-t border-border/60" : ""} ${
+                selectedRole === r.id ? "bg-muted/60" : "hover:bg-muted/40"
               }`}
             >
               <p
@@ -693,7 +693,7 @@ function RolesSlide() {
                 {r.initials.slice(0, 3).map((init, j) => (
                   <div
                     key={init}
-                    className="h-5 w-5 rounded-full bg-gray-100 border border-white flex items-center justify-center"
+                    className="h-5 w-5 rounded-full bg-muted border border-white flex items-center justify-center"
                     style={{ marginLeft: j > 0 ? "-5px" : "0", zIndex: 3 - j }}
                   >
                     <span className="text-[8px] font-semibold text-muted-foreground">{init[0]}</span>
@@ -709,7 +709,7 @@ function RolesSlide() {
 
         {/* Permissions */}
         <div className="flex-1 min-w-0 flex flex-col">
-          <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+          <div className="px-5 py-3 border-b border-border flex items-center justify-between">
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
               {role.name}
             </p>
@@ -741,7 +741,7 @@ function RolesSlide() {
             </div>
           </div>
 
-          <div className="px-5 py-4 border-t border-gray-100">
+          <div className="px-5 py-4 border-t border-border">
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-3">
               Add member
             </p>
@@ -757,7 +757,7 @@ function RolesSlide() {
             </div>
           </div>
 
-          <div className="px-5 py-3 border-t border-gray-100 bg-gray-50/60">
+          <div className="px-5 py-3 border-t border-border bg-muted/40">
             <p className="text-xs text-muted-foreground">Access granted the moment they join the role.</p>
           </div>
         </div>
@@ -791,7 +791,7 @@ function HandoverSlide() {
         className="rounded-xl bg-card overflow-hidden"
         style={{ border: "1px solid rgba(61, 90, 62, 0.1)" }}
       >
-        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+        <div className="px-4 py-3 border-b border-border flex items-center justify-between">
           <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
             Outgoing exec
           </p>
@@ -802,7 +802,7 @@ function HandoverSlide() {
             Graduating
           </span>
         </div>
-        <div className="px-4 py-3 border-b border-gray-100">
+        <div className="px-4 py-3 border-b border-border">
           <p className="text-sm font-medium text-foreground">Alex Chen</p>
           <p className="text-xs text-muted-foreground mt-0.5">President · 2 years</p>
         </div>
@@ -835,9 +835,9 @@ function HandoverSlide() {
       {/* Right card — incoming exec */}
       <div
         className="rounded-xl bg-card overflow-hidden transition-all duration-300"
-        style={{ border: transferred ? "0.5px solid #1D9E75" : "0.5px solid #e8e8e8" }}
+        style={{ border: transferred ? "0.5px solid #1D9E75" : "1px solid rgba(61, 90, 62, 0.1)" }}
       >
-        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+        <div className="px-4 py-3 border-b border-border flex items-center justify-between">
           {transferred ? (
             <span
               className="text-[10px] font-medium px-2 py-0.5 rounded-full uppercase tracking-widest"
@@ -851,7 +851,7 @@ function HandoverSlide() {
             </p>
           )}
         </div>
-        <div className="px-4 py-3 border-b border-gray-100">
+        <div className="px-4 py-3 border-b border-border">
           <p className="text-sm font-medium text-foreground">Jamie Liu</p>
           <p className="text-xs text-muted-foreground mt-0.5">President-elect · Year 2</p>
         </div>
@@ -926,7 +926,7 @@ function ExperienceSlide() {
         className="rounded-xl bg-card overflow-hidden flex flex-col"
         style={{ border: "1px solid rgba(61, 90, 62, 0.1)" }}
       >
-        <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+        <div className="px-5 py-3 border-b border-border flex items-center justify-between">
           <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
             GatherInn record
           </p>
@@ -953,7 +953,7 @@ function ExperienceSlide() {
               </div>
             ))}
           </div>
-          <div className="mt-auto pt-3 border-t border-gray-100 flex items-center gap-1.5">
+          <div className="mt-auto pt-3 border-t border-border flex items-center gap-1.5">
             <span className="text-xs text-muted-foreground">
               Verified by Ethan Park, President · Oct 2024
             </span>
@@ -988,7 +988,7 @@ function StatsSection() {
   const riskCount = useCountUp(14, active);
 
   return (
-    <section className="border-b border-gray-100 py-16">
+    <section className="border-b border-border py-16">
       <div className="max-w-3xl mx-auto px-6">
         <div className="grid grid-cols-3 gap-6 text-center">
           {[
@@ -1065,7 +1065,7 @@ function FeatureSlideshow() {
   return (
     <>
       {/* Tab strip */}
-      <div className="border-y border-gray-100">
+      <div className="border-y border-border">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4">
             {FEATURE_TABS.map(({ id, Icon, label }, i) => (
@@ -1073,8 +1073,8 @@ function FeatureSlideshow() {
                 key={id}
                 onClick={() => handleSelect(id)}
                 className={`flex items-center justify-center gap-2.5 py-5 transition-colors border-b-2 ${
-                  i > 0 ? "border-l border-gray-100" : ""
-                } ${active === id ? "bg-gray-50 border-b-[#1a1a1a]" : "border-b-transparent hover:bg-gray-50/50"}`}
+                  i > 0 ? "border-l border-border" : ""
+                } ${active === id ? "bg-muted/60 border-b-[#1a1a1a]" : "border-b-transparent hover:bg-muted/40"}`}
               >
                 <Icon
                   className={`h-4 w-4 transition-colors ${active === id ? "text-foreground" : "text-muted-foreground/60"}`}
@@ -1092,7 +1092,7 @@ function FeatureSlideshow() {
 
       {/* Slide */}
       <section
-        className="border-b border-gray-100 py-20"
+        className="border-b border-border py-20"
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? "translateY(0)" : "translateY(8px)",
@@ -1118,7 +1118,7 @@ function FeatureSlideshow() {
 function Landing() {
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-gray-100">
+      <header className="border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <BrandLogo />
           <Link
@@ -1133,7 +1133,7 @@ function Landing() {
       <HeroSection />
       <FeatureSlideshow />
 
-      <section className="py-24 border-t border-gray-100">
+      <section className="py-24 border-t border-border">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <p className="text-sm text-muted-foreground">
             Contact us{" "}
