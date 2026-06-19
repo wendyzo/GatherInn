@@ -392,7 +392,7 @@ function TimelineSlide() {
                   className="w-10 text-xs font-mono transition-all duration-300"
                   style={{
                     transitionDelay: `${i * 55}ms`,
-                    color: converted ? "#1a1a1a" : "#f0b04a",
+                    color: converted ? "#1C2B1D" : "#f0b04a",
                   }}
                 >
                   {row.time}
@@ -401,7 +401,7 @@ function TimelineSlide() {
                   className="flex-1 min-w-0 text-xs flex items-center gap-1.5 transition-all duration-300"
                   style={{
                     transitionDelay: `${i * 55}ms`,
-                    color: converted ? "#1a1a1a" : "#5A6B5B",
+                    color: converted ? "#1C2B1D" : "#5A6B5B",
                   }}
                 >
                   {converted ? (
@@ -424,7 +424,7 @@ function TimelineSlide() {
                   className="w-8 shrink-0 text-xs font-mono text-right transition-all duration-300"
                   style={{
                     transitionDelay: `${i * 55}ms`,
-                    color: converted ? "#1a1a1a" : "#5A6B5B",
+                    color: converted ? "#1C2B1D" : "#5A6B5B",
                   }}
                 >
                   {converted ? row.duration : "—"}
@@ -495,7 +495,7 @@ function VendorSlide() {
                         <div
                           key={i}
                           className="h-1.5 w-1.5 rounded-full"
-                          style={{ background: i <= v.rating ? "#EF9F27" : "#e5e7eb" }}
+                          style={{ background: i <= v.rating ? "#EF9F27" : "rgba(61,90,62,0.15)" }}
                         />
                       ))}
                     </div>
@@ -594,7 +594,7 @@ function VendorSlide() {
                       className="h-3.5 w-3.5"
                       style={{
                         fill: i <= pastVendor.rating ? "#EF9F27" : "transparent",
-                        color: i <= pastVendor.rating ? "#EF9F27" : "#e5e7eb",
+                        color: i <= pastVendor.rating ? "#EF9F27" : "rgba(61,90,62,0.15)",
                       }}
                     />
                   ))}
@@ -729,7 +729,7 @@ function RolesSlide() {
                   <button
                     onClick={() => toggle(perm)}
                     className="relative h-5 w-9 rounded-full shrink-0 transition-colors duration-200"
-                    style={{ background: perms[perm] ? "#1a1a1a" : "#e5e7eb" }}
+                    style={{ background: perms[perm] ? "#1C2B1D" : "rgba(61,90,62,0.15)" }}
                   >
                     <span
                       className="absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-card transition-transform duration-200"
@@ -883,7 +883,7 @@ function HandoverSlide() {
               ))
             : HANDOVER_EVENTS.map((ev) => (
                 <div key={ev.name} className="flex items-center gap-2.5">
-                  <div className="h-1.5 w-1.5 rounded-full shrink-0 bg-gray-200" />
+                  <div className="h-1.5 w-1.5 rounded-full shrink-0 bg-muted" />
                   <p className="text-sm text-muted-foreground/60">—</p>
                 </div>
               ))}
@@ -914,7 +914,7 @@ function ExperienceSlide() {
         <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-4">
           Traditional CV
         </p>
-        <p className="text-sm font-medium text-gray-600">Hackathon Organiser</p>
+        <p className="text-sm font-medium text-muted-foreground">Hackathon Organiser</p>
         <p className="mt-2 text-sm text-muted-foreground leading-snug">
           UNSW Computer Science &amp; Engineering Society
         </p>
