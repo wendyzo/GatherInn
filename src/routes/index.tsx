@@ -1074,7 +1074,7 @@ function FeatureSlideshow() {
                 onClick={() => handleSelect(id)}
                 className={`flex items-center justify-center gap-2.5 py-5 transition-colors border-b-2 ${
                   i > 0 ? "border-l border-border" : ""
-                } ${active === id ? "bg-muted/60 border-b-[#1a1a1a]" : "border-b-transparent hover:bg-muted/40"}`}
+                } ${active === id ? "bg-muted/60 border-b-foreground" : "border-b-transparent hover:bg-muted/40"}`}
               >
                 <Icon
                   className={`h-4 w-4 transition-colors ${active === id ? "text-foreground" : "text-muted-foreground/60"}`}
