@@ -147,7 +147,7 @@
   h3,
   .font-display {
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     letter-spacing: -0.02em;
     line-height: 1.15;
     font-weight: 400;
