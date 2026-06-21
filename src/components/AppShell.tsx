@@ -12,6 +12,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-background">
       <header className="bg-sidebar text-sidebar-foreground sticky top-0 z-30 border-b border-sidebar-border">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+          <Link to="/dashboard" className="group flex items-center gap-2">
+            <BrandLogo />
+          </Link>
           <nav className="flex items-center gap-2">
             {!onDashboard && (
               <Link
@@ -36,9 +39,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <LogOut className="h-4 w-4" />
             </Button>
           </nav>
-          <Link to="/dashboard" className="group flex items-center gap-2">
-            <BrandLogo />
-          </Link>
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-6 py-8">{children}</main>

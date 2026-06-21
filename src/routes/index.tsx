@@ -1118,12 +1118,12 @@ function FeatureSlideshow() {
 function Landing() {
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border">
+      <header className="border-b border-border" style={{ background: "#3d5a3e" }}>
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <BrandLogo />
           <Link
             to="/login"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm font-medium text-white/80 hover:text-white transition-colors"
           >
             Sign in →
           </Link>
