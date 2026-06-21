@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowRight,
   X,
@@ -9,12 +8,9 @@ import {
   Copy,
   Users,
   Shield,
-  UserCheck,
   BadgeCheck,
 } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
-import { joinWaitlist } from "@/lib/waitlist.functions";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({ component: Landing });
 
@@ -145,28 +141,6 @@ function useCountUp(target: number, active: boolean, duration = 700) {
 // ── Hero ──────────────────────────────────────────────────────────
 
 function HeroSection() {
-  const [email, setEmail] = useState("");
-  const [societyName, setSocietyName] = useState("");
-  const [busy, setBusy] = useState(false);
-  const submitWaitlist = useServerFn(joinWaitlist);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setBusy(true);
-    try {
-      const res = await submitWaitlist({ data: { email, societyName } });
-      toast.success(res.message);
-      setEmail("");
-      setSocietyName("");
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Something went wrong";
-      toast.error(msg);
-    } finally {
-      setBusy(false);
-    }
-  };
-
   return (
     <section className="max-w-3xl mx-auto px-6 pt-24 pb-20 text-center">
       <h1 className="text-4xl md:text-5xl font-medium text-foreground leading-tight tracking-tight">
@@ -175,46 +149,20 @@ function HeroSection() {
       <p className="mt-4 text-base text-muted-foreground max-w-xl mx-auto">
         Inherit past runsheets, vendors, and risks.
       </p>
-
-      <form onSubmit={handleSubmit} className="mt-8 max-w-md mx-auto">
-        <div className="flex flex-col sm:flex-row gap-2">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Your email address"
-            required
-            className="flex-1 min-w-0 rounded-lg border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/40 transition-colors"
-          />
-          <button
-            type="submit"
-            disabled={busy}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-white hover:opacity-80 transition-opacity disabled:opacity-50 whitespace-nowrap"
-          >
-            {busy ? "Joining…" : "Join waitlist"} <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-        <input
-          type="text"
-          value={societyName}
-          onChange={(e) => setSocietyName(e.target.value)}
-          placeholder="Society or university name (optional)"
-          className="mt-2 w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/40 transition-colors"
-        />
-        <p className="mt-3 text-xs text-muted-foreground">
-          Be the first to get access when we launch. No spam.
-        </p>
-      </form>
-
-      <p className="mt-6 text-xs text-muted-foreground">
-        Already have access?{" "}
+      <div className="mt-8 flex flex-col items-center gap-3">
         <Link
           to="/login"
-          className="underline underline-offset-2 hover:text-foreground transition-colors"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3 text-sm font-medium text-white hover:opacity-80 transition-opacity"
         >
-          Sign in
+          Sign in <ArrowRight className="h-4 w-4" />
         </Link>
-      </p>
+        <Link
+          to="/login"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          No account? Sign up
+        </Link>
+      </div>
     </section>
   );
 }
