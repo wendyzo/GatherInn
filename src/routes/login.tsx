@@ -75,7 +75,7 @@ function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-background">
       <div className="w-full max-w-md">
-        <Link to="/" className="flex items-center gap-2 mb-8">
+        <Link to="/" className="flex items-center justify-center gap-2 mb-8">
           <BrandLogo compact />
         </Link>
         <div className="rounded-md border border-border bg-card p-8 shadow-sm">
