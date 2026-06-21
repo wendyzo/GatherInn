@@ -89,10 +89,16 @@ function Login() {
           </p>
           <button
             onClick={async () => {
-              await supabase.auth.signInWithOAuth({
-                provider: "google",
-                options: { redirectTo: `${window.location.origin}/dashboard` },
+              const { lovable } = await import("@/integrations/lovable");
+              const result = await lovable.auth.signInWithOAuth("google", {
+                redirect_uri: `${window.location.origin}/dashboard`,
               });
+              if (result.error) {
+                toast.error(result.error.message ?? "Google sign-in failed");
+                return;
+              }
+              if (result.redirected) return;
+              nav({ to: "/dashboard" });
             }}
             className="mt-6 w-full flex items-center justify-center gap-3 rounded-md border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
           >
