@@ -1067,14 +1067,8 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border" style={{ background: "#3d5a3e" }}>
-        <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-2 flex items-center">
           <BrandLogo />
-          <Link
-            to="/login"
-            className="text-sm font-medium text-white/80 hover:text-white transition-colors"
-          >
-            Sign in →
-          </Link>
         </div>
       </header>
 
